@@ -103,6 +103,7 @@ window.onload = function () {
 			window.location = '../' + target;
 		} else {
 			window.open('../blog');
+			window.open('https://jisuowei.com/post');
 		}
 	});
 

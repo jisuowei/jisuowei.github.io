@@ -32,15 +32,13 @@ a:active{color:#005DAF;}
 /* 002 Web Font */
 @font-face {
 	font-family: 'dincondweb';
-	src: url('../fonts/dincond-bold-webfont.woff2') format('woff2'),
-		 url('../fonts/dincond-bold-webfont.woff') format('woff');
+	src: url('../../static/fonts/dincond-bold-webfont.woff') format('woff');
 	font-weight: normal;font-style: normal;
 }
 
 @font-face {
 	font-family:'webConsolas';
-	src:url('../fonts/webConsolas.woff2') format('woff2'),
-		url('../fonts/webConsolas.woff') format('woff');
+	src: url('../../static/fonts/webConsolas.woff') format('woff');
 	font-weight:normal;font-style:normal;
 }
 
