@@ -1,0 +1,64 @@
+/*
+	
+	jisuowei_mobile.css for 320px < width < 960px
+	(c)jisuowei.com
+
+*/
+
+
+@media screen and (max-width:960px){
+
+	#nav {margin-left:-200px;}
+	#logo {margin-left:-320px;}
+	#center {margin-left:-320px;}
+	#search_btn {margin-right:-320px;}
+	#search_inp {margin-left:-320px;}
+	#search_ox {margin-right:-320px;}
+	#sider {left:100%; margin-left:0; transition:all .6s;}
+	#sider.on {margin-left:-240px;}
+	#sider_ox {display:block;}
+	#totop {right:50px; margin-right:0; bottom:20px; border-radius:40px;}
+	#totop:hover {background:rgba(222,222,222,0.8);}
+	#totop:active {background:rgba(222,222,222,0.8);}
+	#toast {margin-left:-320px;}
+
+	#Jikit_Navzoom {left:20px;}
+
+	.paras p {font-size:14px; color:#5c5c5c; text-align:justify; text-indent:28px;}
+
+	#sider_read,
+	#skill_bar {width: 80%;left: 10%;}
+
+}
+
+
+@media screen and (max-width:780px){
+
+	#center {width:90%; left:5%; margin-left:0;}
+	#footer {margin:0;text-align:center;}
+	#footer p {line-height:20px;margin-top:16px;}
+	#footer span {display:block;}	
+	#logo {left:50%; margin-left:-39px;}
+	#nav {display:none;}
+	#menu {display:inline-block;}
+	#menu_sons {display:block;}
+	#search_btn {right:0; margin-right:0; text-align:center;}
+	#search_inp {left:5%; margin-left:0; width: auto;right: 68px;}
+	#search_ox {right:0;margin-right:0; text-align:center;}
+	#sider {left:100%; margin-left:0; transition:all .6s;}
+	#sider.on {margin-left: -240px;}
+	#sider_ox {display:block;}
+	#totop {right:50px; margin-right:0; bottom:20px; border-radius:40px;}
+	#totop:hover {background:rgba(222,222,222,0.8);}
+	#totop:active {background:rgba(222,222,222,0.8);}
+	#toast {left:5%;margin-left:0;width:90%;}
+	#result {width:100%;left:0;top:48px;right:20px;margin-left:0;}
+
+	.paras {columns: 1;column-count: 1;-moz-column-count: 1;-webkit-column-count: 1;}
+	.paras p {font-size:14px; line-height:24px; color:#5c5c5c; text-align:justify; text-indent:28px;}
+
+	.book_list {width: 100%;min-width:320px;overflow: hidden;}
+
+	#jiMap {height:160px;}
+
+}

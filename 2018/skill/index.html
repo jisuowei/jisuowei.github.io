@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title title="skill">技能-奇斯威克-Jisuowei.com</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0">
+	<link rel='stylesheet' type='text/css' href='../css/jikit.css' />
+	<link rel='stylesheet' type='text/css' href='../css/jisuowei.css' />
+	<link rel='stylesheet' type='text/css' href='../css/jisuowei_mobile.css' />
+</head>
+<body>
+
+</body>
+<script src="../../static/js/jquery.2.1.1.min.js"></script>
+<script src="../js/jikit.js"></script>
+<script src="../js/jisuowei.js"></script>
+<script>
+
+$('#top').append($('<div id="skill_title"><p>“吾生也有涯，而知也无涯。以有涯随无涯，殆已！”——庄子</p><span>“还是要往死里学的啊。”——鸡日天</span></div>'));
+
+Jikit.Article.init('skill');
+
+var skill_curr = 0;
+scroll_bind = function(index) {
+	if( index != skill_curr ) {
+		$('.skill_bars').fadeOut(300);
+		$($('.skill_bars')[index]).fadeIn(300);
+		skill_curr = index;
+	}
+}
+
+
+var skill_bar = '<div class="skill_bars"><li></li><li></li><li></li><li></li></div>'
+		 + '<div class="skill_bars"><li></li><li></li><li></li><li></li><li></li><li></li><li></li></div>'
+		 + '<div class="skill_bars"><li></li><li></li><li></li><li></li><li></li><li></li></div>'
+		 + '<div class="skill_bars"><li></li><li></li><li></li><li></li></div>'
+		 + '<div class="skill_bars"><li></li></div>';
+
+$('#sider').prepend($('<div id="skill_bar"></div>'))
+$('#skill_bar').html(skill_bar);
+
+var skill_val = [
+	{'name':'Photoshop','p':90},
+	{'name':'Adobe Illustrator','p':18},
+	{'name':'UI/UE','p':23},
+	{'name':'VI','p':9},
+
+	{'name':'HTML5','p':89},
+	{'name':'CSS3','p':86},
+	{'name':'JavaScript','p':58},
+	{'name':'AJAX & JSON','p':68},
+	{'name':'jQuery','p':76},
+	{'name':'Bootstrap','p':2},
+	{'name':'AngularJS','p':1},
+
+	{'name':'PHP','p':35},
+	{'name':'Java','p':10},
+	{'name':'Apache','p':23},
+	{'name':'SQL','p':18},
+	{'name':'MySql','p':15},
+	{'name':'HTTP','p':12},
+
+	{'name':'AutoCAD','p':85},
+	{'name':'UG','p':73},
+	{'name':'Pro/E','p':3},
+	{'name':'CNC','p':21},
+
+	{'name':'ZhuangBi','p':100}
+];
+
+for( var i=0; i<skill_val.length; i++){
+	$($('#skill_bar li')[i]).html(
+		'<h5>'+skill_val[i].name+'<i>'+skill_val[i].p+'%</i></h5>'
+		+'<p><span style="width:'+skill_val[i].p+'%"></span></p>'
+	);
+}
+
+$('.skill_bars').hide();
+$($('.skill_bars')[0]).show();
+
+</script>
+</html>

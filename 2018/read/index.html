@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title title="read">阅读-奇斯威克-Jisuowei.com</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0">
+	<link rel='stylesheet' type='text/css' href='../css/jikit.css' />
+	<link rel='stylesheet' type='text/css' href='../css/jisuowei.css' />
+	<link rel='stylesheet' type='text/css' href='../css/jisuowei_mobile.css' />
+</head>
+<body>
+
+</body>
+<script src="../../static/js/jquery.2.1.1.min.js"></script>
+<script src="../js/jikit.js"></script>
+<script src="../js/jisuowei.js"></script>
+<script src="../../static/js/countUp.js"></script>
+<script>
+
+Array.prototype.indexOf = function (val) {
+	for (var i=0; i<this.length; i++) {
+		if (this[i]==val) {return true;}
+	}
+};
+
+function getCont(e) {
+	var s = $(e).attr('data-cont');
+	var a = s.split('/');
+	var res = '';
+	for(var i=0; i<a.length;i++) {
+		res += '《' + a[i] + '》';
+	}
+	toast('<p style="margin-bottom:12px;color:#dedede;font-weight:bold;">包含</p>'+res);
+}
+
+$('#top').html('<div id="top_read"><span id="bookNumTitle">“ 全部 ”</span><span id="sum_read">0</span> 本：</div>'
+	+ '<span class="special taga" data-way="all" data-key="全部">全部</span>'
+	+ '<span class="special taga" data-way="num" data-key="读完">读完</span>'
+	+ '<span class="special taga" data-way="lv" data-key="鸡哥力荐">鸡哥力荐</span>'
+	+ '<span class="special taga" data-way="buy" data-key="最近购买">最近购买</span>');
+$('#mid').html('数据加载中..');
+$('#btm').html('<div id="pgnt"></div>');
+
+var sider_read = '<div id="sider_read">'
+		+ '<i class="fa fa-star on"></i><i class="fa fa-star off"></i><i class="fa fa-star off"></i><i class="fa fa-star off"></i><i class="fa fa-star off"></i>&nbsp;&nbsp;浪费时间<br>'
+		+ '<i class="fa fa-star on"></i><i class="fa fa-star on"></i><i class="fa fa-star off"></i><i class="fa fa-star off"></i><i class="fa fa-star off"></i>&nbsp;&nbsp;不置可否<br>'
+		+ '<i class="fa fa-star on"></i><i class="fa fa-star on"></i><i class="fa fa-star on"></i><i class="fa fa-star off"></i><i class="fa fa-star off"></i>&nbsp;&nbsp;值得一读<br>'
+		+ '<i class="fa fa-star on"></i><i class="fa fa-star on"></i><i class="fa fa-star on"></i><i class="fa fa-star on"></i><i class="fa fa-star off"></i>&nbsp;&nbsp;人生必读<br>'
+		+ '<i class="fa fa-star on"></i><i class="fa fa-star on"></i><i class="fa fa-star on"></i><i class="fa fa-star on"></i><i class="fa fa-star on"></i>&nbsp;&nbsp;三阅可矣<br><br>'
+		+ '<p>*评级针对该版本、译本、分类<br>*评级亦受时间、空间发展而变化<br>*图书购买自超棒的 <a target="_blank" href="http://duokan.com" style="color:#EC6E00;">多看阅读</a></p>'
+	+ '</div>';
+$('#sider').append($(sider_read));
+
+
+function bookSearch(key,way){
+	$('body,html').scrollTop("0");
+	var searchRes = [];
+	if(way != 'lv' && way != 'num') {
+		var bookFlag;
+		var patt = new RegExp(key,'gi');
+		$.each(bookJson, function(entryIndex, entry) {
+			switch( way ) {
+				case 'all':    temp = entry; break;
+				case 'search': temp = patt.test(entry.id) || patt.test(entry.tt) || patt.test(entry.aut) || patt.test(entry.cont) || patt.test(entry.user); break;
+				case 'aut':    temp = entry.aut.match(patt); break;
+				case 'pub':    temp = (key == entry.pub); bookFlag = 'pub'; break;
+				case 'tag':    temp = entry.tag.indexOf(key); bookFlag = 'tag'; break;
+				// case 'num':    temp = entry.lv> 0; break;
+				// case 'lv':     temp =  entry.lv>=4; break;
+				case 'buy':    temp = entryIndex >= (bookJson.length - 20); break;
+				default: ;
+			}
+			if(temp) {
+				var obj = {
+					date: entry.date,
+					id:   entry.id,
+					tt:   entry.tt,
+					aut:  entry.aut,
+					edt:  entry.edt,
+					pub:  entry.pub,
+					user: entry.user,
+					tag:  entry.tag,
+					lv:   entry.lv,
+					num:  entry.num,
+					cont: entry.cont,
+					end:  entry.end
+				};
+				searchRes.push(obj);
+			}
+		});
+	} else {
+		var arr;
+		if(way == 'lv') {
+			arr = [90,44,74,3,43,72];
+		} else {
+			arr = [
+				12,10,18,90,3,76,82,7,27,25,84,43,83,74,85,56,70,71,
+				62,4,72,44
+			];
+		}
+		for(var i=0; i<arr.length; i++) {
+				var obj = {
+					date: bookJson[arr[i]-1].date,
+					id:   bookJson[arr[i]-1].id,
+					tt:   bookJson[arr[i]-1].tt,
+					aut:  bookJson[arr[i]-1].aut,
+					edt:  bookJson[arr[i]-1].edt,
+					pub:  bookJson[arr[i]-1].pub,
+					user: bookJson[arr[i]-1].user,
+					tag:  bookJson[arr[i]-1].tag,
+					lv:   bookJson[arr[i]-1].lv,
+					num:  bookJson[arr[i]-1].num,
+					cont: bookJson[arr[i]-1].cont,
+					end:  bookJson[arr[i]-1].end
+				};
+				searchRes.push(obj);
+		}
+	}
+
+	if(searchRes.length==0){
+		$('#mid').html(
+			'<p style="text-align:center;margin-top:100px;font-size:32px;color:#A0A0A0;">啊哦，没有搜到耶 (ಥ_ಥ)<br>'
+			+ '<a style="font-size:16px;" target="_blank" href="http://www.duokan.com/search/'
+			+ $('#search_input').val() +'">去 多看阅读 搜索 “'+ $('#search_input').val().substring(0,8) +'..”</a></p>'
+		);
+		$('#sum_read').html('0');
+		$('#btm').hide();
+	} else {
+		bookPageAll( searchRes );
+		$('#btm').show();
+	}
+
+	if(bookFlag == 'pub') {key = TAG.Read.pub[key];} else if(bookFlag == 'tag') {key = TAG.Read.tag[key];}
+	if( key.length > 12 ) {  // 顶部搜字符串调整
+		$('#bookNumTitle').html('“ '+ key.substring(0,12) +'..”');
+	} else {
+		$('#bookNumTitle').html('“ '+ key +' ”');
+	}
+}
+
+
+
+function bookPageAll(arr) {  // 大分类数组对象的改变
+
+	// 分页四要素
+	var count = arr.length;
+	var pageCount = 10;
+	var pages = Math.ceil(count/pageCount);
+	var curr = 1;
+
+	bookPaginator( curr );  // 初始化 第一页
+
+	var numAni = new CountUp('sum_read', 0, count, 0, 1.6);numAni.start();  // 统计
+	
+	function bookPaginator( curr ) {
+		$('body,html').scrollTop('0');
+		$('#header').removeClass('on');
+		Jikit.Paginator(curr, pages, '#pgnt', bookPaginator);
+		var pageData = arr.slice(curr*pageCount-pageCount,curr*pageCount);  // 切割数组
+		bookPage(pageData);
+	}
+
+};
+
+
+
+function bookPage(pageData) {  // 一页的数据生成
+	var html = '';
+	$.each(pageData, function(entryIndex, entry) {
+	html += '<div class="book_list" style="opacity:0;"><div class="book_avatar" ><img src="../../static/img/cover/JBK'+ entry.id +'.jpg" /></div>';
+		html += '<div class="book_desc">'
+			html += '<p class="book_tt" title="'+ entry.tt +'">'+ (function(){if(entry.tt.length>14){return entry.tt.substring(0,14)+'..'}else{return entry.tt}})(); +'</p>';
+			html += '<p class="book_aut" title="'+ entry.aut +'">';
+				if(entry.aut) {
+					html += (function(){if(entry.aut.length>18){return entry.aut.substring(0,18)+'..'}else{return entry.aut}})();
+				}
+			html += '</p>';
+			html += '<p class="book_tri">';
+				html += '<span>'+
+					(function(){
+						var star = '';
+						var light = entry.lv || 0;
+						var gray = 5 - light;
+						for(var i=0; i<light; i++) {
+							star += '<i class="fa fa-star on"></i>';
+						}
+						for(var i=0; i<gray; i++) {
+							star += '<i class="fa fa-star off"></i>';
+						}
+						return star;
+					})();
+				+'</span>';
+				if(entry.num) { html += '<a class="book_num" href="javascript:;" value="'+ entry.id +'" title="查看笔记"><i class="fa fa-pencil-square"></i> x'+ entry.num +'</a>'; }
+				if(entry.cont) { html += '<a class="book_cont" onclick="getCont(this);" href="javascript:;" title="显示分册" data-cont="'+entry.cont+'"><i class="fa fa-list"></i></a>';}
+			html += '</p>';
+			html += '<p class="book_tags">'+ (function(){ var tags=''; for(var i=0;i<entry.tag.length;i++){tags+='<span class="book_tag">'+ TAG.Read.tag[entry.tag[i]]+'</span>'};return tags;})(); +'</p>';
+			html += '<p class="book_pub">'+ TAG.Read.pub[entry.pub] + ' ' + (entry.edt ? '| ' + entry.edt : '') + '</p>';
+			html += '<p class="book_user">#'+ entry.id + '&' + entry.user + (entry.date ? '@'+ entry.date : '') +'</p>';
+			if(entry.end) { html += '<p class="book_end"><i class="fa fa-calendar-check-o"></i> '+ entry.end +' 读完</p>'; }
+		html += '</div>';
+	html += '</div>';
+	});
+
+	$('#mid').html(html);
+
+
+	// $('.book_list').animate({opacity:'1'},1000);
+
+	var timerArr = [];
+	for(var i=0; i<$('.book_list').length; i++) {
+		timerArr[i] = "setTimeout(function(){$($('.book_list')["+ i +"]).animate({opacity:'1'},400);}, "+ i +"*160);";
+	}
+	for(var i=0; i<timerArr.length; i++) {
+		eval(timerArr[i]);
+	}
+
+
+	$('.book_tt').click(function(){window.open('http://www.duokan.com/search/'+$(this).attr('title'));});
+	
+	$('.book_num').click(function(){
+		$('#res').fadeIn(240);
+		$('#result').html('<p id="loadingTip">数据加载中..</p>');
+		var s = $(this).attr('value');
+		setTimeout(function(){
+			Jikit.ajax('../../static/note/JBK'+ s + '.html',function(str) {
+				$('#result').html( str );
+			});
+		},400)
+		$('#result').scrollTop("0");
+	});
+	$('#res_ox').click(function(){$('#res').fadeOut(240)});
+
+}
+
+
+var bookJson = null;
+$.getJSON('../../static/json/book.json', function(data) {
+	bookJson = data;
+	setTimeout(function(){bookPageAll( data );},300)
+});
+
+
+
+// 生成标签
+for(var i=0; i<TAG.Read.tag.length; i++) {
+	var tag = $('<span class="taga" data-key="'+ i +'" data-way="tag">'+ TAG.Read.tag[i] +'</span>');
+	$('#top').append(tag);
+}
+for(var i=0; i<TAG.Read.taga.length; i++) {
+	var tag = $('<span class="taga" data-key="'+ TAG.Read.taga[i].key +'" data-way="'+ TAG.Read.taga[i].way +'">'+ TAG.Read.taga[i].key +'</span>');
+	$('#top').append(tag);
+}
+for(var i=0; i<7; i++) {
+	var tag = $('<span class="taga" data-key="'+ i +'" data-way="pub">'+ TAG.Read.pub[i] +'</span>');
+	$('#top').append(tag);
+}
+// 标签 搜索
+$('.taga').click(function(){
+	var key = $(this).attr('data-key');
+	var way = $(this).attr('data-way');
+	bookSearch(key,way);
+});
+
+
+</script>
+</html>
