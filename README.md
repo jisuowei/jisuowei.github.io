@@ -3,6 +3,8 @@ Archive old versions of websites.
 
 - [version 2015](/2015)
 - [version 2017](/2017)
+- [version 2018](/2018)
+- [version 2019](/2019)
 
 ---
 
