@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Jisuowei.com-readJsoner</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<link href="../img/favicon.ico" rel="shortcut icon" />
+</head>
+<style>
+
+* {
+	font-size: 12px;
+}
+
+body {
+	padding: 20px;
+	background: #fafafa;
+}
+
+
+input[type=text],
+input[type=button] {
+	width: 180px;
+	height: 28px;
+	border: 1px solid #DDDDDD;
+	padding: 0 6px;
+	border-radius: 3px;
+	margin-bottom: 12px;
+	box-sizing: border-box;
+	outline: none;
+}
+
+input[type=button] {
+	width: 72px;
+	color: #fff;
+	background: #0090DB;
+	border: 1px solid #0090DB;
+	cursor: pointer;
+}
+
+input[type=button]:hover { background: #00A7FF }
+input[type=button]:active { background: #0079B9 }
+
+input[type=text]:focus { border: 1px solid #0090DB; }
+
+
+
+#jsoner-edit {
+	width: 800px;
+	margin: 12px 0;
+}
+
+
+#title,
+#author {
+	width: 100%;
+}
+
+#publish,
+#editor,
+#client,
+#level,
+#class,
+#note {
+	width: 32%;
+}
+
+#attach {
+	width: 64%;
+}
+
+
+
+#classChose {
+	margin: 12px 0;
+}
+
+#classChose span {
+	width: 80px;
+	display: inline-block;
+
+}
+
+
+
+
+
+
+#jsoner-code {
+	width: 1400px;
+	min-height: 200px;
+	border: 1px solid #e0e0e0;
+	margin-top: 12px;
+	padding: 20px;
+	box-sizing: border-box;
+	outline: none;
+	background: #fff;
+
+}
+
+
+
+input.alert {
+	border: 1px solid red;
+}
+
+.ok {
+	color: green;
+}
+
+
+</style>
+<body>
+
+
+	<div id="jsoner-edit">
+		<input id="title" type="text" placeholder="*书名" />
+		<input id="author" type="text" placeholder="*作者" />
+		<input id="publish" type="text" placeholder="*出版" />
+		<input id="client" type="text" placeholder="*所属" />
+		<input id="class" type="text" placeholder="*选择分类" disabled="true" />
+			
+		<div id="classChose"></div>
+
+		<input id="editor" type="text" placeholder="编译" />
+		<input id="attach" type="text" placeholder="补充" />
+
+	</div>
+
+
+
+	<div class="title">
+		<input id="jsoner-btn-format" type="button" value="格式化" />
+		<input id="jsoner-btn-add" type="button" value="添加" />
+		<input id="jsoner-btn-clear" type="button" value="清空" />
+	</div>
+
+
+
+	<br/><br/><br/>
+	JSON CODE
+	<div id="jsoner-code" contenteditable="true"></div>
+
+
+
+</body>
+<script src="../../static/js/jquery.2.1.1.min.js"></script>
+<script src="../js/jisuowei.js"></script>
+<script>
+
+window.onload = function(){
+
+	var alreadyNum = parseInt(location.href.slice(-4));
+
+	// 格式化
+	$('#jsoner-btn-format').click(function(){
+
+		// 
+		$('#title').val($('#title').val().replace(/' '/g,'').replace('）','').replace('（',' '));
+		$('#author').val($('#author').val().replace(/' '/g,'').replace('【','').replace('】','/'));
+		$('#publish').val( $('#publish').val().replace(' ','') );
+		$('#client').val( $('#client').val().replace(' ','') );
+
+		var laterEditor = $('#editor').val().replace(' ','');
+		if(laterEditor.slice(-2) == '..' ){
+			laterEditor = laterEditor.slice(0,-2) + ' 等';
+		}
+		$('#editor').val(laterEditor);
+
+
+
+	});
+
+
+	// 选择分类
+	$('#classChose input').click(function(){
+		var n = $('input.class:checked').length;
+
+		var str = '';
+
+		if(n>1){
+			str += $('input.class:checked').val()
+			for(var i=1; i<n; i++){
+				str += '-' + $( $('input.class:checked')[i] ).val();
+			}	
+		} else {
+			str = $('input.class:checked').val();
+		}
+
+		$('#class').val(str);
+		$('#class').removeClass('alert');
+
+	});
+
+
+	// 添加
+	$('#jsoner-btn-add').click(function(){
+
+
+		$('#jsoner-edit input').removeClass('alert');
+
+		var trueNum = 0;
+		var falseArr = [];
+
+		for(var i=1; i<=5; i++) {
+			if( $('#jsoner-edit input:nth-child('+ i +')').val() ){
+				trueNum += 1;
+			} else {
+				falseArr.push(i);
+			}
+		}
+
+		var diff = 5 - trueNum;
+
+		if( diff ) {
+			for(var i=0; i<falseArr.length; i++) {
+				$('#jsoner-edit input:nth-child('+ falseArr[i] +')').addClass('alert');
+			}
+		} else {
+
+			var string = $('#jsoner-code').text();
+			var nowNum = Tongji(string,'"id"') + 1;
+
+
+			var id = 'JBK' + (alreadyNum + nowNum);
+			var title   = $('#title').val();
+			var author  = $('#author').val();
+			var publish = $('#publish').val();
+			var client  = $('#client').val();
+			var classes = $('#class').val();
+			var editor  = $('#editor').val();
+			var attach  = $('#attach').val();
+
+			var str = '{"id":"'+ id +'","title":"'+ title
+				+'","author":"'+ author 
+				+'","editor":"' 
+
+				+(function(){
+					if(editor ){
+						return editor;
+					} else {
+						return '0';
+					}				
+				})()
+
+				+'","publish":"'+ publish 
+				+'","client":"@'+ client 
+				+'","class":"'+ classes
+				+'","level":0'
+				+',"note":0'
+
+				+(function(){
+					if(attach!=''){
+						return ',"attach":"'+ attach +'"';
+					} else {
+						return '';
+					}
+				})()
+
+				+'},<br/>';
+
+			$('#jsoner-code').append(str);
+
+			$('#title').val('');
+
+
+
+		}
+
+	});
+
+	// 再次输入 移除红色
+	$('#title,#author,#publish,#client').blur(function(){
+		if($(this).val()){
+			$(this).removeClass('alert');
+		}
+	});
+
+
+
+	// 清空
+	$('#jsoner-btn-clear').click(function(){
+		$('input[type=text]').val('');
+		$('input[type=checkbox]').removeAttr('checked');
+	});
+
+
+
+
+}
+
+
+// 分类 checkbox
+var arr = [
+		{'ckid':'history','key':'历史'},
+		{'ckid':'whistory','key':'世界史'},
+		{'ckid':'chistory','key':'中国史'},
+		{'ckid':'classic','key':'古典名著'},
+		{'ckid':'computer','key':'计算机'},
+		{'ckid':'wfamous','key':'世界名著'},
+		{'ckid':'em','key':'经管'},
+		{'ckid':'person','key':'传记'},
+		{'ckid':'culture','key':'人文社科'},
+		{'ckid':'story','key':'小说'},
+		{'ckid':'fantasy','key':'科幻'},
+		{'ckid':'science','key':'科学'},
+		{'ckid':'nearby','key':'近代'},
+		{'ckid':'edu','key':'教育'},
+		{'ckid':'foreign','key':'外语'},
+		{'ckid':'eco','key':'政治'},
+		{'ckid':'phy','key':'心理'},
+		{'ckid':'art','key':'艺术'}
+];
+
+for(var i=0; i<arr.length; i++) {
+	var e = $('<span><input name="class" class="class" type="checkbox" id="'+arr[i].ckid+'" value="'+arr[i].key+'" /><label for="'+arr[i].ckid+'">'+arr[i].key+'</label></span>');
+	$('#classChose').append(e);
+}
+
+
+
+
+function Tongji(string , char) {
+    var index = 0 , index1 = 0 , count = 0;
+    for(var i = 0; i < string.length && ( index1 != -1 ); i++ )
+    {
+       index1 = string.indexOf(char, index);
+       index = index1 + 1;
+       count = i;
+   }
+   return count;
+}
+
+
+</script>
+</html>

@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title title="read">Jisuowei.com-阅读</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta name="viewport" content=" width=1024,user-scalable=0">
+<link rel='stylesheet' type='text/css' href='../css/ji-common.css' />
+<style>
+
+
+#ji-read-cont-left {
+	width: 680px;
+	min-height: 640px;
+
+}
+
+.jbk-duokan {
+	width: 680px;
+	height: 36px;
+	line-height: 36px;
+	border-radius: 4px;
+	color: #000;
+	background: #e5e5e5;
+	padding: 0 12px;
+	box-sizing: border-box;
+	margin-bottom: 12px;
+	font-size: 14px;
+}
+
+a.tipDuokan,
+.jbk-duokan a {
+	font-size: 14px;
+	color: #EC6E00;
+	font-weight: bold;
+}
+
+a.tipDuokan:hover,
+.jbk-duokan a:hover {
+	text-decoration: underline;
+}
+
+.jbk-duokan-right {
+	color: #A0A0A0;
+	float: right;
+}
+
+#bookNumTitle {
+	margin: 0 8px 0 12px;
+	font-weight: bold;
+	color: #312E03;
+}
+
+#bookNum {
+	color: #312E03;
+	/*font-weight: bold;*/
+	font-family: "DINCondWeb";
+	font-size: 20px;
+}
+
+#ji-read-cont-ajax {
+	width: 100%;
+	float: left;
+}
+
+/*#ji-read-cont-ajax > div:last-child {
+	border-bottom: none;
+}
+*/
+
+.ji-read-book {
+	width: 100%;
+	float: left;
+	padding: 20px 0;
+	border-bottom: 1px dashed #DBDBDB;
+}
+
+.ji-read-avatar {
+	width: 96px;
+	height: 128px;
+	float: left;
+	box-shadow: 0 6px 12px #bbbbbb;
+	border-top-left-radius: 2px;
+	border-top-right-radius: 2px;
+	border-bottom-right-radius: 2px;
+	overflow: hidden;
+}
+
+.ji-read-avatar img {
+	width: 96px;
+	height: 128px;
+	background-image: url(../img/img_null_bg.png);
+}
+
+.ji-read-avatar:before {
+	content: '';
+	height: 128px;
+	border-left: 1px solid rgba(0,0,0,0.1);
+	border-right: 1px solid rgba(255,255,255,0.12);
+	display: block;
+	position: absolute;
+	left: 2px;
+}
+
+.ji-read-avatar:after {
+	content: '';
+	width: 94px;
+	height: 2px;
+	background: #fff;
+	display: block;
+	position: absolute;
+	margin-top: -5px;
+	border: 1px solid rgba(0,0,0,0.24);
+	border-right: none;
+	border-top-left-radius: 3px;
+	border-bottom-left-radius: 3px;
+}
+
+.ji-read-l {
+	width: 584px;
+	height: 56px;
+	padding-left: 24px;
+	float: left;
+	box-sizing: border-box;
+
+}
+
+.ji-read-s {
+	width: 132px;
+	float: left;
+	font-size: 12px;
+	color: #A7A7A7;
+	padding-left: 24px;
+	border-right: 1px solid #efefef;
+	line-height: 18px;
+}
+
+.ji-read-s p {
+	font-family: 'Microsoft Yahei';
+}
+
+.ji-read-m {
+	float: left;
+	padding-left: 20px;
+	line-height: 24px;
+
+}
+
+.ji-read-title { font-size: 18px; display: inline-block;font-family: '微软雅黑'; }
+.ji-read-title:hover { cursor: pointer; color: #0090DB; }
+.ji-read-author { font-size: 14px; color: #5c5c5c; }
+.ji-read-class { color: #A7A7A7; }
+.ji-read-note, .ji-read-class {font-size: 14px;}
+
+.jbk-a-note { font-family: 'DINCondWeb';}
+
+.ji-read-attach {
+	width: 100%;
+	box-sizing: border-box;
+	float: left;
+	font-size: 14px;
+	text-align: justify;
+	padding: 10px;
+	background: #EDEDE8;
+	color: #A7A7A7;
+	margin-top: 16px;
+}
+
+i.light { color: #FFAF00; }
+i.gray { color: #E0E0E0; }
+
+
+#pagination {
+	width: 100%;
+	height: 60px;
+	line-height: 32px;
+	float: left;
+	margin-top: 20px;
+	padding-top: 12px;
+	/*border-top: 1px solid #DBDBDB;*/
+}
+
+#pagination a {
+	min-width: 32px;
+	height: 32px;
+	line-height: 32px;
+	text-align: center;
+	margin-right: 6px;
+	border: 1px solid #dfdfdf;
+	float: left;
+	font-size: 12px;
+	box-sizing: border-box;
+	margin-bottom: 100px;
+	padding: 0 4px;
+	border-radius: 1px;
+}
+
+#pagination a:hover {
+	border: 1px solid #5c5c5c;
+}
+
+#pagination .ellipsis {
+	float: left;
+	color: #808080;
+	height: 32px;
+	line-height: 32px;
+	margin-right: 6px;
+}
+
+
+#pageGo {
+	float: right;
+	font-size: 14px;
+	line-height: 32px;
+}
+
+#pageGoIndex {
+	width: 48px;
+	height: 32px;
+	padding: 0 4px;
+	border: 1px solid #DBDBDB;
+	margin: 0 4px;
+	box-sizing: border-box;
+	text-align: center;
+	border-radius: 4px;
+	font-size: 12px;
+}
+
+#pageGoBtn {
+	width: 40px;
+	height: 32px;
+	text-align: center;
+	border-radius: 4px;
+	display: block;
+	background: #505050;
+	color: #fff;
+	float: right;
+	cursor: pointer;
+}
+
+
+
+#pageGoBtn:hover,#ji-read-serach-btn:hover { background: #5c5c5c }
+#pageGoBtn:active,#ji-read-serach-btn:active { background: #363636 }
+#pageGoIndex:focus,#ji-read-serach input:focus {
+	border: 1px solid #5c5c5c;
+	/*box-shadow: 0px 0px 5px #00A7FF;*/
+}
+
+
+
+#ji-read-cont-right {
+	width: 280px;
+	position: fixed;
+	top: 84px;
+	margin-left: 700px;
+}
+
+#ji-read-serach {
+	font-size: 14px;
+}
+
+#ji-read-serach input {
+	width: 280px;
+	height: 36px;
+	padding: 0 58px 0 10px;
+	box-sizing: border-box;
+	border-radius: 4px;
+	border: 1px solid #DBDBDB;
+}
+
+
+#ji-read-serach-btn {
+	width: 40px;
+	height: 36px;
+	line-height: 36px;
+	position: absolute;
+	top: 0;
+	right: 0;
+	text-align: center;
+	border-top-right-radius: 4px;
+	border-bottom-right-radius: 4px;
+	display: block;
+	background: #505050;
+	color: #fff;
+	font-size: 14px;
+}
+
+
+
+#ji-read-tag {
+	margin-top: 32px;
+}
+
+#ji-read-tag a {
+	padding: 2px 6px;
+	display: block;
+	float: left;
+	margin-right: 6px;
+	margin-bottom: 6px;
+	font-size: 14px;
+	border-radius: 3px;
+}
+
+.author { background: #E0F0FF; }
+.publish { background: #EBE7E3; }
+.search { background: #FFF2ED; }
+.class { background: #E0E0E0; }
+.special { background: #00A28B; color: #fff; }
+
+
+#ji-mask-content { text-align: justify; }
+
+</style>
+</head>
+<body>
+
+
+<div class="ji-content">
+
+		<div id="ji-read-cont-left">
+			<div class="jbk-duokan"><i class="fa fa-check-circle"></i><span id="bookNumTitle">“ 全部 ”</span><span id="bookNum">0</span> <b>本：</b> <span class="jbk-duokan-right">图书购买自超棒的 <a target="_blank" href="http://duokan.com">多看阅读</a> <a id="jsoner" href="readJsoner.html" target="_blank">.</a></span></div>
+
+
+			<div id="ji-read-cont-ajax">
+				数据加载中..
+
+<!--  容器结构
+				<div class="ji-read-book">
+						<div class="ji-read-avatar"><img src="../img/avatar/JBK0001.png" /></div>
+						<div class="ji-read-l">
+							<p class="ji-read-title">三国演义</p>
+							<p class="ji-read-author">明/罗贯中 著</p>
+						</div>
+						<div class="ji-read-s">
+							<p>编译：富强</p>
+							<p>出版：青岛智道文化</p>
+							<p>编号：JBK0144</p>
+							<p>所属：@chisw</p>
+						</div>
+						<div class="ji-read-m">
+							<p class="ji-read-level"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></p>
+							<p class="ji-read-class"><i class="fa fa-tag"></i> 小说-故事-欧美</p>
+							<p class="ji-read-note"><a href="javascript:;"><i class="fa fa-edit"></i>28条笔记</a></p>
+						</div>
+						<p class="ji-read-attach">包含：武林外史/绝代双骄/流星·蝴蝶·剑/圆月弯刀/欢乐英雄/大人物/三少爷的剑/白玉老虎</p>
+					</div> 
+-->
+
+			</div><!-- ji-read-cont-ajax -->
+
+			<div id="pagination"></div>
+
+		</div><!-- left -->
+
+		<div id="ji-read-cont-right">
+
+			<div id="ji-read-serach">
+				<input id="ji-read-search-value" type="text" placeholder="回车发起搜索" /><a id="ji-read-serach-btn" href="javascript:;"><i class="fa fa-search"></i></a>
+			</div>
+
+			<div id="ji-read-tag">
+				<a href="javascript:;" class="special ji-read-tags" data-way="all" data-key="全部" id="reload">全部</a>
+				<a href="javascript:;" class="special ji-read-tags" data-way="note" data-key="读完">读完</a>
+				<a href="javascript:;" class="special ji-read-tags" data-way="level" data-key="鸡哥力荐">鸡哥力荐</a>
+				<a href="javascript:;" class="special ji-read-tags" data-way="buy" data-key="最近购买">最近购买</a>
+			</div>
+
+			<p style="float:left;font-size:12px;color:#909090;margin-top:12px;">*鸡哥评分只针对该版本、译本或分类。</p>
+
+		</div><!-- right -->
+
+</div><!-- ji-content end -->
+
+
+</body>
+<script src="../../static/js/jquery.2.1.1.min.js"></script>
+<script src="../js/jisuowei.js"></script>
+<script src="../js/ji-navi.js"></script>
+<script src="../../static/js/countUp.js"></script>
+<script>
+
+
+// 读取 json 文件
+$.getJSON('../../static/json/stack.json', function(data) {
+
+	// json输出本数
+	$('#jsoner').attr('href','readJsoner.html?num=' + data.length);
+
+
+	// 初始 所有书籍
+	setTimeout(function(){
+		jiBookFiller( data );
+	},600)
+
+	// 搜索框 搜索
+	$('#ji-read-serach-btn').click(function(){
+		var key = $('#ji-read-search-value').val();
+		if(key !='') {
+			searchFiller(key,'search');
+		}
+		$('#ji-read-search-value').val('');
+	});
+
+	document.onkeydown = function(evt){
+		var e = evt || window.event;
+		if( e.keyCode == 13 ) {
+			var key = $('#ji-read-search-value').val();
+			if(key !='') {
+				searchFiller(key,'search');
+			}
+			$('#ji-read-search-value').empty();
+		}
+	};
+
+
+
+	// 标签 搜索
+	$('.ji-read-tags').click(function(){
+		var key = $(this).attr('data-key');
+		var way = $(this).attr('data-way');
+		searchFiller(key,way);
+	});
+
+
+	// 搜索+标签 方式控制
+	function searchFiller(key,way){
+
+		// 窗口置顶
+		$('body,html').animate( { scrollTop: 0 }, 400 );
+
+		var resArray = [];  // 创建接收数组
+
+		$.each(data, function(entryIndex, entry) {
+
+			var patt = new RegExp(key,'gi');
+
+			// 方式匹配
+			switch( way ) {
+				case 'all':     temp = entry; break;
+				case 'search':  temp = patt.test(entry.id) || patt.test(entry.title) || patt.test(entry.author) || patt.test(entry.class) || patt.test(entry.attach) || patt.test(entry.client); break;
+				case 'author':  temp = patt.test(entry.author); break;
+				case 'publish': temp = patt.test(entry.publish); break;
+				case 'class':   temp = patt.test(entry.class); break;
+				case 'note':    temp = entry.note != 0; break;
+				case 'level':   temp = entry.level>=4; break;
+				case 'buy':     temp = entryIndex >= (data.length - 30); break;
+				default: ;
+			}
+
+
+			if( temp ) {
+				// 创建一本书对象
+				var obj = {
+					'id': entry.id,
+					'title': entry.title,
+					'author': entry.author,
+					'editor': entry.editor,
+					'publish': entry.publish,
+					'client': entry.client,
+					'class': entry.class,
+					'level': entry.level,
+					'note': entry.note,
+					'attach': entry.attach
+				};
+				
+				resArray.push(obj);  // 一本书追加到接收数组
+			}
+
+		});
+
+
+		// 接收数组 判空
+		if(resArray.length==0){
+			$('#ji-read-cont-ajax').html(
+				'<p style="text-align:center;margin-top:160px;font-size:32px;color:#A0A0A0;">啊哦，没有搜到耶 (ಥ_ಥ)<br><a class="tipDuokan" target="_blank" href="http://www.duokan.com/search/'
+				+ $('#ji-read-search-value').val() +'">去 多看阅读 搜索 “'+ $('#ji-read-search-value').val().substring(0,8) +'..”</a></p>'
+			);
+			$('#bookNum').html('0');
+			$('#pagination').hide();
+		} else {
+			jiBookFiller( resArray );
+			$('#pagination').show();
+		}
+
+		// 顶部搜索提示字符串调整
+		if( key.length > 12 ) {
+			$('#bookNumTitle').html('“ '+ key.substring(0,12) +'..”');
+		} else {
+			$('#bookNumTitle').html('“ '+ key +' ”');
+		}
+
+
+	}
+
+});
+
+
+
+
+
+
+
+// 处理 接收数组
+function jiBookFiller( targetArray ) {
+
+
+	// 分页四要素
+	var count = targetArray.length;
+	var pageCount = 10;
+	var pages = Math.ceil(count/pageCount);
+	var curr = 1;
+
+
+
+	// 初始化 第一页
+	jiBookPager( curr );
+
+	// 统计
+	var numAnim = new CountUp('bookNum', 0, count, 0, 2);
+	numAnim.start();
+	// $('#bookNum').html(count + ' 本：');  
+
+	// 分页器 调用
+	jiPaginator(pages, curr, '#pagination');
+
+	// <!-- 分页器 方法 start -->
+	function jiPaginator(pages, curr, container) {
+
+		$(container).html('');  // 先清空
+
+		// <!-- 创建必要元素 -->
+		// 上下页
+		var pPrev  = $('<a href="javascript:;" id="prevPage">上一页</a>');
+		var pNext  = $('<a href="javascript:;" id="nextPage">下一页</a>');
+		// 首末页
+		var pFirst = $('<a href="javascript:;" class="numPages" value="1">1</a>');
+		var pLast  = $('<a href="javascript:;" class="numPages" value="'+ pages +'">'+ pages +'</a>');
+		// 省略号
+		var ellipsis1 = $('<span class="ellipsis">···</span>');
+		var ellipsis2 = $('<span class="ellipsis">···</span>');
+		// 跳转框
+		var pageGo = $('<div id="pageGo"><input maxlength="3" id="pageGoIndex" type="text" placeholder="Skip" /><span id="pageGoBtn">GO</span></div>')
+
+		// <!-- 分页生成 start -->
+		// 小于 7 页 全部打出
+		if(pages<=7) {
+
+			for( var i=1; i<=pages; i++) {
+				var pageTags = $('<a href="javascript:;" class="numPages" value="'+ i +'">'+ i +'</a>');
+				$(container).append(pageTags);
+			}
+
+		// 大于 7 页
+		} else {
+			// 第一页时隐藏“上一页”按钮
+			if( curr != 1){
+				$(container).append(pPrev);
+			}
+
+			// 第1页 一直显示
+			$(container).append(pFirst);
+
+			// 点击页小于 6 一直显示前六页
+			if(curr<6){
+
+				for( var i=2; i<=6; i++) {
+					var pageTags = $('<a href="javascript:;" class="numPages" value="'+ i +'">'+ i +'</a>');
+					$(container).append(pageTags);
+				}
+
+				// 显示 后省略号 + 最后一页 + 下一页
+				$(container).append(ellipsis2);
+				$(container).append(pLast,pNext);
+
+			// 点击页还没到最后4页
+			} else if(curr<pages-3) {
+
+				// 显示 前省略号
+				$(container).append(ellipsis1);
+
+				// 显示 点击页 前后 各两页
+				for( var i=curr-2; i<=curr+2; i++) {
+					var pageTags = $('<a href="javascript:;" class="numPages" value="'+ i +'">'+ i +'</a>');
+					$(container).append(pageTags);
+				}
+
+				// 显示 后省略号
+				$(container).append(ellipsis2);
+				$(container).append(pLast);
+
+				// 没到最后一页 就显示“下一页”按钮
+				if( curr != pages ) {
+					$(container).append(pNext);
+				}
+
+			// 只剩下 点到最后四页的情况
+			} else {
+
+				// 显示 前省略号
+				$(container).append(ellipsis1);
+
+				// 生成 最后 6 页
+				for( var i=pages-5; i<=pages; i++) {
+					var pageTags = $('<a href="javascript:;" class="numPages" value="'+ i +'">'+ i +'</a>');
+					$(container).append(pageTags);
+				}
+
+				// 没到最后一页 就显示“下一页”按钮
+				if( curr != pages ) {
+					$(container).append(pNext);
+				}
+			}
+
+			// 追加跳转框
+			$(container).append(pageGo);
+
+			// 跳转框事件
+			$('#pageGoBtn').click(function(){
+				// 取值
+				var index = parseInt($('#pageGoIndex').val());
+				// 判空
+				if( !(index<0|| index>pages || isNaN(index)) ) {
+					jiBookPager( index );
+				}
+				// 清空
+				$('#pageGoIndex').val('');
+			});
+
+		}
+		// <!-- 分页生成 end -->
+
+		// 设置当前页样式
+		$(container + ' a').css({'background':'none','color':'#5c5c5c'});
+		$(container + ' a[value='+ curr +']').css({'background':'#5c5c5c','color':'#fff','border':'1px solid #5c5c5c','cursor':'default'});
+
+		// 分页点击事件
+		$('.numPages').click(function(){
+			// 点击页非当前页
+			if(curr != parseInt($(this).attr('value')) ) {
+
+				// 更新当前页标记
+				curr = parseInt($(this).attr('value'));
+
+				// 更新 选中页 数据&分页
+				jiBookPager( curr );
+			}
+
+		});
+
+		// 下一页事件
+		$('#nextPage').click(function(){ jiBookPager( curr+1 ) });
+
+		// 上一页事件
+		$('#prevPage').click(function(){ jiBookPager( curr-1 ) });
+
+	}
+	// <!-- 分页器 方法 end -->
+
+
+
+	// 根据 传入的页码 显示切割后的数组书籍数据
+	function jiBookPager( curr ) {
+		
+		// $('body,html').animate( { scrollTop: 0 }, 400 );
+		$('body,html').scrollTop("0");
+
+		// 更新分页
+		jiPaginator(pages, curr, '#pagination');
+
+		// 切割数组
+		var pageData = targetArray.slice(curr*pageCount-pageCount,curr*pageCount);
+
+	// 书结构
+		var html = '';
+		// 遍历 切割到的对象数组
+		$.each(pageData, function(entryIndex, entry) {
+
+			// 封面
+			html += '<div class="ji-read-book"><div class="ji-read-avatar" ><img src="../../static/img/cover/'+ entry.id +'.jpg" /></div>';
+				
+				// 书名+作者
+				html += '<div class="ji-read-l">'
+					html += '<p class="ji-read-title" title="'+ entry.title +'">'+ (function(){if(entry.title.length>24){return entry.title.substring(0,32)+'..'}else{return entry.title}})(); +'</p>';
+
+					html += '<p class="ji-read-author" title="'+ entry.author +'">';
+						if( entry.author != 0 ) {
+							html += (function(){if(entry.author.length>36){return entry.author.substring(0,36)+'..'}else{return entry.author}})();
+						} else {
+							html += 'undefined';
+						}
+					html += ' 著</p>';
+
+				html += '</div>';
+
+				// 概要信息
+				html += '<div class="ji-read-s">';
+
+					html += '<p>出版：'+ entry.publish +'</p>';
+
+					if(entry.editor!=0) {
+						html += '<p>编译：'+ entry.editor +'</p>';
+					} else {
+						html += '<p>编译：无</p>';
+					}
+
+					html += '<p>编号：'+ entry.id +'</p>';
+					html += '<p>所属：'+ entry.client +'</p>';
+
+				html += '</div>';
+
+				// 读后
+				html += '<div class="ji-read-m">';
+
+					// 星级
+					html += '<p class="ji-read-level">'+
+						(function(){
+
+							var star = "";
+							var light = entry.level;
+							var gray = 5 - light;
+
+							for(var i=0; i<light; i++) {
+								star += '<i class="fa fa-star light"></i>';
+							}
+							for(var i=0; i<gray; i++) {
+								star += '<i class="fa fa-star gray"></i>';
+							}
+							return star;
+						})();
+					+'</p>';
+					
+					// 分类
+					if(entry.class!=0) {
+						html += '<p class="ji-read-class"><i class="fa fa-tag"></i> '+ entry.class +'</p>';
+					} else {
+						html += '<p class="ji-read-class">未分类</p>';
+					}
+
+					// 笔记
+					if(entry.note!=0) {
+						html += '<p class="ji-read-note"><a class="jbk-a-note" href="javascript:;" value="'+ entry.id +'"><i class="fa fa-pencil-square"></i> '+ entry.note +'条笔记</a></p>';
+					}
+
+				html += '</div>';
+
+				// 包括
+				if(entry.attach) {
+					html += '<p class="ji-read-attach">包括：'+ entry.attach +'</p>';
+				}
+
+			// 封闭
+			html += '</div></div>';
+			
+		});
+
+		// 返回给容器
+		$('#ji-read-cont-ajax').html(html);
+
+
+		// 多看搜索
+		$('.ji-read-title').click(function(){
+			window.open('http://www.duokan.com/search/'+$(this).attr('title'));
+		});
+
+
+		// 笔记
+		$('.jbk-a-note').click(function(){
+
+			$("#ji-mask-content").html('<p id="loadingTip">数据加载中..</p>');
+
+			showJiMask();
+
+			var s = $(this).attr('value');
+
+			setTimeout(function(){
+				ajax('../../static/note/'+ s + '.html',function(str) {
+					$("#ji-mask-content").html( str );
+				});
+			},600)
+
+			$('#ji-mask-content').scrollTop("0");
+
+		});
+
+		$('#ji-mask').click(function(){
+			hideJiMask();
+		});
+
+
+		// 禁止图片拖动编辑
+		jiImgForbiden();
+
+
+	}  // jiBookPager end
+
+
+};  // jiBookFiller end
+
+
+// 生成标签
+(function(){
+	var tagArray = [
+		{'way':'class','key':'历史'},
+		{'way':'class','key':'世界史'},
+		{'way':'class','key':'中国史'},
+		{'way':'class','key':'古典名著'},
+		{'way':'class','key':'计算机'},
+		{'way':'class','key':'世界名著'},
+		{'way':'class','key':'经管'},
+		{'way':'class','key':'传记'},
+		{'way':'class','key':'人文社科'},
+		{'way':'class','key':'小说'},
+		{'way':'class','key':'科幻'},
+		{'way':'class','key':'科学'},
+		{'way':'class','key':'近代'},
+		{'way':'class','key':'教育'},
+		{'way':'class','key':'外语'},
+		{'way':'class','key':'政治'},
+		{'way':'class','key':'心理'},
+		{'way':'class','key':'艺术'},
+		{'way':'author','key':'吕思勉'},
+		{'way':'author','key':'林语堂'},
+		{'way':'author','key':'胡适'},
+		{'way':'author','key':'周国平'},
+		{'way':'author','key':'张鸣'},
+		{'way':'author','key':'汪曾祺'},
+		{'way':'author','key':'刘慈欣'},
+		{'way':'author','key':'易中天'},
+		{'way':'author','key':'贾志刚'},
+		{'way':'author','key':'凡尔纳'},
+		{'way':'author','key':'东野圭吾'},
+		{'way':'author','key':'卡耐基'},
+		{'way':'search','key':'西方视野里的中国'},
+		{'way':'search','key':'卑鄙的圣人'},
+		{'way':'search','key':'双语'},
+		{'way':'search','key':'牛津通识读本'},
+		{'way':'search','key':'剑桥艺术史'},
+		{'way':'search','key':'中英全两册'},
+		{'way':'search','key':'简史'},
+		{'way':'search','key':'哲学'},
+		{'way':'search','key':'银河帝国'},
+		{'way':'search','key':'昆虫记'},
+		{'way':'publish','key':'中南博集天卷'},
+		{'way':'publish','key':'中信'},
+		{'way':'publish','key':'中华书局'},
+		{'way':'publish','key':'磨铁数盟'},
+		{'way':'publish','key':'新华先锋'},
+		{'way':'publish','key':'北京图灵'},
+		{'way':'publish','key':'上海读客'},
+		{'way':'publish','key':'机械工业'},
+		{'way':'publish','key':'多看文库'},
+		{'way':'publish','key':'湖南科学'},
+		{'way':'publish','key':'凤凰壹力'},
+		{'way':'publish','key':'译林'},
+		{'way':'publish','key':'湖北长江'}
+
+	];
+
+	for(var i=0; i<tagArray.length; i++) {
+		var tag = $('<a class="ji-read-tags '+ tagArray[i].way +'" href="javascript:;" data-key="'+ tagArray[i].key +'" data-way="'+ tagArray[i].way +'">'+ tagArray[i].key +'</a>');
+		$('#ji-read-tag').append(tag);
+	}
+
+})();
+
+
+
+
+</script>
+</html>
