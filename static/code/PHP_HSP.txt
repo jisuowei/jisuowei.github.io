@@ -1,0 +1,1616 @@
+<pre><code class="js hljs javascript">
+<span class="hljs-comment">/*
+
+    PHP 韩顺平
+
+    2015-12-13
+    ~
+    2016-03-14 Noted by Chisw
+
+    2016-09-12 Modified
+
+*/</span>
+
+
+<span class="hljs-comment">// 2015-12-13</span>
+PHP 面向对象编程
+    构造方法--完成对象的初始化，并不是创建对象本身
+        是没有返回值的，它是自动被调用
+        在创建新对象后，系统会自动的调用该类的构造方法
+
+    两种形式：
+        _construct() 和 类名() ,两个方法同时存在时，优先调用 _construct()
+        <span class="hljs-keyword">this</span> 代表对象本身
+        <span class="hljs-keyword">this</span> 的本质可以理解就是这个对象的地址
+        哪个对象使用到 $<span class="hljs-keyword">this</span> 就是那个对象的地址
+        $<span class="hljs-keyword">this</span> 不能在外部使用
+
+<span class="hljs-comment">// 2015-12-14</span>
+    析构方法
+        PHP5 引入了析构函数的概念，这类似与C++。
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__destruct</span>(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-comment">// 释放资源操作</span>
+        }
+
+        <span class="hljs-comment">// 析构函数会自动被调用、主要用于回收内存 释放资源、调用的顺序是”栈“。</span>
+        <span class="hljs-comment">// 当程序（进程结束）退出时、当一个对象成为垃圾对象的时候该对象的析构函数也会被调用。</span>
+        <span class="hljs-comment">// 析构函数会在到某个对象所有引用都被删除或者当对象被显示销毁时执行。</span>
+        <span class="hljs-comment">// 所谓垃圾对象就是指没有任何变量再引用它。</span>
+        <span class="hljs-comment">// 一旦一个对象成为垃圾对象，析构方法就会立即调用。</span>
+
+        &lt;?php
+            <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person</span></span>{
+                public $name;
+                public $age;
+
+                public <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span>(<span class="hljs-params">$name,$age</span>)</span>{
+                    $<span class="hljs-keyword">this</span>-&gt;name = $name;
+                    $<span class="hljs-keyword">this</span>-&gt;age = $age;
+                }
+
+                <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__destruct</span>(<span class="hljs-params"></span>)</span>{
+                    echo $<span class="hljs-keyword">this</span>-&gt;name.<span class="hljs-string">" destructed&lt;br/&gt;"</span>;
+                }
+            }
+
+            $p1 = <span class="hljs-keyword">new</span> Person(<span class="hljs-string">"Chisw"</span>,<span class="hljs-number">23</span>);
+            $p2 = <span class="hljs-keyword">new</span> Person(<span class="hljs-string">"Chiue"</span>,<span class="hljs-number">22</span>);
+        ?&gt;
+
+    静态变量/静态方法
+        一群小孩玩游戏，不断有人加入，请问如何知道现在的总人数？
+            <span class="hljs-number">1.</span>使用全局变量--在程序中，都可以使用的变量称为全局变量
+                &lt;?php
+                    global $a;
+
+                    $a = <span class="hljs-number">9</span>;
+                    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">test1</span>(<span class="hljs-params"></span>)</span>{
+                        $a = <span class="hljs-number">90</span>;
+                    }
+
+                    test1();
+                    echo $a;
+                ?&gt;
+
+                &lt;?php
+                    global $global_nums;
+                    $global_nums = 0;
+
+                    class Child{
+                        public $name;
+
+                        function __construct($name){
+                            $this-&gt;name = $name;
+                        }
+
+                        public function join_game(){
+                            global $global_nums;
+
+                            $global_nums += 1;
+                            echo $this-&gt;name." Join the game";
+                        }
+                    }
+
+                    $child1 = new Child("chisw");
+                    $child1-&gt;join_game();
+                    $child2 = new Child("chiue");
+                    $child1-&gt;join_game();
+                    $child3 = new Child("chien");
+                    $child1-&gt;join_game();
+
+                    echo "&lt;br/&gt; have ".$global_nums; 
+                ?&gt;
+
+            2.使用静态变量
+                静态变量是该类的所有对象共享的变量，任何一个该类的对象去访问取到的都是相同的值。
+                同样任何一个该类的对象去修改它时一是同一个变量。
+                如何定义静态变量：
+                    static 变量名;
+                如何访问静态变量：
+                    在类外部：
+                        类名::$类变量名
+                    在类内部：
+                        self::$类变量名
+                        类名::$类变量名
+
+                &lt;?php
+                    class Child{
+                        public $name;
+
+                        public static $nums = 0;
+
+                        function __construct($name){
+                            $this-&gt;name = $name;
+                        }
+
+                        public function join_game(){
+
+                            self::$nums += 1;
+                            echo $this-&gt;name." Join the game";
+                        }
+                    }
+
+                    $child1 = new Child("chisw");
+                    $child1-&gt;join_game();
+                    $child2 = new Child("chiue");
+                    $child1-&gt;join_game();
+                    $child3 = new Child("chien");
+                    $child1-&gt;join_game();
+
+                    echo "&lt;br/&gt; have ".Child::$nums; 
+                ?&gt;
+
+// 2015-12-15
+    静态方法--类方法，是属于所有对象实例的
+        访问修饰符 static 方法名(){}
+        注意： 类方法中不能访问非静态属性(变量)
+        在类外部： 类名::类方法名 或者 对象名-&gt;类方法名
+        在类内部： self::类方法名 或者 类名::类方法名
+
+        当我们操作静态变量的时候，我们可以考虑使用静态方法。
+        静态方法不能操作非静态变量。
+
+    PHP 面向对象特征
+        抽象
+            把一类事物的共有属性和行为提取出来，形成一个物理模型。
+
+        封装
+            把抽象出的数据和对数据的操作封装在一起，数据被保护在内部。
+            程序只用被授权操作（成员方法）才能对数据进行操作。
+            访问修饰符 public protected private
+            __set() __get()
+
+            1.如果一个方法没有访问修饰符，则默认是 public
+            2.属性必须指定访问修饰符
+            3.方法之间可以互相调用，但是需要使用 $this 引用
+
+// 2015-12-22
+        继承
+            解决代码的复用性和管理成本问题。
+
+            一个父类可以被多个子类继承,但一个子类只能继承一个父类或者超类。
+            父类的 public protected 的属性和方法可以被继承，private 没有被继承。
+            在创建某个子类对象时间，默认不会自动调用其父类的构造函数。
+            如果在子类中需要访问其父类的方法可以使用 父类::方法名 或者 parent::方法名 来完成。
+            如果子类(派生类)中的方法和父类方法相同，我们称之为方法的重写/方法覆盖。
+
+            &lt;?php
+                class Stu {
+                    public $name;
+                    protected $age;
+                    protected $grade;
+                    public function showInfo() {
+                        echo $this-&gt;name."||".$this-&gt;age;
+                    }
+                }
+
+                class Pupil extends Stu {
+                    public function testing() {
+                        echo "Primary Exam..";
+                    }
+                }
+
+                class Graduate extends Stu {
+                    public function testing() {
+                        echo "Graduate Exam..";
+                    }
+                }
+
+                $stu1 = new Pupil();
+                $stu1-&gt;testing();
+
+                $stu2 = new Graduate();
+                $stu2-&gt;testing();
+
+            ?&gt;
+
+// 2015-12-23
+        多态
+            函数名一样，通过函数的参数个数或者是参数类型的不同，达到调用同一个函数名但可以区分不同的函数。
+
+            子类的某个方法和父类的方法名称、参数一样，那么我们就说这个方法重写了父类的方法。
+            如果子类需要调用父类的方法，使用 parent::方法名() 或者 父类名::方法名(参数)
+
+            实现方法覆盖的时候，访问修饰符可以不一样，但是子类的访问范围必须 &gt;= 父类的访问范围
+
+    抽象类
+        不能够被实例化
+        抽象类不一定要包含 abstract 方法
+        一旦包含了 abstract 方法，则这个类必须声明为 abstract
+        抽象方法不能有函数体
+        如果一个函数继承了某个抽象类，则它必须实现该抽象类的所有抽象方法，除非它自己也声明为抽象类
+
+        abstract class 类名 { }
+
+// 2015-12-24
+    接口 interface
+        接口不能够有方法体 即不能实现
+        就是给出一些没有实现的方法，封装到一起，到某个类需要使用的时候，再根据具体情况把这些方法写出来。
+        高内聚低耦合
+        接口中可以有属性，但必须是常量，而且必须是 public 。
+        一个类可以实现多个接口。
+        一个接口不能继承其它的类，但是可以继承其它的接口。
+
+        &lt;?php
+            interface iUsb {
+                public function start() {
+                    echo "start work";
+                }
+            }
+
+            class Camera implements iUsb {...}
+        ?&gt;
+
+        接口可以看作是对继承的一种补充
+        实现接口可在不打破继承关系的前提下对某个功能扩展
+
+
+    final
+        如果我们希望某个类不被其它的类来继承时使用
+
+        &lt;?php
+            final class A {}
+        ?&gt;
+
+    常量 const
+        不希望一个成员变量被修改，希望该变量的值固定不变。 比如圆周率。
+        不需要访问修饰符。
+        定义的时候就需要赋初值，定义后不能被修改。
+        常量可以被子类继承，是属于一个类的而不是某个对象。
+        一般全部大写。
+
+        外部  类名::常量名
+        内部  类名::常量名  或者 self::常量名
+
+        &lt;?php
+            class A {
+                const TAXRATE = 0.08;
+                public payTax ( $val ) {
+                    return $val * A::TAXRATE;
+                }
+            }
+            $a = new A();
+            echo $a-&gt;payTax(200);
+        ?&gt;
+
+// 2015-12-28
+    错误处理
+        案例:
+            &lt;?php
+                if(!file_exists("aaa.txt")) {
+                    echo "Can not find the file!";
+                    exit();
+                } else {
+                    $fp = fopen("aaa.txt","r");
+                    echo "Open Success!";
+                    fclose( $fp );
+                }
+            ?&gt;
+
+        简单的 die() 语句:
+            &lt;?php
+                if(!file_exists("aaa.txt")) {
+                    die("Can not find the file!");
+                } else {
+                    $fp = fopen("aaa.txt","r");
+                    echo "Open Success!";
+                    fclose( $fp );
+                }
+            ?&gt;
+
+            或：
+                file_exists("aaa.txt") or die("Can not find the file!");
+                echo "ok";
+
+        自定义错误:
+            回调函数：
+            error_function(error_level,error_message,error_file,error_line,error_context);
+
+            值             常量
+            2             E_WARNING
+            8             E_NOTICE
+            256         E_USER_ERROR
+            512         E_USER_WARNING
+            1024         E_USER_NOTICE
+            4096         E_RECOVERABLE_ERROR
+            8191         E_ALL
+
+            &lt;?php
+                function my_error($errno,$errmes){
+                    echo "&lt;font size='5' color='red' &gt;$errno&lt;/font&gt;&lt;br/&gt;";
+                    echo "The error is $errmes";
+                    exit();
+                }
+
+                set_error_handler("my_error",E_WARNING);
+                $fp = fopen("aa.txt","r");
+            ?&gt;
+
+        错误触发器:
+            &lt;?php
+                function my_error3($errno,$errmes) {
+                    echo "The error NO. is ".$errno;
+                }
+
+                set_error_handler("my_error3",E_USER_WARNING);
+                set_error_handler("my_error4",E_USER_ERROR);
+
+                $age = 700;
+                if($age&gt;120){
+                    trigger_error("The age is wrong!",E_USERROR);
+                }
+
+                echo "ok";
+            ?&gt;
+
+
+        错误日志:
+            默认地，根据在 php.ini 中 error_log 配置，PHP想服务器的错误记录记录系统或文件
+            发送错误记录。通过使用 error_log() 函数可以想指定的文件或远程目的地发送错误记录。
+
+bool error_log ( string $message [, int $message_type=0 [, string $destination [, string $extra_headers ]]])
+date_default_timezone_set("Asia/Chongqing");
+echo date("Y-m-d G-i-s");
+
+    异常处理:
+        try{
+            ...
+        } catch (Exception e){
+            // 自己处理
+            // 不处理，将其抛出
+            throw new Exception("Failed");
+        }
+
+    PHP进阶预热
+        1.php 文件一定要放在服务器中
+        2.php 文件中不同内容在不同的执行
+            http 发包请求，apache 下有很多个模块，不同的请求去不同的模块，好比 apache 是公司的前台工作人员。
+
+            http 是建立在 tcp/ip 协议上的
+            web 开发数据的传输都依赖于 http 协议
+
+            基本结构：
+
+请求行        GET/test/hello.html HTTP/1.1                // GET请求的资源
+消息头        Accept:*/*                                    // 客户端可以接收的类型
+            Referer:http://localhost:80/test/abc.html  *///源出处
+            Accept-Language:zh-cn                        // 页面语言
+            User-agent:Mozilla/4.0                        // 浏览器内核，操作系统
+            Accept-Encoding:gzip,deflate                 // 可以接收的数据压缩格式
+            Host:localhost:80                             // 主机端口
+            Connection:Keep-Alive                        // 保持连接
+消息体
+(实体内容)
+        
+        get 和 post 的区别：
+            get 请求数据会先是在地址栏，所以也利于收藏网页
+            post 请求放在 http 协议消息体中
+            http 协议本身没有数据大小限制
+            get 请求数据 2K+35，post 没有显示
+
+        防盗链：
+            &lt;?php
+                if(isset($_SERVER['HTTP_REFERER'])){
+                    if(strpos($_SERVER['HTTP_REFERER'],"http://localhost/http")==0){
+                        //
+                    } else {
+                        header("Location:warning.php");
+                    }
+                } else {
+                    header("Location:warning.php");
+                }
+            ?&gt;
+
+// 2016-01-14
+            HTTP/1.1 200 ok                            // 200状态码 ok 表示客户端请求成功
+            Server:Microsoft-IIS/5.0                 // 表示告诉浏览器 服务器的情况
+            Date:Thu,13 Jul 2000 05:46:53 GMT         // 告诉浏览器 请求的页面更新时间
+            Content-Length:2291                     // 表示回送的数据有 2291 个字节
+            Cotent-Type:text/html                     // 文档类型
+            Cache-control:private                     // 缓存
+
+// 2016-01-15
+        通过 header 来禁用缓存
+        &lt;?php
+            header("Expires: -1");
+            header("Cache-Control: no_cache");
+            header("Pragma: no-cache");
+            echo "hello!cache";
+        ?&gt;
+
+// 2016-01-16
+    文件的操作原理
+        &lt;?php
+            function down_file( $file_name, $file_sub_dir ) {
+                // 中文转码
+                $file_name = iconv( "utf-8", "gb2312", $file_name );
+                $file_path = $_SERVER['DOCUMENT_ROOT']."/down/".$file_name;
+                // 判断文件是否存在
+                if(! file_exists($file_path) ) {
+                    echo "file is not exist!";
+                    return;
+                }
+                $fp=fopen( $file_path, "r" );
+                // 获取下载文件的大小
+                $file_size=filesize( $file_path );
+                if( $file_size &gt; 30 ){
+                    echo "NO NO NO";
+                    return;
+                }
+                // 返回的文件
+                header("Content-type: application/octet-stream");
+                // 按照字节大小返回
+                header("Accept-Ranges: bytes");
+                // 返回文件大小
+                header("Accept-Length: $file_size");
+                // 这里客户端弹出对话框 对应文件名
+                header("Content-Disposition: attachement: filename=".$file_name);
+                // 向客户端回送数据
+                $buffer = 1024;
+                // 判断文件是否结束
+                while( !feof( $fp )) {
+                    $file_data = fread( $fp, $buffer );
+                    // 回送部分数据
+                    echo $file_data;
+                }
+                // 关闭文件
+                fclose( $fp );
+            }
+            down_file("header.jpg", "http/img/");
+        ?&gt;
+
+// 2016-01-17
+    数据库操作的三种方式
+        1.mysql扩展库
+        2.mysqli扩展库
+        3.pdo
+
+    1.mysql扩展库：编写一个程序 从表中读取数据并打印在网页中
+        环境搭建：
+            // 启用 mysql 扩展库
+            php.ini 中打开 extension=php_mysql.dll
+            // 检测是否启用
+            &lt;?php phpinfo() ?&gt; 中是否有 mysql
+
+        创建一张用户表：
+            CREATE TABLE user1(
+                id int primary key auto_increment,
+                name varchar(32) not null,
+                password varchar(64) not null,
+                email varchar(128) not null,
+                age tinyint unsigned  not null
+            );
+
+        预先加入数据：
+            INSERT INTO user1 (name, password, email, age) 
+            VALUES ('chisw',md5('07140714'),'chisw@qq.com',23);
+            // 解决中文乱码
+            // set character_set_client = gbk;
+            // set character_set_results = gbk;
+            // show variables like '%char%';
+
+        PHP操作：
+            &lt;?php 
+            // 1.获取连接
+                $conn = mysql_connect("localhost","root","07140714");
+                if ( !$conn ) {
+                    die( "Connect failed!".mysql_error() );
+                } else {
+                    //echo "Connect successed!";
+                }
+            // 2.选择数据库
+                mysql_select_db("test");
+            // 3.设置操作编码(建议有)
+                mysql_query("set names utf8");
+            // 4.发送指令 SQL语句
+                // ddl 定义 
+                // dml 操作 update insert delete
+                // dql 查询 select
+                // dcl 控制 rollback commit
+                $sql = "select * from user1";
+                $res = mysql_query( $sql, $conn );
+            // 5.接收返回结果并处理
+                while ( $row = mysql_fetch_row( $res )) {
+                    //echo "&lt;br/&gt; $row[0]--$row[1]--$row[2]--$row[3]";
+                    foreach($row as $key =&gt; $val ) {
+                        echo "--$val";
+                    }
+                    echo"&lt;br/&gt;";
+                }
+            // 6.释放资源并关闭连接
+                mysql_free_result( $res );
+                mysql_close( $conn );
+            ?&gt;
+            // 细节
+            // 1.使用完 $res 结果集后，一定要及时释放资源
+            // 2.mysql_close() 如果没有的话系统也会自动的关闭
+            // 3.从 $res 获取行数据
+                // $row = mysql_fetch_row( $res )    返回一个索引的数组
+                // mysql_fetch_assoc( $res )         返回一个关联数组
+                // mysql_fetch_array( $res )          返回一个索引数组和关联数组
+                // mysql_fetch_object( $res )         返回一个对象
+
+        演示对表进行增删改：
+            &lt;?php 
+            $conn = mysql_connect("localhost","root","07140714");
+            if(!$conn){
+                die('Connect failed!'.mysql_error() );
+            }
+            mysql_select_db("test",$conn) or die(mysql_error());
+            mysql_query("set names utf8");
+
+            // $sql = "insert into user1 (name,password,email,age) values ('嵇所伟',md5('12'),'i@qq.com',24)";
+            // $sql = "delete from user1 where id=8";
+            $sql = "update user1 set age=100 where id=3";
+
+            // 如果是 dml 操作则返回布尔值
+            $res = mysql_query($sql,$conn);
+
+            if( !$res ){
+                echo 'Operate failed!'.mysql_error();
+            }
+            // 查看数据数量
+            if( mysql_affected_rows($conn)&gt;0 ) {
+                echo "Operate successed!";
+            } else {
+                echo "No rows affected!";
+            }
+
+            mysql_close($conn);
+            ?&gt;
+
+        封装成工具类：    SqlTool.class.php
+        &lt;?php
+        class SqlTool {
+            private $conn;
+            private $host = "localhost";
+            private $user = "root";
+            private $password = "07140714";
+            private $db = "test";
+
+            function SqlTool() {
+                $this-&gt;conn = mysql_connect( $this-&gt;host, $this-&gt;user, $this-&gt;password );
+                if ( !$this-&gt;conn ) {
+                    die("Connect failed!".mysql_error());
+                }
+                mysql_select_db( $this-&gt;db, $this-&gt;conn );
+                mysql_query("set names ufg8");
+            }
+            // 完成 select
+            public function execute_dql( $sql ) {
+                $res = mysql_query( $sql ) or die( mysql_error());
+                return $res;
+            }
+            // 完成 update delete insert
+            public function execute_dml( $sql ) {
+                $b = mysql_query( $sql, $this-&gt;conn );
+                if( !$b ) {
+                    return 0; // 失败
+                } else {
+                    if ( mysql_affected_rows($this-&gt;conn) &gt; 0 ) {
+                        return 1; // 成功
+                    } else {
+                        return 2; // 成功但没有行数影响
+                    }
+                }
+            }
+        }
+        ?&gt;
+        &lt;?php 
+            require_once "SqlTool.class.php";
+        /*
+            $sql = "insert into user1 (name,password,email,age) values ('Chisw',md5('12'),'i@qq.com',24)";
+
+            $sqlTool = new SqlTool();
+            $res = $sqlTool-&gt;execute_dml( $sql );
+
+            if ( $res == 0 ) {
+                echo "Failed";
+            } else if ( $res == 1 ) {
+                echo "Successed";
+            } else if ( $res == 2) {
+                echo "No rows affected";
+            }
+        */
+            $sql = "select * from user1";
+            $sqlTool = new SqlTool();
+            $res =  $sqlTool-&gt;execute_dql( $sql );
+            while( $row = mysql_fetch_row( $res )) {
+                foreach( $row as $key=&gt;$val ) {
+                    echo "--$val";
+                }
+                echo "&lt;br/&gt;";
+            }
+            mysql_free_result( $res );
+        ?&gt;
+
+// 2016-01-18
+        使用 mysql 扩展库 curd 练习
+        /*
+            &lt;h1&gt;查询英文&lt;/h1&gt;
+            &lt;form action="wordProcess.php" method="post"&gt;
+                请输入英文：&lt;input type="text" name="enword" /&gt;
+                &lt;input type="hidden" value="search" name="type" /&gt;
+                &lt;input type="submit" value="查询" /&gt;
+            &lt;/form&gt;
+        */
+        &lt;?php
+            require_once 'SqlTool.class.php';
+            header("Content-type: text/html;charset=utf-8");
+            // 接s收英文单词
+            if( isset($_POST['enword'])) {
+                $en_word = $_POST['enword'];
+            } else {
+                echo "输入为空";
+                echo "&lt;a href='mainView.php'&gt;返回重新查询&lt;/a&gt;";
+            }
+            // 检查数据库是否存在记录
+            $sql = "select chword from words where enword='".$en_word."' limit 0,1";
+            // 设计表
+                //    CREATE DATABASE worddb;
+
+                //    CREATE TABLE words (
+                //        id int primary key auto_increment,
+                //        enword varchar(32) not null,
+                //        chword varchar(256) not null
+                //    );
+
+                //    INSERT INTO words (enword,chword) VALUES ('boy','男孩');
+                //    INSERT INTO words (enword,chword) VALUES ('girl','女孩');
+            // 查询
+            $sqlTool = new SqlTool();
+            $res = $sqlTool-&gt;execute_dql( $sql );
+            if( $row = mysql_fetch_assoc( $res ) ) {
+                echo $en_word."翻译结果： ".$row['chword'];
+            } else {
+                echo "Can not find the word!";
+                echo "&lt;br/&gt;&lt;a href='mainView.php' &gt;重新查询&lt;/a&gt;";
+            }
+            // 释放
+            mysql_free_result( $res );
+        ?&gt;
+
+    2.mysqli扩展库 -&gt; mysql improve
+        简单介绍：
+            a.稳定性、安全性、效率有所提高
+            b.支持面向对象编程，同时也对老程序员提供了面向过程的编程风格
+                mysqli::close(void)
+                mysqli_close($link)
+
+        面向对象风格入门案例：
+            a.配置 php.ini 支持 mysqli 扩展库  启用 mysqli.dll
+            b.建库建表
+            c.代码
+                &lt;?php 
+                    header("Content-type: text/html;charset=utf-8");
+                    // 1.创建 mysqli 对象  代表了PHP和数据库之间的一个连接
+                    $mysqli = new MySqli("localhost","root","07140714","test");
+                    if($mysqli-&gt;connect_error) {
+                        die("Connect failed!".$mysqli-&gt;connect_error);
+                    } else {
+                        // echo "Connect success!";
+                    }
+                    // 2.操作数据库
+                    $sql="select * from user1";
+                    $res = $mysqli-&gt;query( $sql ); // 结果类型是 .mysqli result
+                    // 3.处理结果
+                    while( $row =  $res-&gt;fetch_row() ) {
+                        foreach( $row as $key =&gt; $val ) {
+                            echo "--$val";
+                        }
+                        echo "&lt;br/&gt;";
+                    }
+                    // 4.关闭资源
+                    $res-&gt;free();
+                    $mysqli-&gt;close();
+                ?&gt;
+
+        面向过程案例：
+            &lt;?php 
+                header("Content-type: text/html;charset=utf-8");
+                // 1.得到mysqli连接
+                $mysqli = mysqli_connect("localhost","root","07140714","test");
+                if (!$mysqli) {
+                    die("Connect failed!".mysqli_connect_error($mysqli));
+                }
+                // 2.操作数据库
+                $sql = "select * from user1";
+                $res = mysqli_query( $mysqli,$sql );    
+                // 3.处理结果
+                while( $row=mysqli_fetch_row($res) ) {
+                    foreach($row as $key =&gt;$val) {
+                        echo "--$val";
+                    }
+                    echo "&lt;br/&gt;";
+                }
+                // 4.关闭资源
+                mysqli_free_result( $res );
+                mysqli_close( $mysqli );
+            ?&gt;
+
+        在 mysqli扩展库中也提供了四种方式来获取 mysqli result 结果集：
+            mysqli_result::fetch_assoc
+            mysqli_result::fetch_row
+            mysqli_result::fetch_array
+            mysqli_result::fetch_object
+            前两种效率较高
+
+        释放结果集有三种方式：
+            void mysqli_result::free( void )
+            void mysqli_result::close( void )
+            void mysqli_result::free_result( void )
+
+        案例三：
+            &lt;?php 
+                $mysqli = new MySQLi("localhost","root","07140714","test");
+                if( $mysqli-&gt;connect_error ) {
+                    die( "Connect failed!".$mysqli-&gt;connect_error );
+                }
+                // 添加一条记录
+                $sql = "insert into user1 (name,password,email,age) values ('哈哈',md5('0714'),'i@qq.com',8)";
+                $res = $mysqli-&gt;query($sql);
+                if( !$res ) {
+                    echo "Operate failed!".$mysqli-&gt;error;
+                } else {
+                    if( $mysqli-&gt;affected_rows&gt;0 ) {
+                        echo "OK";
+                    } else {
+                        echo "No rows affected！";
+                    }
+                }
+                // 关闭资源
+                $mysqli-&gt;close();
+            ?&gt;
+
+        SqlHelper.class.php:
+            &lt;?php
+                class SqlHelper {
+                    private $mysqli;
+                    private static $host = "localhost";
+                    private static $user = "root";
+                    private static $pwd = "07140714";
+                    private static $db = "test";
+
+                    public function __construct() {
+                        // 完成初始化
+                        $this-&gt;mysqli = new MySQLi( self::$host,self::$user,self::$pwd,self::$db );
+                        if( $this-&gt;mysqli-&gt;connect_error) {
+                            die("Connect failed! ".$this-&gt;mysqli-&gt;connect_error);
+                        }
+                        // 设置访问数据库的字符集
+                        $this-&gt;mysqli-&gt;query("set names utf8");
+                    }
+
+                    public function execute_dql( $sql ) {
+                        $res = $this-&gt;mysqli-&gt;query( $sql ) or die("DQL failed! ".$this-&gt;mysqli-&gt;error);
+                        return $res;
+                    }
+
+                    public function execute_dml( $sql ) {
+                        $res = $this-&gt;mysqli-&gt;query( $sql ) or die("DQL failed! ".$this-&gt;mysqli-&gt;error);
+                        if(!$res) {
+                            return 0;  // 表示失败
+                        } else {
+                            if( $this-&gt;mysqli-&gt;affected_rows&gt;0 ) {
+                                return 1;  // 表示成功
+                            } else {
+                                return 2;  // 表示没有行受到影响
+                            }
+                        }
+                    }
+                }
+            ?&gt;
+            &lt;?php 
+                require "SqlHelper.class.php";
+                header("Content-type: text/html;charset=utf-8");
+                // 创建SqlHelper对象
+                $sqlHelper = new SqlHelper();
+                $sql = "insert into user1 (name,password,email,age) values ('哈哈',md5('0714'),'i@qq.com',8)";
+                // 通过sqlHelper实例完成添加任务
+                $res = $sqlHelper-&gt;execute_dml( $sql );
+                if ( $res == 0 ) {
+                    echo "Failed!";
+                } else {
+                    if( $res == 1 ) {
+                        echo "Success";
+                    } else {
+                        echo "No rows affected!";
+                    }
+                }
+            ?&gt;
+
+// 2016-01-19
+        mysqli 批量执行
+            dml语句：
+                基本使用：
+                $sqls = "sql语句1; sql语句2; sql语句n"；
+                $res = mysqli::multi_query( $sqls );
+
+                &lt;?php 
+                    // 使用mysqli::multi_query()一次性添加三个用户
+                    // 1.得到 mysqli 对象
+                    $mysqli = new MySQLi("localhost","root","07140714","test");
+                    if ( $mysqli-&gt;connect_error ) {
+                        die( $mysqli-&gt;connect_error);
+                    }
+                    $sqls = "insert into user1 (name, password, email, age) values ('宋江','aaa','aa@a.com',23);";
+                    $sqls.= "insert into user1 (name, password, email, age) values ('卢俊义','aaa','aa@a.com',23);";
+                    $sqls.= "insert into user1 (name, password, email, age) values ('吴用','aaa','aa@a.com',23);";
+
+                    $b = $mysqli-&gt;multi_query( $sqls );
+
+                    if ( !$b ) {
+                        echo "Failed!";
+                    } else {
+                        echo "Success!";
+                    }
+                    // 关闭资源
+                    $mysqli-&gt;close();
+                ?&gt;
+
+            dql语句：
+                &lt;?php 
+                    // 使用mysqli::multi_query()一次性查询
+                    // 1.得到 mysqli 对象
+                    $mysqli = new MySQLi("localhost","root","07140714","test");
+                    // 2.批量查询
+                    $sqls = "select * from emp;";
+                    $sqls.= "select * from user1";
+                    // 3.处理结果
+                    if( $res = $mysqli-&gt;multi_query( $sqls ) ) {
+                        do {
+                            // 从 mysqli 连接中取出第一个结果集
+                            $result = $mysqli-&gt;store_result();
+                            // 显示 mysqli result 对象
+                            while ( $row = $result-&gt;fetch_row() ) {
+                                foreach( $row as $key =&gt; $val ) {
+                                    echo "--$val";
+                                }
+                                echo "&lt;br/&gt;";
+                            }
+                            $result-&gt;free();
+                            echo "&lt;br/&gt;";
+                        } while( $mysqli-&gt;next_result() );
+                    }
+                    // 4.关闭资源
+                    $mysqli-&gt;close();
+                ?&gt;
+
+        事务处理：
+            事务用于保证数据的一致性，它由一组相关的 dml 语句组成，该组的 dml 语句要么全部成功，要么全部失败。
+            事务的 acid 特性：原子性 一致性 隔离性 持久性
+            
+            案例：银行转账
+                &lt;?php 
+                    // create table account (
+                    //    id int primary key,
+                    //    balance float
+                    // );
+                    // insert into account values(1,34);
+                    // insert into account values(2,20);
+                    $mysqli = new MySQLi("localhost","root","07140714","test");
+                    if ( $mysqli-&gt;connect_error ) {
+                        die( $mysqli-&gt;connect_error );
+                    }
+                    // 将提交设为假
+                    $mysqli-&gt;autocommit(false);
+
+                    $sql1="update account set balance=balance-2 where id=1";
+                    $sql2="update account set balance=balance+2 where id=2";
+
+                    $b1 = $mysqli-&gt;query( $sql1 ) or die( $mysqli-&gt;error );
+                    $b2 = $mysqli-&gt;query( $sql2 ) or die( $mysqli-&gt;error );
+
+                    if( !$b1 || !$b2 ) {
+                        // echo "Failed!";
+                        $mysqli-&gt;rollback();    //savepoint a; rollback to a;
+                    } else {
+                        // echo "Success!";
+                        $mysqli-&gt;commit();
+                    }
+                    $mysqli-&gt;close();
+                ?&gt;
+
+            // 1.开启一个事务
+            start transaction
+            // 2.做保存点
+            savepoint pointName
+            // 3.操作
+            // 4.可以回滚也可以提交
+                // 4.1没有问题就提交
+                commit
+                // 4.2有问题就回滚
+                rollback to pointName
+
+// 2016-02-03
+    mysqli扩展库增强--预处理 (还可以防止 sql注入攻击)
+        dml
+        &lt;?php 
+            // 预编译演示
+            // 1.创建 mysqli 对象
+            $mysqli = new MySQLi("localhost","root","07140714","test");
+            // 2.创建 预编译 对象
+            $sql = "insert into user1 (name, password, email, age) values(?,?,?,?)";
+            $mysqli_stmt = $mysqli-&gt;prepare($sql);
+            // /////////////////////////////////////////////////
+            // 绑定参数
+            $name = "小月";
+            $password = "1012";
+            $email = "chiue@qq.com";
+            $age = "18";
+            // 参数绑定--给 ？ 赋值, 类型和顺序都是需要对应的
+            $mysqli_stmt-&gt;bind_param("sssi", $name, $password, $email, $age); // string ~ ~ integer
+            //执行
+            $b = $mysqli_stmt-&gt;execute();
+            // /////////////////////////////////////////////////
+            if( !$b ) {
+                die("Failed".$mysqli_stmt-&gt;error);
+            } else {
+                echo "Success";
+            }
+            // 关闭连接
+            $mysqli-&gt;close();
+        ?&gt;
+
+        dql
+        &lt;?php
+            // 预编译演示
+            // 1.创建 mysqli 对象
+            $mysqli = new MySQLi("localhost","root","07140714","test");
+            if ( mysqli_connect_error()) {
+                die (mysqli_connect_error());
+            }
+            // 创建预定义对象
+            $sql="select id, name, email, from user1 where id&gt;?";
+            $mysqli_stmt = $mysqli-&gt;prepare($sql);
+            $id = 5;
+            // 绑定参数
+            $mysqli_stmt-&gt;bind_param("i", $id);
+
+            $mysqli_stmt-&gt;bind_result($id, $name, $email);
+            // 执行
+            $mysqli_stmt-&gt;execute();
+            // 取出绑定值
+            while( $mysqli_stmt-&gt;fetch() ){
+                echo "&lt;br/&gt;--$id--$name-$email";
+            }
+            // 关闭资源
+            $mysqli_stmt-&gt;free_result();
+            // 关闭编译语句
+            $mysqli_stmt-&gt;close();
+            // 关闭连接
+            $mysqli-&gt;close();
+        ?&gt;
+
+        防注入：
+            if(数据库密码==输入的密码) {
+                //合法
+            }
+
+// 2016-02-04
+    超全局变量--在全部作用域中始终可以使用的系统内置变量--无需声明即可以使用
+        $GLOBALS
+            包含了全部变量的全局组合数组。变量的名字就是数组的键。
+            同时一个自定义的全局变量也会自动的被 $_GLOBALS 管理。
+
+        $_SERVER
+            // 区分请求
+            if($_SERVER['REQUEST_METHOD']=="post")
+
+        $_GET
+            通过URL参数传递给当前脚本的变量数组
+            基本用法：
+                客户机（浏览器）通过【超链接】传送信息给服务器
+                客户机（浏览器）通过【表单】传送信息给服务器
+                但我们推荐表单数据用 POST提交
+
+            // 如果希望指定取出某个数据，可以通过下标名
+            // &lt;a href="a.php?name=chisw"&gt;&lt;/a&gt;
+            $_GET['name'];
+                // 解决中文乱码
+                1. trim()
+                2. urlencode urldecode
+
+            使用细节：判空
+                if( empty($_GET['name']) ) {   // empty() &lt;&gt; !isset()
+                    echo "No data";
+                } else {
+                    echo "OK";
+                    echo $_GET('name');
+                }
+
+        $_POST
+            通过 HTTP POST 方法传递给当前脚本的变量的数组
+            各种表单输入项数据的获取：text password radio checkbox file select textarea hidden image button
+            // 接收
+            $var = $_POST['name'];
+
+            GET POST 区别
+            安全性 POST&gt;GET
+            数据传输大小 POST&gt;GET
+            保存到收藏夹 GET比较方便
+
+        $_FILES
+
+        $_COOKIE
+
+        $_SESSION
+
+        $_REQUEST
+            包含 $_GET $_POST $_COOKIE 的数组
+
+        $_ENV
+            获取环境变量，在php 5.3 中默认禁用
+            php.ini =&gt; variables_order = "EGPCS"
+            在开发和生产环境不要启用
+
+// 2016-02-10
+    Zend Studio
+        文件编码全部设置成utf-8
+        // 提示符助手  alt+/
+        windows-&gt;keys    content assistant
+        快捷键：
+            // ctrl+alt+下光标        复制当前行
+            // ctrl+d                 删除当前行
+            // shift+ctrl+/         块注释
+            // ctrl+/                 行注释
+
+        调试：为了发现代码的错误，逐行执行代码，同时可以看到变量的变化。
+        断点：定位执行代码块。
+            f5  跳入函数执行
+            f6  跳过（继续按顺序执行）
+            f7  跳出（函数跳出）
+
+        需求分析 &gt; 设计阶段 &gt; 编码阶段 &gt; 调试阶段 &gt; 部署/维护阶段
+
+// 2016-02-18
+    分页
+        pageNow        当前页（用户选择）
+        pageSize     每页记录数（自定义）
+        pageCount     合计页（计算得出）
+        rowCount     合计记录数（数据库获取）
+
+        if ( $rowCount % $pageSize == 0 ) { //判断是否能取整
+            $pageCount == $rowCount / $pageSize;
+        } else {
+            $pageCount == ceil($rowCount / $pageSize);
+        }
+
+        ==&gt; $pageCount == ceil($rowCount / $pageSize);
+
+    ============== 实例 ================
+    参 Code/Module/PHP/Paging
+
+// 2016-02-19/22/24/25
+    ============== 实例2 ===============
+    参 Code/Module/PHP/Pagination
+
+    MVC是一个设计模式，强制输入、处理和输出的分开，分为三个核心部件：模型、视图、控制器。
+
+    M 主要由 类 来做，用于处理具体的业务逻辑
+    V 由 PHP 来做，主要用于做界面（即显示数据）
+    C 由 PHP 来做，主要用于相应用户的各种请求（比如增删改）
+
+    MVC处理过程总结：
+        1.首先控制器接收用户的请求，并决定应该调用哪个模型来进行处理。
+        2.然后调用模型用来处理用户的请求并返回数据。
+        3.最后控制器用相应的视图显示模型返回的数据，并通过浏览器呈献给用户。
+
+// 2016-02-26
+    MVC思考： 是否每一个请求，都需要对应一个控制器来相应？
+        把同一逻辑的请求（对同一张表的操作），提交一个控制器即可。
+
+
+// 2016-02-26
+    会话：
+        可以简单理解为：用户开一个浏览器，点击多个超链接，访问服务器多个 Web 资源，
+        然后关闭浏览器，整个过程称之为一个会话。
+
+        面临的问题：
+            每个用户在使用浏览器与服务器进行会话的过程中，不可避免各自会产生一些数据，
+            服务器要想办法为每个用户保存这些数据。 
+            如何保存？又保存在什么地方？
+            例如：购物车。
+
+        解决之道--会话技术 cookie/session
+
+    Cookie:
+        cookie(小甜饼)是客户端技术，服务器把每个用户的数据以cookie的形式写给用户各自的
+        浏览器。当用户使用浏览器再去访问服务器中的 web 资源时就会带着各自的数据去。
+        以 *.txt 的方式保存在 C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Cookies
+
+        如何创建一个Cookie：
+            &lt;?php
+                // 演示如何创建cookie信息
+                // 将用户的用户名和密码保存到客户端的cookie
+                // key &lt;--&gt; value  expireTime(s)
+                setcookie( "name","Jisuowei",time() + 3600 ); //时区问题
+                setcookie( "address","南京",time() + 3600 );
+                echo "保存成功！";
+            ?&gt;
+            1.当浏览器访问 cookie.php，服务器就会回送http响应，当浏览器获取到该信息后就会保存该cookie到本地。
+            2.如果没有给第三个参数，一旦浏览器关闭，cookie就会失效。
+            3.cookie所能保存的信息种类：只有字符串
+            4.客户端可以保存多个键值对，且可以指定不同的失效时间。
+            5.中文会通过 urldecode 编码。   //echo urldecode(..)
+
+        如何获取Cookie：
+            &lt;?php
+                // 获取cookie信息
+                echo "&lt;pre&gt;";
+                print_r( $_COOKIE);
+                echo "&lt;/pre&gt;";
+                // 获取指定key对应的值
+                if( !empty( $_COOKIE['name'] ) ) {
+                    $name = $_COOKIE['name'];
+                    echo "name=".$name;
+                } else {
+                    echo "Cookie 已失效！";
+                }
+            ?&gt;
+            1.如果 cookie 失效（expire），则无法取出。
+            2.客户端 cookie 是通过 http 协议传递给服务器的。
+
+// 2016-02-27
+        如何更新Cookie：
+            实际就是重新设置一下Cookie
+            setcookie(..)
+
+        如何删除Cookie：
+            // 单个
+            setcookie( "key", "", time() - 1 );
+            // 所有
+            foreach( $_COOKIE as $key=&gt;$val ) {
+                setcookie( $key, "", time() - 1 );
+            }
+
+        时区问题：
+            date_default_timezone_set("Aisa/Chongqing");
+            // or
+            php.ini -&gt; timezone
+
+// 2016-02-29
+    Session 初步介绍：
+        1.Session 是服务器端技术
+        2.一个会话对应一个 Session 文件
+        3.原理示意
+
+            浏览器 -----&gt; session1.php把数据保存到 session 文件
+              |                                      |
+              |                                        写入
+              ↓                                            ↓
+            session2.php
+            可以从 session 文件                   session文件默认路径
+            中取出该浏览器保存的 ---读取---&gt; c:/windows/temp/sess_xxx.
+            session 数据
+
+    Session 的用法：
+        如何保存 session 数据：
+            &lt;?php
+                // 1.初始化session
+                session_start();
+                // 2.保存数据
+                $_SESSION['name'] = "shunping";
+            ?&gt;
+
+            ==&gt; name|s:8:"shunping";
+
+            name     key
+            s         数据类型  // 可以保存 dobule integer bool array object
+            8         数据大小
+
+        如何获取 Session：
+            &lt;?php
+                // 1.初始化session
+                session_start();
+                // 2.1获取所有session数据
+                echo "&lt;pre&gt;";
+                print_r($_SESSION);
+                echo "&lt;pre&gt;";
+                // 2.2获取指定session数据
+                echo "&lt;br/&gt;名字是：".$_SESSION['name'];
+            ?&gt;
+
+        如何更新 Session：
+            &lt;?php
+                // 1.初始化session
+                session_start();
+                
+                $_SESSION['name'] = '顺平';
+            ?&gt;
+
+        如何删除 Session：
+            &lt;?php
+                // 1.初始化session
+                session_start();
+                // 2.1删除指定
+                unset( $_SESSION['name'] );
+                // 2.2删除所有 (当前浏览器对应的 session 文件)
+                session_destroy();
+            ?&gt;
+
+        默认有效时间： 1440s 24m  // 需要重启 apache
+            修改： php.ini -&gt; session.gc_maxlifetime = ?
+            这个时间是指在1440秒内，没有session文件，该session才会被当作垃圾从而被回收。
+
+        默认存放路径：
+            修改： php.ini -&gt; session.save_path = "?" // 需要重启 apache
+
+        总结：
+            在web开发中，服务器可以为每个用户创建一个超全局变量 $_SESSION 
+            默认情况下，一个浏览器独占一个session文件
+            在需要保存用户数据时，服务器程序可以把用户数据写到用户浏览器独占的 session 文件中
+            当浏览器访问其它页面时，其他php页面可以从用户的$_SESSION 中取出该用户数据，为用户服务。
+            在使用 $_SESSION 前要保证初始化，或者配置 php.ini -&gt; session.auto_start = 1
+
+        与 cookie 的区别：
+            cookie 是把用户数据写给用户的浏览器
+            session技术把用户的数据写到用户独占的 $_SESSION 文件中，存在服务器的某个路径的文件中
+
+        $sid = session_id()
+
+// 2016-03-01
+    Session的应用：验证码技术
+        打开 php.ini -&gt; extension=php_gd2.dll
+        index.php             添加输入框
+                            判断错误代码
+        loginProcess.php     接受验证码并验证
+        checkCode.php         引用
+
+    **php.ini**中 Cookie 和 Session 的设置：
+        session.name             用来设置 session 的名字，可以通过 session_name() 来获取
+        session.use_trans_sid     默认是0，对安全有影响，不建议开启
+        session.save_path         默认保存路径
+        session.gc_maxlifetime     默认存放周期
+        session.gc_probability=1
+        session.gc_divisor=1000
+        session.cookie_lifetime=0
+                                指定cookie默认生命周期，默认是0，关闭浏览器后失效
+        session_set_save_handler = [files/user]
+                                自定义文件
+
+
+// 2016-03-06
+    php进阶：文件编--IO编程
+        文件的概念： 分二进制数据和文本数据  都是一种数据源
+            文件在程序中是以流的形式来操作的  file stream
+
+                        &lt;== 输入 ==
+                内存                     文件
+                         == 输出 ==&gt;
+
+            流： 数据在数据源(文件)和程序(内存)之间经历的路程
+            输入流： 数据源到程序的路径
+            输出流： 程序到数据源的路径
+
+            操作方式： 本地操作 和 远程操作
+
+        基本用法：
+            如何获取文件信息：
+                &lt;?php
+                    // 文件信息
+                    // 打开文件
+                    $file_path="test.txt";
+                    // 该函数返回一个指向文件的指针
+                    if ( $fp = fopen( $file_path, "r") ) {  //只读
+                        // 以数组的形式获取到文件信息
+                        $file_info = fstat( $fp );
+                        echo "&lt;pre&gt;";
+                        print_r( $file_info );
+                        echo "&lt;/pre&gt;";
+
+                        // echo "文件大小： {$file_info['size']}";
+                        // echo "上次修改时间：".date("Y-m-d H-i-s",$file_info['mtime']);
+
+                    } else {
+                        echo "文件打开失败";
+                    }
+                    // 关闭文件
+                    fclose( $fp );
+
+                    // 第二种方式
+                    echo "&lt;br&gt;".filesize( $file_path );
+                ?&gt;
+
+                Array
+                (
+                    [0] =&gt; 0
+                    [1] =&gt; 0
+                    [2] =&gt; 33206
+                    [3] =&gt; 1
+                    [4] =&gt; 0
+                    [5] =&gt; 0
+                    [6] =&gt; 0
+                    [7] =&gt; 0
+                    [8] =&gt; 1457265934
+                    [9] =&gt; 1457265934
+                    [10] =&gt; 1457265934
+                    [11] =&gt; -1
+                    [12] =&gt; -1
+                    [dev] =&gt; 0
+                    [ino] =&gt; 0
+                    [mode] =&gt; 33206
+                    [nlink] =&gt; 1
+                    [uid] =&gt; 0
+                    [gid] =&gt; 0
+                    [rdev] =&gt; 0
+                    [size] =&gt; 0
+                    [atime] =&gt; 1457265934        // 上次访问时间
+                    [mtime] =&gt; 1457265934         // 上次内容修改时间
+                    [ctime] =&gt; 1457265934         // 上次文件所有者/所在组修改时间
+                    [blksize] =&gt; -1
+                    [blocks] =&gt; -1
+                )
+
+            如何读取文件：
+                &lt;?php
+                    // 打开文件
+                    $file_path="test.txt";
+                    // 判断文件是否存在
+                    if ( file_exists( $file_path ) ) {
+                        // 打开文件
+                        $fp = fopen( $file_path, "a+" ); // 读写 追加
+
+                        $con = fread( $fp, filesize($file_path) ); // 全部读取
+                        // 换行符替换
+                        $con = str_replace( "\r\n", "&lt;br/&gt;", $con );
+
+                        echo "文件内容：&lt;br/&gt;";
+                        echo $con;
+
+                    } else {
+                        echo "文件不存在";
+                    }
+
+                    fclose( $fp );
+                ?&gt;
+                // 第二种方式
+                &lt;?php
+                    // 打开文件
+                    $file_path="test.txt";
+
+                    $con = file_get_contents( $file_path );
+                    // 换行符替换
+                    $con = str_replace( "\r\n", "&lt;br/&gt;", $con );
+
+                    echo "文件内容：&lt;br/&gt;";
+                    echo $con;
+                ?&gt;
+                // 第三种方式 循环读取
+                &lt;?php
+                    // 打开文件
+                    $file_path="test.txt";
+                    $fp = fopen( $file_path, "a+");
+                    // 设置单次读取量
+                    $buffer = 1024;
+
+                    $str = "";
+
+                    // 一边读一边判断是否到达文件末尾
+                    while( !feof($fp) ) {
+                        $str .= fread( $fp, $buffer );
+                    }
+
+                    $str = str_replace( "\r\n", "&lt;br/&gt;", $str );
+
+                    echo $str;
+                    
+                    fclose( $fp );
+                ?&gt;
+                // 文件读取实际用法
+                // 连接数据库，用户名、密码、主机配置到一个外部文件 db.ini
+                // php运行时实时获取
+                db.ini 
+                ==&gt;
+                host=192.168.1.23
+                user=admin
+                password=123456
+
+                &lt;?php
+                    $arr = parse_ini_file("db.ini");
+
+                    print_r( $arr );
+                    
+                    // mysql_connect( $arr['host'], $arr['user'], $arr['password']);
+                ?&gt;
+
+// 2016-03-07
+            如何写文件：
+                &lt;?php
+                    // 1.传统方法
+                    $file_path="test.txt";
+                    if( file_exists($file_path) ) {
+                        // 如果是追加 则使用 a+ append
+                        $fp = fopen( $file_path, "a+" ); //w+ 会覆盖原文件
+                        $con = "追加的文本";
+                        // 一个方法
+                        fwrite( $fp, $con );
+                    } else {}
+
+                    echo "添加成功";
+                    fclose( $fp );
+
+                    // 2.第二种方式
+                    $file_path = "test.txt";
+                    $con = "第二种方式";
+                    file_put_contents( $file_path, $con );
+
+                    echo "添加成功";
+                ?&gt;
+
+            如何拷贝一个文件：
+                &lt;?php
+                    // 路径转码
+                    // $file_path = iconv("utf-8","gb2312","c:\\我的图片");
+                    if( !copy("c:\\demo.jpg","d:\\newName.jpg") ) {
+                        echo "error";
+                    } else {
+                        echo "OK";
+                    }
+                ?&gt;
+
+            文件、文件夹的创建和删除：
+                &lt;?php
+                    // 1.创建一个文件夹 make direction
+                    if(mkdir("d:/newFolder")){
+                        echo "文件夹创建成功！";
+                    } else {
+                        echo "创建失败！";
+                    }
+                    // 2.删除一个文件夹 rmdir remove direction
+                        //如果文件夹下有文件或者目录，均不能删除
+                    if( rmdir("d:/newFolder")){
+                        echo "删除文件夹ok";
+                    } else {
+                        echo "err";
+                    }
+                    // 3.文件的创建
+                    $file_path = "d:/newFolder/test.txt";
+                    $fp = fopen( $file_path, "w+");
+                        // 文件写入
+                    fwrite( $fp, "hello");
+                    fclose( $fp );
+                    echo "创文件ok";
+                    // 4.文件的删除
+                    $file_path ="d:/newFolder/test.txt";
+                    if( is_file( $file_path) ) {
+                        if(unlink( $file_path )){
+                            echo "删除成功";
+                        } else {
+                            echo "删除失败";
+                        }
+                    } else {
+                        echo "文件不存在";
+                    }
+                ?&gt;
+
+            文件上传：
+                ======== 参 Code/Module/PHP/fileUpload
+                // 大小设置： php.ini =&gt; upload_max_filesize = 2M
+
+    绘图技术：
+        坐标体系
+            ------ x
+            |
+            |
+            y
+
+        // 启用： php.ini &gt; extension=php_gd2.dll
+        ======== 参 Code/Module/PHP/image
+
+// 2016-03-08
+        阶段项目--信息共享
+            1.需求分析
+                定角色
+                    普通用户
+                    广告用户
+                    ...
+            2.UML图  Rational Rose 可视化建模工具 用例
+
+            3.界面设计
+
+            4.数据库设计 
+                需求文档+HTML
+
+// 2016-03-09
+        浪费了两天在这个倒霉阶段项目，啥也没学到 T_T
+
+// 2016-03-13
+    AJAX --无刷新表单验证
+        asynchronouse javascript and xml 包含了七个技术
+        -&gt;    javascript xml xstl xhtml dom xmlhttprequest css
+        与服务器端语言无关
+
+        无刷新数据交换技术还有： flash、java applet、框架、iframe
+
+        实际运用：
+            动态加载数据，按需取得数据：树形菜单，联动菜单
+            改善用户体验：输入内容前提示，带进度条文件上传
+            电子商务运用：购物车，邮件订阅
+            访问第三方服务：搜索服务，RSS阅读器
+
+        无刷新验证：
+            ======== 参 Code/Module/PHP/ajaxCheckName
+
+            使用 get 方式发出请求时，如果提交的用户名不变化，浏览器将不会真的发出请求
+            而是缓存数据，解决方法：
+                1.url 后带一个总是变化的参数,比如当前时间
+                    var url = "ajaxCheckName/registerProcess.php?mytime=" + new Date() + "$username" + $('username').value;
+                2.在服务器回送结果时，禁用缓存
+                    header("Content-Type:text/xml;charset=utf-8");
+                    header("Cache-Control:no-cache");
+
+        JSON:
+            格式：
+                &lt;script&gt;
+                    var chisw = {'name':'jisuowei','age':23};
+                    alert( chisw.name );
+
+                    var man = [{'name':'jisuowei','age':23},{'name':'chiue','age':22}];
+                    alert( man[1].age );
+                &lt;/script&gt;
+
+                /// 当接收到的 json 是多组数据 则
+                var reses = eval("(" +xmlHttpRequest.responseText + ")" );
+                reses[index].属性名
+
+            小结：
+                作为一种数据传输格式，json 与 xml 很相似，但是更加灵巧
+                json 不需要从服务器端发送含有特定内容类型的首部信息
+                但是语法过于严谨，不易读，eval函数存在风险
+
+        html xml json 比较：
+            若应用程序不需要与其它应用程序共享数据的时候 html片段是最简单的
+            如果数据需要重用， JSON 是个不错的选择，尤其在性能和大小方面有优势 （项目首选）
+            当远程应用程序未知时，XML是首选，因为 XML 是 WEB 服务领域的世界语
+
+        省市联动菜单：
+            ======== 参 Code/Module/PHP/selectCity
+            // 调试小技巧
+            file_put_contents("d:/mylog.log", $province."\r\n", FILE_APPEND);
+
+// 2016-03-14
+    在线聊天室：又一个过过的小项目
+// 2016-03-14
+    SVN 版本控制系统
+        面向人群： 开发工程师、运维工程师、Team Leader、项目经理
+        面对问题： 误删代码、测试修改须知、修改者、手动发布太紧张压力大
+
+        简介：
+            Subversion 免费使用，跨平台，网络架构（服务端与客户端）
+            不会覆盖，随时复原
+
+        安装命令：
+            Ubantu
+                $sudo apt-get install subversion
+                $svn --version
+
+            Windows
+                &gt;svn --version
+
+        SVN图形化界面工具：
+            Windows: TortoiseSVN
+            IDE: Zend Studio
+
+    Linux
+        1.性能高
+        2.开源
+        3.处理多并发
+        4.安全性和稳定性
+        5.免费(内核)
+
+        发展方向：
+            系统管理员
+                 perl..shell脚本
+
+            程序员 c/c++/java/jsp/php
+                软件工程师
+                嵌入式开发
+
+        学习流程：
+            第一阶段        vi gcc gdb make jdk tomcat mysql linux基本操作
+            第二阶段        c语言功底 java
+            第三阶段        学习 unix环境高级编程
+            第四阶段        linux应用系统开发/linux嵌入式开发
+
+</code></pre>

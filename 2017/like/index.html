@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title title="like">Jisuowei.com-兴趣</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta name="viewport" content=" width=1024,user-scalable=0">
+<link rel='stylesheet' type='text/css' href='../css/ji-common.css' />
+<style>
+
+#storeTable {
+	width: 100%;
+	padding: 32px;
+	box-sizing: border-box;
+}
+
+#storeTable thead th {
+	text-align: left;
+	padding-bottom: 20px;
+}
+
+#storeTable thead th a {
+	color: #5c5c5c;
+	border: 1px solid #e5e5e5;
+	padding: 4px 12px;
+	border-radius: 2px;
+	transition: all .13s;
+}
+
+#storeTable thead th a:hover {
+	color: #000;
+	background: #fafafa;
+}
+
+#storeTable tbody tr {
+	height: 48px;
+}
+
+#storeTable thead tr th:nth-child(1),
+#storeTable tbody tr td:nth-child(1) {
+	width: 200px;
+	text-align: center;
+}
+
+#storeTable tbody tr td a {
+	color: #002C40;
+	font-size: 16px;
+	text-decoration: underline;
+}
+
+#storeTable tbody tr td a:hover {
+	color: #0090DB;
+}
+
+
+</style>
+</head>
+<body>
+
+
+
+<div class="ji-content">
+	<p class="secNav"></p>
+
+	<div id="ji-content-ajax">
+
+	</div>
+
+
+</div><!-- ji-content end -->
+
+
+
+</body>
+<script src="../../static/js/jquery.2.1.1.min.js"></script>
+<!-- 调试工具 -->
+<script src="../js/jisuowei.js"></script>
+<script src="../js/ji-navi.js"></script>
+<script>
+
+
+function startSecNav(){
+
+	var oNavi = [
+		{'id':'nav-ride' ,'value':'骑行'},
+		{'id':'nav-web','value':'Web项目'},
+	];
+	// append
+	// var navWidth = Math.floor(100/oNavi.length);
+	var navWidth = 100/oNavi.length;
+	for( var i=0; i<oNavi.length; i++ ) {
+		var eA = $('<a href="javascript:;" style="width:'+navWidth+'%;left:'+navWidth*i+'%;" id="'+oNavi[i].id+'">'+oNavi[i].value+'</a>');
+		$('.ji-content p.secNav').append(eA);
+	}
+
+
+	// nav 点击 
+	$('.secNav a').click(function(){
+
+		$("#ji-content-ajax").html('');
+
+
+		var nNavNotation = $(this).attr('id').substring(4).toLowerCase();
+		$('.secNav a').removeClass('hover');
+		$('.secNav a#nav-' + nNavNotation).addClass('hover');
+
+
+		// switch tab
+		// ajax('../ajax/store/' + nNavNotation + '.html',function(str) {
+			// $("#ji-content-ajax").html( str );
+			$("#ji-content-ajax").html( "<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+nNavNotation+" 建设中.." );
+		// });
+
+
+
+	});
+
+
+	// 初始化
+	$('#nav-ride').click();
+
+
+};
+
+
+
+addOnload( startSecNav );
+
+
+
+
+
+
+</script>
+</html>

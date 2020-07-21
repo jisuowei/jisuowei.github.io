@@ -1,0 +1,221 @@
+<pre><code class="js hljs javascript">
+<span class="hljs-comment">/*
+
+    Document Object Model
+
+    2016-09-01
+    ~
+    2016-09-23 Noted by Chisw
+
+*/</span>
+
+
+<span class="hljs-number">001.</span>Document
+<span class="hljs-number">002.</span>Element
+<span class="hljs-number">003.</span>Attribute
+<span class="hljs-number">004.</span>Event
+
+
+<span class="hljs-comment">// 2016-09-01</span>
+<span class="hljs-number">001.</span>Document
+<span class="hljs-comment">// 每个载入浏览器的 HTML 文档都会成为 Document 对象</span>
+<span class="hljs-comment">// Document 对象是 Window 对象的一部分，可通过 window.document 属性对其进行访问</span>
+
+<span class="hljs-comment">// 对象合集</span>
+    all[]      <span class="hljs-comment">// 所有 HTML 元素的访问</span>
+    <span class="hljs-built_in">document</span>.all[index]
+    <span class="hljs-built_in">document</span>.all[name]
+    <span class="hljs-built_in">document</span>.all.tags[tagname]
+
+    links[]      <span class="hljs-comment">// 所有 Area 和 Link 对象引用</span>
+    anchors[]      <span class="hljs-comment">// 所有 Anchor 对象的引用 锚位置</span>
+    forms[]      <span class="hljs-comment">// 所有 Form 对象引用</span>
+    images[]      <span class="hljs-comment">// 所有 Image 对象引用</span>
+    applets      <span class="hljs-comment">// 所有 Applet(小程序) 对象的引用</span>
+
+<span class="hljs-comment">// 属性</span>
+    <span class="hljs-built_in">document</span>.body      <span class="hljs-comment">// 对 &lt;body&gt; 元素的直接访问</span>
+    <span class="hljs-built_in">document</span>.title      <span class="hljs-comment">// 返回 当前文档的标题 &lt;title&gt;标签</span>
+    <span class="hljs-built_in">document</span>.URL      <span class="hljs-comment">// 返回 当前文档的 URL</span>
+    <span class="hljs-built_in">document</span>.referrer      <span class="hljs-comment">// 返回 载入当前文档的 文档的 URL</span>
+    <span class="hljs-built_in">document</span>.domain      <span class="hljs-comment">// 返回 当前文档的域名</span>
+    <span class="hljs-built_in">document</span>.cookie      <span class="hljs-comment">// 读写 当前文档有关的所有 cookie</span>
+    <span class="hljs-built_in">document</span>.lastModified      <span class="hljs-comment">// 返回 文档被最后修改的日期和时间</span>
+
+<span class="hljs-comment">// 方法</span>
+    <span class="hljs-built_in">document</span>.getElementById()      <span class="hljs-comment">// 返回 对拥有指定 ID 的第一个对象的引用</span>
+    <span class="hljs-built_in">document</span>.getElementsByName()      <span class="hljs-comment">// 返回 带有指定 名称 的对象的集合 元素数组</span>
+    <span class="hljs-built_in">document</span>.getElementsByTagName()      <span class="hljs-comment">// 返回 带有指定 标签名 的对象的集合 元素数组</span>
+
+    <span class="hljs-built_in">document</span>.write(exp1,exp2,..)      <span class="hljs-comment">// 打出</span>
+    <span class="hljs-built_in">document</span>.writeln(exp1,exp2,..)      <span class="hljs-comment">// 打出 自带换行</span>
+
+    <span class="hljs-built_in">document</span>.open(mimetype,replace)
+    <span class="hljs-comment">// mimetype    可选 规定正在写的文档的类型 默认 text/html</span>
+    <span class="hljs-built_in">document</span>.close()
+    <span class="hljs-comment">// 调用 open() write() 后，必须用 close() 关闭文档</span>
+
+
+<span class="hljs-number">002.</span>Element
+<span class="hljs-comment">// 在 HTML DOM 中 每个部分都是节点</span>
+<span class="hljs-comment">// 文档节点 元素节点 属性节点 文本节点 注释节点</span>
+
+<span class="hljs-comment">// Element 对象表示 HTML 元素 可以拥有类型为元素节点、文本节点、注释节点的子节点</span>
+<span class="hljs-comment">// NodeList 对象表示节点列表</span>
+
+<span class="hljs-comment">// 属性方法</span>
+    element.id      <span class="hljs-comment">// 读写 元素 id</span>
+    element.title      <span class="hljs-comment">// 读写 元素 title</span>
+    element.className      <span class="hljs-comment">// 读写 元素 class</span>
+    element.style      <span class="hljs-comment">// 读写 元素 style</span>
+    element.accessKey      <span class="hljs-comment">// 读写 元素 快捷键</span>
+    element.tabIndex      <span class="hljs-comment">// 读写 元素 tab 键控制次序</span>
+    element.tagName      <span class="hljs-comment">// 返回 元素 标签名</span>
+    element.textContent      <span class="hljs-comment">// 读写 节点及其后代的文本内容</span>
+    element.innerHTML      <span class="hljs-comment">// 读写 元素 内容</span>
+    element.contentEditable      <span class="hljs-comment">// 读写 可编辑性</span>
+    element.isContentEditable      <span class="hljs-comment">// 同上</span>
+    element.ownerDocument      <span class="hljs-comment">// 返回 元素 根元素（文档对象 始终是 HTML 文档本身）</span>
+    element.namespaceURI      <span class="hljs-comment">// 返回元素的 namespace URI</span>
+    element.dir      <span class="hljs-comment">// 读写 元素 文本方向</span>
+    element.lang      <span class="hljs-comment">// 读写 元素 语言代码</span>
+    element.nodeName      <span class="hljs-comment">// 返回 元素 名称</span>
+    element.nodeValue      <span class="hljs-comment">// 读写 元素值 替代选择是 textContent</span>
+    element.nodeType      <span class="hljs-comment">// 返回 元素 节点类型</span>
+    <span class="hljs-comment">// 1 Element 元素</span>
+    <span class="hljs-comment">// 2 Attr 属性</span>
+    <span class="hljs-comment">// 3 Text 文本</span>
+    <span class="hljs-comment">// 4 CDATASection</span>
+    <span class="hljs-comment">// 5 EntityReference 实体引用</span>
+    <span class="hljs-comment">// 6 Entity 实体</span>
+    <span class="hljs-comment">// 7 ProcessingInstruction 处理指令</span>
+    <span class="hljs-comment">// 8 Comment 注释</span>
+    <span class="hljs-comment">// 9 Document 整个文档</span>
+    <span class="hljs-comment">// 10 DocumentType 文档定义的实体提供接口</span>
+    <span class="hljs-comment">// 11 DocumentFragment 轻量级的 Document 对象，能够容纳文档的某个部分</span>
+    <span class="hljs-comment">// 12 Notation DTD中声明的符号</span>
+
+    element.attributes      <span class="hljs-comment">// 返回 元素 属性集合(NamedNodeMap)  IE8- 返回所有可能的属性集合</span>
+    <span class="hljs-comment">// ele.attributes.length</span>
+    <span class="hljs-comment">// ele.attributes[0].name      $(ele).attr()</span>
+    <span class="hljs-comment">// ele.attributes[0].value</span>
+
+    element.parentNode      <span class="hljs-comment">// 返回 元素 父节点</span>
+    element.firstChild      <span class="hljs-comment">// 返回 元素 首个子元素</span>
+    element.lastChild      <span class="hljs-comment">// 返回 元素 最后一个子元素</span>
+    element.previousSibling      <span class="hljs-comment">// 返回 上一个 兄弟元素</span>
+    element.nextSibling      <span class="hljs-comment">// 返回 下一个 兄弟元素</span>
+    element.childNodes      <span class="hljs-comment">// 返回 元素子节点的 NodeList</span>
+    <span class="hljs-comment">// c=document.body.childNodes;</span>
+    <span class="hljs-comment">// c.length </span>
+    <span class="hljs-comment">// c[i].nodeName;</span>
+
+    element.clientWidth      <span class="hljs-comment">// 返回 元素 可见宽度</span>
+    element.clientHeight      <span class="hljs-comment">// 返回 元素 可见高度</span>
+
+    element.offsetHeight      <span class="hljs-comment">// 返回 元素 高度</span>
+    element.offsetWidth      <span class="hljs-comment">// 返回 元素 宽度</span>
+    element.offsetTop      <span class="hljs-comment">// 返回 元素 垂直偏移位置</span>
+    element.offsetLeft      <span class="hljs-comment">// 返回 元素 水平偏移位置</span>
+    element.offsetParent      <span class="hljs-comment">// 返回 元素 偏移容器</span>
+
+    element.scrollWidth      <span class="hljs-comment">// 返回 元素 整体宽度</span>
+    element.scrollHeight      <span class="hljs-comment">// 返回 元素 整体高度</span>
+    element.scrollTop      <span class="hljs-comment">// 返回 元素 上边缘与视图之间的距离</span>
+    element.scrollLeft      <span class="hljs-comment">// 返回 元素 左边缘与视图之间的距离</span>
+
+    element.toString()      <span class="hljs-comment">// 把元素转换为字符串</span>
+    element.appendChild()      <span class="hljs-comment">// 向元素添加新的子节点，作为最后一个子节点</span>
+    element.removeChild()      <span class="hljs-comment">// 移除 子节点</span>
+    element.replaceChild()      <span class="hljs-comment">// 替换 元素中的子节点</span>
+    element.insertBefore(now,old)      <span class="hljs-comment">// 在指定的已有的子节点之前插入新节点</span>
+    element.hasChildNodes()      <span class="hljs-comment">// 返回 元素 是否拥有 子节点</span>
+    element.normalize()      <span class="hljs-comment">// 合并元素中相邻的，并移除空的 文本节点</span>
+    element.cloneNode()      <span class="hljs-comment">// 克隆元素</span>
+    <span class="hljs-comment">// var clonedItm = document.getElementById("myList2").lastChild.cloneNode(true);</span>
+
+    element.getAttribute()      <span class="hljs-comment">// 返回 元素节点 指定属性值 a.getAttribute("target");</span>
+    element.getAttributeNode()      <span class="hljs-comment">// 返回 指定的属性节点</span>
+    element.getElementsByTagName()  <span class="hljs-comment">// 返回 拥有 指定标签名 的所有子元素的集合</span>
+    element.setAttribute()      <span class="hljs-comment">// 把指定属性设置或更改为指定值</span>
+    element.setAttributeNode()      <span class="hljs-comment">// 设置或更改指定属性节点</span>
+    element.setIdAttribute()
+    element.setIdAttributeNode()
+    element.removeAttribute()      <span class="hljs-comment">// 移除 指定属性</span>
+    element.removeAttributeNode()      <span class="hljs-comment">// 移除 指定的属性节点 并返回被移除的节点</span>
+    element.hasAttribute(attr)      <span class="hljs-comment">// 返回 元素 是否拥有 指定属性</span>
+    element.hasAttributes()      <span class="hljs-comment">// 返回 元素 是否拥有 属性</span>
+
+    element.getFeature()      <span class="hljs-comment">// 返回 实现了指定特性的 API 的某个对象</span>
+    element.getUserData()      <span class="hljs-comment">// 返回 关联元素上键的对象</span>
+    element.setUserData()      <span class="hljs-comment">// 把对象关联到元素上的键</span>
+
+    element.isDefaultNamespace(namespaceURI)
+    <span class="hljs-comment">// 检查被定义的命名空间是否是默认命名空间</span>
+    element.isEqualNode(ele2)      <span class="hljs-comment">// 检查两个元素是否相等</span>
+    <span class="hljs-comment">// 节点类型相同</span>
+    <span class="hljs-comment">// 拥有相同的 nodeName、NodeValue、localName、nameSpaceURI 以及前缀</span>
+    <span class="hljs-comment">// 所有后代均为相同的子节点</span>
+    <span class="hljs-comment">// 拥有相同的属性和属性值（属性次序不必一致）</span>
+    element.isSameNode()      <span class="hljs-comment">// 检查两个元素 是否 是相同的节点</span>
+    element.isSupported()      <span class="hljs-comment">// 检测元素 是否 支持特性 item.isSupported("Core","2.0");</span>
+
+    element.compareDocumentPosition()      <span class="hljs-comment">// 比较两个元素的文档位置</span>
+    <span class="hljs-comment">// p1.compareDocumentPosition(p2); 返回 数值</span>
+    <span class="hljs-comment">// 1：没有关系，两个节点不属于同一个文档</span>
+    <span class="hljs-comment">// 2：p1 在 p2 后</span>
+    <span class="hljs-comment">// 4：p1 在 p2 前</span>
+    <span class="hljs-comment">// 8：p1 在 p2 内</span>
+    <span class="hljs-comment">// 16：p2 在 p1 内</span>
+    <span class="hljs-comment">// 32：没有关系，或是两个节点是同一元素的两个属性</span>
+
+    nodelist.length      <span class="hljs-comment">// 返回 NodeList 中的节点数</span>
+    nodelist.item(index)      <span class="hljs-comment">// 返回 NodeList 中位于指定下标的节点</span>
+    <span class="hljs-comment">// document.body.childNodes.item(0);</span>
+
+
+<span class="hljs-comment">// 2016-09-23</span>
+<span class="hljs-number">003.</span>Attribute
+    attr.isId      <span class="hljs-comment">// 返回 是否是 id属性  attributes[0].isId;</span>
+    attr.name      <span class="hljs-comment">// 返回 属性 名称</span>
+    attr.value      <span class="hljs-comment">// 读写 属性 值</span>
+    attr.specified      <span class="hljs-comment">// 返回 是否 分配了属性</span>
+    nodemap.length      <span class="hljs-comment">// 返回 属性 节点个数</span>
+    nodemap.getNamedItem()      <span class="hljs-comment">// 返回 指定 属性节点</span>
+    nodemap.item(index)      <span class="hljs-comment">// 返回 NamedNodeMap 中 指定下标 节点</span>
+    nodemap.removeNamedItem()      <span class="hljs-comment">// 移除 指定 属性节点</span>
+    nodemap.setNamedItem()      <span class="hljs-comment">// 设置 指定 属性节点</span>
+
+
+<span class="hljs-number">004.</span>Event
+    event.altKey      <span class="hljs-comment">// 返回 是否 按下 Alt 键</span>
+    event.ctrlKey      <span class="hljs-comment">// 返回 是否 按下 Ctrl 键</span>
+    event.shiftKey      <span class="hljs-comment">// 返回 是否 按下 Shift 键</span>
+    event.metaKey      <span class="hljs-comment">// 返回 是否 按下 meta 键  if (event.metaKey==1)</span>
+    event.button      <span class="hljs-comment">// 返回 鼠标按键 左0 中1 右2 （IE 左1 中4 右2）</span>
+
+    event.clientX      <span class="hljs-comment">// 返回 光标 相对于 客户端 水平 坐标</span>
+    event.clientY      <span class="hljs-comment">// 返回 光标 相对于 客户端 垂直 坐标</span>
+    event.screenX      <span class="hljs-comment">// 返回 光标 相对于 显示器 水平 坐标</span>
+    event.screenY      <span class="hljs-comment">// 返回 光标 相对于 显示器 垂直 坐标</span>
+
+    event.target      <span class="hljs-comment">// 返回 事件的目标节点（触发该事件的节点）</span>
+    event.relatedTarget      <span class="hljs-comment">// 返回 与事件的目标节点相关的节点</span>
+    event.currentTarget      <span class="hljs-comment">// 返回 其监听器触发事件的节点</span>
+
+    event.type      <span class="hljs-comment">// 返回 事件类型名称 删除了前缀 "on" </span>
+    event.timeStamp      <span class="hljs-comment">// 返回 一个时间戳 事件的日期和时间 从 epoch 开始的毫秒数</span>
+    event.bubbles      <span class="hljs-comment">// 返回 是否是 起泡型事件</span>
+    event.cancelable      <span class="hljs-comment">// 返回 是否可以用 preventDefault() 取消与事件关联的默认动作</span>
+    event.eventPhase      <span class="hljs-comment">// 返回 事件传播的当前阶段</span>
+    <span class="hljs-comment">// 常量      值</span>
+    <span class="hljs-comment">// Event.CAPTURING_PHASE    1</span>
+    <span class="hljs-comment">// Event.AT_TARGET    2</span>
+    <span class="hljs-comment">// Event.BUBBLING_PHASE    3</span>
+
+    event.initEvent(eventType,canBubble,cancelable)      <span class="hljs-comment">// 初始化新事件对象的属性</span>
+    event.preventDefault()      <span class="hljs-comment">// 取消 事件 默认动作</span>
+    event.stopPropagation()      <span class="hljs-comment">// 停止事件的传播</span>
+    <span class="hljs-comment">// 虽然该方法不能阻止同一个 Document 节点上的其他事件句柄被调用</span>
+    <span class="hljs-comment">// 但是它可以阻止把事件分派到其他节点</span>
+</code></pre>

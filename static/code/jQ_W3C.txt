@@ -1,0 +1,275 @@
+<pre><code class="js hljs javascript">
+<span class="hljs-comment">/*
+
+    jQuery W3CSchool
+
+    2015-09-07
+    ~
+    2015-09-07 Noted by Chisw
+
+    2016-09-06 Modified
+
+*/</span>
+
+
+<span class="hljs-number">001.</span>安装
+<span class="hljs-number">002.</span>基本语法
+<span class="hljs-number">003.</span>文档就绪事件
+<span class="hljs-number">004.</span>jQuery 选择器
+<span class="hljs-number">005.</span>jQuery 事件
+<span class="hljs-number">006.</span>jQuery 效果
+<span class="hljs-number">007.</span>jQuery HTML
+<span class="hljs-number">008.</span>jQuery 遍历
+
+
+<span class="hljs-comment">// 2015-09-07</span>
+<span class="hljs-number">001.</span>安装
+    <span class="hljs-comment">// &lt;script src="http://libs.baidu.com/jquery/1.10.2/jquery.min.js"&gt;</span>
+    <span class="hljs-comment">// 编写的jQeruy应放在引用的后面</span>
+
+
+<span class="hljs-number">002.</span>基本语法
+    $(selector).action();
+        <span class="hljs-comment">// 美元符号定义jQuery</span>
+        <span class="hljs-comment">// 选择符(selector)"查询"和"查找"元素</span>
+        <span class="hljs-comment">// action()执行对元素的操作</span>
+
+
+<span class="hljs-number">003.</span>文档就绪事件
+    $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-comment">//    $("p").click(function(){</span>
+        <span class="hljs-comment">//        $(this).hide();</span>
+        <span class="hljs-comment">//    });</span>
+    });
+    <span class="hljs-comment">// 这是为了防止文档在完全加载就绪之前运行jQuery代码</span>
+    <span class="hljs-comment">// 简洁写法 $(function(){});</span>
+
+
+<span class="hljs-number">004.</span>jQuery 选择器-基于CSS选择器
+    <span class="hljs-comment">// 所有选择器以 $() 开头</span>
+        $(<span class="hljs-string">"p"</span>)         <span class="hljs-comment">// 元素选择器</span>
+        $(<span class="hljs-string">"#test"</span>)    <span class="hljs-comment">// id选择器</span>
+        $(<span class="hljs-string">".test"</span>)    <span class="hljs-comment">// .class选择器</span>
+        $(<span class="hljs-string">"p.test"</span>)
+        $(<span class="hljs-string">"p span"</span>)
+        $(<span class="hljs-string">"a:hover"</span>)
+        $(<span class="hljs-string">"[attr]"</span>)
+        $(<span class="hljs-string">"a[target='_blank']"</span>)
+        $(<span class="hljs-string">":button"</span>)
+        $(<span class="hljs-string">"tr:odd"</span>)
+
+
+<span class="hljs-number">005.</span>jQuery 事件
+    .ready()
+
+    .click()
+    .dbclick()
+
+    .focus()
+    .blur()
+
+    .hover() 
+    &lt;==&gt;
+    .mouseenter()
+    +
+    .mouseleave()
+
+    .mousedown()
+    .mouseup()
+
+
+<span class="hljs-number">006.</span>jQuery 效果
+    <span class="hljs-comment">// speed = "slow" / duration(ms)</span>
+    <span class="hljs-comment">// 隐藏显示</span>
+        .hide(speed,callback)
+        .show(speed,callback)
+        .toggle(speed,callback)
+
+    <span class="hljs-comment">// 淡入淡出</span>
+        .fadeIn(speed,callback)
+        .fadeOut(speed,callback)
+        .fadeToggle(speed,callback)
+        .fadeTo(speed,opacity,callback)
+        <span class="hljs-comment">// 0 &lt;=opacity &lt;= 1</span>
+
+    <span class="hljs-comment">// 滑动</span>
+        .slideDown(speed,callback)
+        .slideUp(speed,callback)
+        .slideToggle(speed,callback)
+
+    <span class="hljs-comment">// 动画</span>
+        <span class="hljs-comment">// 语法</span>
+            $(selector).animate({params},speed,callback);
+
+        <span class="hljs-comment">// 默认情况下，所有HTML元素都有一个静态位置，且无法移动</span>
+        <span class="hljs-comment">// 如需位置操作，需要预先设置poition为relative/fixed/absolute</span>
+        <span class="hljs-comment">// 使用animate()时，必须遵循Camel命名规则</span>
+        <span class="hljs-comment">// 色彩动画并不包含在核心jQuery库中</span>
+            .animate({attr1:<span class="hljs-string">'value1'</span>,attr2:<span class="hljs-string">'value2'</span>},speed)
+
+        <span class="hljs-comment">// 使用相对值</span>
+            .animate({left:<span class="hljs-string">'+=150px'</span>})
+            .animate({width:<span class="hljs-string">'+=150px'</span>})
+
+        <span class="hljs-comment">// 使用预定义的值</span>
+            .animate({height:<span class="hljs-string">'toggle'</span>})
+
+        <span class="hljs-comment">// 使用队列</span>
+            $(<span class="hljs-string">"button"</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+              <span class="hljs-keyword">var</span> div=$(<span class="hljs-string">"div"</span>);
+              div.animate({height:<span class="hljs-string">'300px'</span>,opacity:<span class="hljs-string">'0.4'</span>},<span class="hljs-string">"slow"</span>);
+              div.animate({width:<span class="hljs-string">'300px'</span>,opacity:<span class="hljs-string">'0.8'</span>},<span class="hljs-string">"slow"</span>);
+            });
+
+        <span class="hljs-comment">// 停止动画</span>
+            $(selector).stop(stopAll,goToEnd);
+                <span class="hljs-comment">// stopAll,默认false，停止当前，继续队列</span>
+                <span class="hljs-comment">// goToEnd,默认false，立即完成当前动画</span>
+                <span class="hljs-comment">// 没有参数，默认清楚在被选元素上指定当前的动画</span>
+
+        <span class="hljs-comment">// Callback方法</span>
+            Callback 函数 在当前动画<span class="hljs-number">100</span>%完成之后执行
+                $(<span class="hljs-string">"button"</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+                    $(<span class="hljs-string">"p"</span>).fadeOut(<span class="hljs-number">1000</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+                        alert(<span class="hljs-string">'Callback'</span>);
+                    })
+                });
+        
+        <span class="hljs-comment">// Chaining</span>
+            $(<span class="hljs-string">"p"</span>).slideUp(<span class="hljs-number">2000</span>).slideDown(<span class="hljs-number">2000</span>);
+
+
+<span class="hljs-number">007.</span>jQuery HTML
+    <span class="hljs-comment">// 捕获</span>
+        .text()    <span class="hljs-comment">// 设置或返回所选元素的文本内容</span>
+        .html()    <span class="hljs-comment">// 同上，并返回HTML标记</span>
+        
+        <span class="hljs-comment">// &lt;p id="test"&gt;This is some text in a paragraph.&lt;/p&gt;</span>
+        $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            $(<span class="hljs-string">"#btn1"</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+                alert(<span class="hljs-string">"Text: "</span> + $(<span class="hljs-string">"#test"</span>).text());
+            });
+            $(<span class="hljs-string">"#btn2"</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+                alert(<span class="hljs-string">"HTML: "</span> + $(<span class="hljs-string">"#test"</span>).html());
+            });
+        });
+
+        .val()    <span class="hljs-comment">// 设置或返回表单字段的值</span>
+        &lt;==&gt;
+        .attr(<span class="hljs-string">"value"</span>)
+
+    <span class="hljs-comment">// 设置</span>
+        <span class="hljs-comment">// 设置内容</span>
+        $(<span class="hljs-string">"p"</span>).text(<span class="hljs-string">"Hello world!"</span>);
+        ..
+        <span class="hljs-comment">// 回调</span>
+        $(<span class="hljs-string">"btn"</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            $(<span class="hljs-string">"p"</span>).text(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">i,origText</span>)</span>{
+                <span class="hljs-keyword">return</span> <span class="hljs-string">"Old text:"</span> + origText + <span class="hljs-string">"index:"</span> + i ; 
+            });
+        });
+            <span class="hljs-comment">// 两个参数：被选元素列表中当前元素的下标，以及原始值。</span>
+            <span class="hljs-comment">// 然后以函数新值返回您希望使用的字符串。</span>
+
+        <span class="hljs-comment">// 设置属性</span>
+        $(<span class="hljs-string">"a"</span>).attr(<span class="hljs-string">"href"</span>,<span class="hljs-string">"http://www.jisuowei.com"</span>);
+        <span class="hljs-comment">// 队列</span>
+        $(<span class="hljs-string">"#w3s"</span>).attr({
+            <span class="hljs-string">"href"</span> : <span class="hljs-string">"http://www.w3cschool.cc/jquery"</span>,
+            <span class="hljs-string">"title"</span> : <span class="hljs-string">"W3Schools jQuery Tutorial"</span>
+        });
+        <span class="hljs-comment">// 回调</span>
+        $(<span class="hljs-string">"button"</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            $(<span class="hljs-string">"#w3s"</span>).attr(<span class="hljs-string">"href"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">i,origValue</span>)</span>{
+                <span class="hljs-keyword">return</span> origValue + <span class="hljs-string">"/jquery"</span>; 
+            });
+        });
+
+    <span class="hljs-comment">// 添加元素</span>
+        <span class="hljs-comment">// 插入文本/HTML--引号包裹</span>
+        <span class="hljs-comment">// before &lt;p&gt; prepend "Content" append &lt;/p&gt; after</span>
+        .append() &lt;&gt; .appendTo()  <span class="hljs-comment">// 主宾对调</span>
+        .prepend()
+        .after()
+        .before()
+
+    
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">appendText</span>(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">var</span> txt1=<span class="hljs-string">"&lt;p&gt;Text.&lt;/p&gt;"</span>;  
+            <span class="hljs-keyword">var</span> txt2=$(<span class="hljs-string">"&lt;p&gt;&lt;/p&gt;"</span>).text(<span class="hljs-string">"Text."</span>);
+            <span class="hljs-keyword">var</span> txt3=<span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">"p"</span>);
+            txt3.innerHTML=<span class="hljs-string">"Text."</span>;
+            $(<span class="hljs-string">"p"</span>).append(txt1,txt2,txt3);
+        }
+    
+
+    <span class="hljs-comment">// 删除元素</span>
+        .remove()    <span class="hljs-comment">// 删除被选元素和所有子元素</span>
+        .empty()      <span class="hljs-comment">// 删除被选元素的所有子元素</span>
+            <span class="hljs-comment">// 可以添加一个参数专门进行删除--用来过滤</span>
+
+    <span class="hljs-comment">// jQuery操作CSS</span>
+        .addClass(classname)
+        .removeClass(classname)
+        .toggleClass(classname)
+
+        .css()
+            <span class="hljs-comment">// 得到属性值</span>
+            $(ele).css(<span class="hljs-string">"attr"</span>); 
+            <span class="hljs-comment">// 设置属性及值    </span>
+            $(ele).css({<span class="hljs-string">"attr"</span>:<span class="hljs-string">"value"</span>}); 
+            <span class="hljs-comment">// 设置多个属性及值</span>
+            $(ele).css({<span class="hljs-string">"attr1"</span>:<span class="hljs-string">"value1"</span>,<span class="hljs-string">"attr2"</span>:<span class="hljs-string">"value2"</span>});
+
+        .position()        <span class="hljs-comment">// 返回相对于父元素的位置</span>
+        .position().left
+        .position().top
+
+    <span class="hljs-comment">// jQuery尺寸</span>
+        <span class="hljs-comment">// 自身</span>
+        .width()
+        .height()
+        <span class="hljs-comment">// 自身 + padding</span>
+        .innerWidth()
+        .innerHeight()
+        <span class="hljs-comment">// 自身 + padding + border</span>
+        .outerWidth()
+        .outerHeight()
+        <span class="hljs-comment">// 自身 + padding + border + margin</span>
+        .outerWidth(<span class="hljs-literal">true</span>)
+        .outerHeight(<span class="hljs-literal">true</span>)
+
+<span class="hljs-number">008.</span>jQuery 遍历
+    <span class="hljs-comment">// 祖先</span>
+        .parent()                <span class="hljs-comment">// 返回直接父元素</span>
+        .parents(special)        <span class="hljs-comment">// 所有父元素</span>
+        .parentsUntil(special)    <span class="hljs-comment">// 介于special之间的所有父元素            </span>
+
+    <span class="hljs-comment">// 后代</span>
+        .children(special)        <span class="hljs-comment">// 返回所有直接子元素</span>
+        .find(special)            <span class="hljs-comment">// 返回special子元素</span>
+        .find(<span class="hljs-string">"*"</span>)                <span class="hljs-comment">// 返回所有子元素</span>
+
+    <span class="hljs-comment">// 同胞</span>
+        .siblings(special)        <span class="hljs-comment">// 返回所有同胞元素</span>
+
+        .next()                    <span class="hljs-comment">// 返回下一个同胞元素</span>
+        .nextAll()                <span class="hljs-comment">// 返回所有跟随同胞元素</span>
+        .nextUntil(special)        <span class="hljs-comment">// 返回介于special之间所有同胞元素</span>
+
+        .prev()
+        .prevAll()
+        .prevUntil()
+
+    <span class="hljs-comment">// 过滤</span>
+        .first()                <span class="hljs-comment">// 返回被选元素的首个元素</span>
+        .last()                
+        .eq(index)                <span class="hljs-comment">// 返回指定索引的元素</span>
+        .filter()                <span class="hljs-comment">// 返回匹配标准的元素</span>
+        .not()                    <span class="hljs-comment">// 返回非匹配标准的元素</span>
+
+<span class="hljs-comment">// jQuery Ajax Asynchronous Javascript and XML</span>
+    $(selector).load(URL,data,callback);
+    $.get(URL,callback);
+    $.post(URL,data,callback);
+</code></pre>

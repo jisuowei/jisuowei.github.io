@@ -1,0 +1,509 @@
+<pre><code class="js hljs javascript">
+<span class="hljs-comment">/*
+
+    HTML5 实例教程
+
+    2015-11-10
+    ~
+    2015-11-12 Noted by Chisw
+
+    2016-09-06 Modified
+
+*/</span>
+
+
+<span class="hljs-number">001.</span>标签
+<span class="hljs-number">002.</span>IE 条件注释
+<span class="hljs-number">003.</span>废弃 onclick
+<span class="hljs-number">004.</span>自定义数据属性
+<span class="hljs-number">005.</span>创建易用的 Web 表单
+<span class="hljs-number">006.</span>CSS3 用户界面改善
+<span class="hljs-number">007.</span>增强可访问性
+<span class="hljs-number">008.</span>canvas绘图
+<span class="hljs-number">009.</span>嵌入音频和视频
+<span class="hljs-number">010.</span>柔化视觉体验
+<span class="hljs-number">011.</span>客户端数据
+<span class="hljs-number">012.</span>其他 API
+
+
+<span class="hljs-comment">// 2015-11-10</span>
+<span class="hljs-number">001.</span>标签
+    <span class="hljs-comment">/*
+        &lt;!DOCTYPE html&gt;
+
+        &lt;meta http-equiv="content-type" content="text/html;charset=utf-8" /&gt;
+
+        &lt;header&gt; &lt;footer&gt; &lt;nav&gt; &lt;section&gt; &lt;article&gt; &lt;aside&gt; &lt;progress&gt;
+
+        p { margin:0 0 20px 0 }  // 段后距
+    */</span>
+
+
+<span class="hljs-number">002.</span>IE 条件注释
+    <span class="hljs-comment">/*
+        &lt;!--[if lt IE 9]&gt;
+                &lt;script&gt;...&lt;/script&gt;
+        &lt;![endif]--&gt;
+    */</span>
+
+
+<span class="hljs-number">003.</span>废弃 onclick
+    <span class="hljs-comment">// &lt;a href="holiday_pay" class="popup"&gt;Holiday Pay&lt;/a&gt;</span>
+    <span class="hljs-keyword">var</span> links = $(<span class="hljs-string">"a.popup"</span>);
+    links = click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"> event </span>) </span>{
+        event.preventDefault();
+        <span class="hljs-built_in">window</span>.open($(<span class="hljs-keyword">this</span>).attr(<span class="hljs-string">'href'</span>));
+    });
+
+
+<span class="hljs-number">004.</span>自定义数据属性
+<span class="hljs-comment">// HTML5文档类型声明可以保证 data- 开头的属性都会被忽略</span>
+
+    <span class="hljs-comment">// &lt;a href="index.html" class="popup" data-width="600" &gt;Holiday Pay&lt;/a&gt;</span>
+    $(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        $(<span class="hljs-string">".popup"</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"> event </span>) </span>{
+            event.preventDefault();
+            <span class="hljs-keyword">var</span> href = $( <span class="hljs-keyword">this</span> ).attr(<span class="hljs-string">"href"</span>);
+            <span class="hljs-keyword">var</span> width = $( <span class="hljs-keyword">this</span> ).attr(<span class="hljs-string">"data-width"</span>);
+            <span class="hljs-keyword">var</span> popup = <span class="hljs-built_in">window</span>.open( href, <span class="hljs-string">"popup"</span> , <span class="hljs-string">"width="</span> + width );
+        });
+    });
+
+
+<span class="hljs-number">005.</span>创建易用的 Web 表单
+    <span class="hljs-comment">// 新类型</span>
+        &lt;input type=<span class="hljs-string">"email"</span> /&gt;       <span class="hljs-comment">// 电子邮件表单域</span>
+        &lt;input type=<span class="hljs-string">"url"</span> /&gt;             <span class="hljs-comment">// URL表单域</span>
+        &lt;input type=<span class="hljs-string">"tel"</span> /&gt;             <span class="hljs-comment">// 电话号码表单域</span>
+        &lt;input type=<span class="hljs-string">"search"</span> /&gt;          <span class="hljs-comment">// 搜索框表单域</span>
+        &lt;input type=<span class="hljs-string">"date"</span> /&gt;            <span class="hljs-comment">// 日期</span>
+        &lt;input type=<span class="hljs-string">"datetime"</span> /&gt;        <span class="hljs-comment">// 时间</span>
+        &lt;input type=<span class="hljs-string">"color"</span> /&gt;       <span class="hljs-comment">// 颜色</span>
+
+        &lt;input type=<span class="hljs-string">"range"</span> min=<span class="hljs-string">"0"</span> max=<span class="hljs-string">"10"</span> value=<span class="hljs-string">"3"</span> /&gt;     <span class="hljs-comment">// 范围</span>
+        &lt;input type=<span class="hljs-string">"number"</span> min=<span class="hljs-string">"0"</span> max=<span class="hljs-string">"10"</span> /&gt;           <span class="hljs-comment">// 选值框</span>
+
+    <span class="hljs-comment">// 新属性</span>
+        &lt;input autofocus /&gt;                   <span class="hljs-comment">// 自动获取焦点 替代方案 $("input[autofocus=true]").focus();</span>
+        &lt;input placeholder=<span class="hljs-string">"hintText"</span> /&gt;         <span class="hljs-comment">// 占位文本</span>
+        &lt;p contenteditable /&gt;                     <span class="hljs-comment">// 在位编辑 li&gt;span[contenteditable=true]:focus {..}</span>
+        &lt;input autocomplete /&gt;                <span class="hljs-comment">// 自动记录之前输入的值</span>
+        &lt;input required /&gt;                    <span class="hljs-comment">// 必填</span>
+        &lt;input type=<span class="hljs-string">"text"</span> pattern=<span class="hljs-string">".."</span> /&gt;      <span class="hljs-comment">// 正则模式</span>
+
+    <span class="hljs-comment">/*
+        &lt;fieldset&gt;
+            &lt;legend&gt;Title&lt;/legend&gt;
+        &lt;/fieldset&gt;
+    */</span>
+
+
+<span class="hljs-number">006.</span>CSS3 用户界面改善
+    <span class="hljs-comment">// 表格优化</span>
+        th {..}                     <span class="hljs-comment">// 表头样式</span>
+        tr:nth-<span class="hljs-keyword">of</span>-type(odd) {..}      <span class="hljs-comment">// 条纹表格行</span>
+        td:nth-child(n+<span class="hljs-number">2</span>) {..}     <span class="hljs-comment">// 选择性文本对齐方式</span>
+        tr:last-child { bold }      <span class="hljs-comment">// 最后一行加粗</span>
+
+    <span class="hljs-comment">// 将链接的 href 显示出来</span>
+        a:after { content:<span class="hljs-string">"("</span>attr(href)<span class="hljs-string">")"</span>; }
+
+    <span class="hljs-comment">// 媒体查询</span>
+        &lt;link rel=<span class="hljs-string">"stylesheet"</span> type=<span class="hljs-string">"text/css"</span> href=<span class="hljs-string">"css.css"</span> media=<span class="hljs-string">"only screen and (max-device-width:480px)"</span> /&gt;
+
+
+<span class="hljs-number">007.</span>增强可访问性
+    <span class="hljs-comment">// 屏幕阅读角色</span>
+        &lt;div role=<span class="hljs-string">"roleName"</span>&gt;
+
+        <span class="hljs-comment">// 标志角色 landmark：</span>
+            banner | search | navigation | main | contentinfo | complementary | application
+
+        <span class="hljs-comment">// 文档角色 document：</span>
+            <span class="hljs-built_in">document</span> | article | definition | directory | heading | img | list | listitem | math | note | 
+            presentation | row | rowheader
+
+    <span class="hljs-comment">// 可更新区域</span>
+        &lt;section id=<span class="hljs-string">"content"</span> role=<span class="hljs-string">"document"</span> aria-live=<span class="hljs-string">"assertive"</span> aria-atomic=<span class="hljs-string">"true"</span>&gt;
+
+
+<span class="hljs-number">008.</span>canvas绘图
+    <span class="hljs-comment">// &lt;canvas id="logo" style="width:200px;height:200px;border:1px solid red" &gt;&lt;/canvas&gt;</span>
+    $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-keyword">var</span> canvas = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'logo'</span>);
+        <span class="hljs-keyword">if</span>( canvas.getContext ) {
+            <span class="hljs-keyword">var</span> context = canvas.getContext(<span class="hljs-string">'2d'</span>);
+        }
+        context.fillStyle = <span class="hljs-string">"rgb(200,0,0)"</span>;
+        context.fillRect(<span class="hljs-number">10</span>, <span class="hljs-number">10</span>, <span class="hljs-number">100</span>, <span class="hljs-number">100</span>);
+        context.fillStyle = <span class="hljs-string">"rgb(0,200,0)"</span>;
+        context.fillRect(<span class="hljs-number">20</span>, <span class="hljs-number">20</span>, <span class="hljs-number">100</span>, <span class="hljs-number">100</span>);
+        context.fillStyle = <span class="hljs-string">"rgb(0,0,200)"</span>;
+        context.fillRect(<span class="hljs-number">30</span>, <span class="hljs-number">30</span>, <span class="hljs-number">100</span>, <span class="hljs-number">100</span>);
+    });
+
+    $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-keyword">var</span> canvas = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'logo'</span>);
+        <span class="hljs-keyword">if</span>( canvas.getContext ) {
+            <span class="hljs-keyword">var</span> context = canvas.getContext(<span class="hljs-string">'2d'</span>);
+        }
+
+        context.font = <span class="hljs-string">'italic 34px impact'</span>;
+        context.textBaseline = <span class="hljs-string">'top'</span>;
+        context.fillText(<span class="hljs-string">'JISUOWEI'</span>,<span class="hljs-number">60</span>,<span class="hljs-number">0</span>);
+
+        context.lineWidth = <span class="hljs-number">2</span>;
+        context.beginPath();
+        context.moveTo( <span class="hljs-number">0</span>, <span class="hljs-number">40</span> );
+        context.lineTo( <span class="hljs-number">30</span>, <span class="hljs-number">0</span> );
+        context.lineTo( <span class="hljs-number">60</span>, <span class="hljs-number">40</span> );
+        context.lineTo( <span class="hljs-number">285</span>, <span class="hljs-number">40</span> );
+        context.stroke();           <span class="hljs-comment">// 输出</span>
+        context.closePath();        <span class="hljs-comment">// 终止</span>
+
+        context.save();
+        context.translate( <span class="hljs-number">20</span>, <span class="hljs-number">20</span> );
+        context.fillRect( <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">20</span>, <span class="hljs-number">20</span> );
+
+        context.fillStyle = <span class="hljs-string">'#fff'</span>;
+        context.strokeStyhle = <span class="hljs-string">'#fff'</span>;
+        context.lineWidth = <span class="hljs-number">2</span>;
+        context.beginPath();
+        context.moveTo( <span class="hljs-number">0</span>, <span class="hljs-number">20</span> );
+        context.lineTo( <span class="hljs-number">10</span>, <span class="hljs-number">0</span> );
+        context.lineTo( <span class="hljs-number">20</span>, <span class="hljs-number">20</span> );
+        context.lineTo(<span class="hljs-number">0</span>, <span class="hljs-number">20</span> );
+        context.fill();
+        context.closePath();
+        context.restore();
+    });
+
+
+<span class="hljs-number">009.</span>嵌入音频和视频
+    <span class="hljs-comment">// 视频编码格式：</span>
+        H<span class="hljs-number">.264</span>      IE9 | S4 | C3 | IOS
+        Theora      F3<span class="hljs-number">.5</span> | C4 | O10
+        VP8         IE9 | F4 | C5 | O10<span class="hljs-number">.7</span>
+
+    <span class="hljs-comment">// 音频编码格式：</span>
+        AAC         S4 | C3 | IOS
+        MP3         IE9 | S4 | C3 | IOS
+        Vorbis(OGG) F3 | C4 | O10
+
+    <span class="hljs-comment">/*
+        &lt;audio controls autoplay&gt;
+            &lt;source src="example.ogg" type="audio/ogg"&gt;
+            &lt;source src="example.mp3" type="audio/mpeg"&gt;
+            &lt;a href="example.mp3"&gt;Download&lt;/a&gt;
+        &lt;/audio&gt;
+
+        &lt;video controls&gt;
+            &lt;source src="example.mp4"&gt;
+            &lt;source src="example.ogv"&gt;
+            &lt;source src="example.webm"&gt;
+        &lt;/video&gt;
+    */</span>
+
+    <span class="hljs-comment">// 支持检测</span>
+        <span class="hljs-keyword">var</span> canPlayAudioFiles = !!(<span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'audio'</span>).canPlayType);
+        <span class="hljs-keyword">if</span> ( canPlayAudioFiles ) { $(<span class="hljs-string">'.sample a'</span>).hide(); }
+
+
+<span class="hljs-number">010.</span>柔化视觉体验
+    border-radius | rgba() | shadow | rotate() | gradient | @font-face
+
+
+<span class="hljs-number">011.</span>客户端数据
+    localStorage        <span class="hljs-comment">// 以 键/值对 的形式存储数据，与某个域绑定，数据可以跨浏览器会话保持</span>
+    sessionStorage      <span class="hljs-comment">// 以 键/值对 的形式存储数据，与某个域绑定，浏览器会话结束时被清除</span>
+    WebSQL Datebase     <span class="hljs-comment">// 完整的关系数据库，支持通过事物进行表创建、插入、更新、删除和选择操作</span>
+                        <span class="hljs-comment">// 与某个域绑定时，数据可跨浏览器会话保持</span>
+    Offline Web Application
+                        <span class="hljs-comment">// 离线缓存应用 定义缓存文件是为了方便离线使用，以便应用能够运行在没有英特网的情况下</span>
+
+    <span class="hljs-comment">//用 localStorage 保存参数设置</span>
+        <span class="hljs-comment">//创建参数表单</span>
+        <span class="hljs-comment">/*
+            &lt;p&gt;&lt;strong&gt;Preferences&lt;/strong&gt;&lt;/p&gt;
+            &lt;form id="preferences" action="save_prefs" method="post" accept-charset="utf-8"&gt;
+                &lt;field id="colors"&gt;
+                    &lt;legend&gt;Colors&lt;/legend&gt;
+                    &lt;ol&gt;
+                        &lt;li&gt;
+                            &lt;label for="background-color"&gt;Background color&lt;/label&gt;
+                            &lt;input type="color" name="background_color" value="" id="background_color"&gt;
+                        &lt;/li&gt;
+                        &lt;li&gt;
+                            &lt;label for="text_color"&gt;Text color&lt;/label&gt;
+                            &lt;input type="color" name="text_color" value="" id="text_color" /&gt;
+                        &lt;/li&gt;
+                    &lt;/ol&gt;
+                &lt;/field&gt;
+                &lt;input type="submit" value="Save change" /&gt;
+            &lt;/form&gt;
+        */</span>
+
+        <span class="hljs-comment">// 保存和加载设置</span>
+            <span class="hljs-comment">// 通过 javascript 访问 window.localStorage() 对象</span>
+            <span class="hljs-comment">// 设置</span>
+            localStorage.setItem(<span class="hljs-string">"background_color"</span>,$(<span class="hljs-string">"#background_color"</span>).val());
+            <span class="hljs-comment">// 获取</span>
+            <span class="hljs-keyword">var</span> bgcolor = localStorage.getItem(<span class="hljs-string">"background_color"</span>);
+
+        <span class="hljs-comment">// 封装</span>
+            <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">save_settings</span>(<span class="hljs-params"></span>) </span>{
+                localStorage.setItem(<span class="hljs-string">"background_color"</span>,$(<span class="hljs-string">"#background_color"</span>).val());
+                ...
+                apply_preferences_to_page();
+            }
+
+            <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">load_settings</span>(<span class="hljs-params"></span>) </span>{
+                <span class="hljs-keyword">var</span> bgcolor = localStorage.getItem(<span class="hljs-string">"background_color"</span>);
+                ...
+                apply_preferences_to_page();
+            }
+
+            <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">apply_preferences_to_page</span>(<span class="hljs-params"></span>) </span>{
+                $(<span class="hljs-string">"body"</span>).css(<span class="hljs-string">"backgroundColor"</span>,$(<span class="hljs-string">"#background_color"</span>).val());
+                ...
+            }
+
+            $(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+                load_settings();
+                $(<span class="hljs-string">'form#perferences'</span>).submit(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"> event </span>) </span>{
+                    event.preventDefault();
+                    save_settings();
+                });
+            });
+
+        <span class="hljs-comment">// 支持检测</span>
+            <span class="hljs-keyword">if</span> ( !<span class="hljs-built_in">window</span>.localStorage ) {...}
+
+    <span class="hljs-comment">// sessionStorage</span>
+        sessionStorage.setItem(<span class="hljs-string">'name'</span>,<span class="hljs-string">'Jisuowei'</span>);
+        <span class="hljs-keyword">var</span> name = sessionStorage.getItem(<span class="hljs-string">'name'</span>);
+
+<span class="hljs-comment">// 2015-11-11</span>
+    <span class="hljs-comment">// 客户端数据的使用</span>
+        <span class="hljs-comment">// 数据库引用</span>
+        <span class="hljs-keyword">var</span> db = <span class="hljs-literal">null</span>;
+
+        <span class="hljs-comment">//creates a connection to the local database</span>
+        connectToDB = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            db = <span class="hljs-built_in">window</span>.openDatabase(<span class="hljs-string">'awesome_notes'</span>,<span class="hljs-string">'1.0'</span>,<span class="hljs-string">'AwesomeNotes Database'</span>, <span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">3</span>);
+        }
+
+        <span class="hljs-comment">// 创建数据库表</span>
+        createNotesTable = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            db.transaction ( <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"> tx </span>) </span>{
+                tx.executeSql(
+                    <span class="hljs-string">"CREATE TABLE notes (id INTEGER \ PRIMARY KEY, tile TEXT, note TEXT)"</span>,[],
+                    <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ alert( <span class="hljs-string">'Notes database created successfully!'</span>); },
+                    <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"> tx, error </span>) </span>{ alert( error.message ); }
+                )
+            });
+        };
+
+        <span class="hljs-comment">// 加载留言</span>
+        fetchNotes = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            db.transaction( <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"> tx </span>) </span>{
+                tx.execueSql( <span class="hljs-string">'SELECT id, title, note FROM notes'</span>, [],
+                    <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"> SQLTransaction, data</span>)</span>{
+                        <span class="hljs-keyword">for</span> ( <span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; data.rows.length; ++i ) {
+                            <span class="hljs-keyword">var</span> row = data.rows.item(i);
+                            <span class="hljs-keyword">var</span> id = row[<span class="hljs-string">'id'</span>];
+                            <span class="hljs-keyword">var</span> title = row[<span class="hljs-string">'title'</span>];
+                            addToNoteList( id, title );
+                        }
+                    }
+                )
+            })
+        }
+
+        <span class="hljs-comment">//遍历方法</span>
+        addToNoteList = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"> id, title </span>) </span>{
+            <span class="hljs-keyword">var</span> notes = $(#notes);
+            <span class="hljs-keyword">var</span> item = $(<span class="hljs-string">"&lt;li&gt;"</span>);
+            item.attr( <span class="hljs-string">"data-id"</span>, id);
+            item.html( title );
+            notes.append( item );
+        };
+
+        <span class="hljs-comment">//获取指定记录</span>
+        $(<span class="hljs-string">"#notes"</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"> event </span>) </span>{
+            <span class="hljs-keyword">if</span> ($(event.target).is(<span class="hljs-string">'li'</span>)) {
+                <span class="hljs-keyword">var</span> element = $(event.target);
+                loadNote( element.attr(<span class="hljs-string">"data-id"</span>));
+            }
+        });
+
+        <span class="hljs-comment">// function loadNote()</span>
+        loadNote = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"> id </span>) </span>{
+            db.transaction( <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"> tx </span>) </span>{
+                tx.executeSql( <span class="hljs-string">'SELECT id, title, note FROM notes where id = ?'</span>, [id],
+                    <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"> SQLTransaction, data </span>) </span>{
+                        <span class="hljs-keyword">var</span> row = data.rows.item(<span class="hljs-number">0</span>);
+                        <span class="hljs-keyword">var</span> title = $(<span class="hljs-string">"#title"</span>);
+                        <span class="hljs-keyword">var</span> note = $(<span class="hljs-string">"#note"</span>);
+
+                        title.val(row[<span class="hljs-string">"title"</span>]);
+                        title.attr(<span class="hljs-string">"data-id"</span>, row[<span class="hljs-string">"id"</span>]);
+                        note.val(row[<span class="hljs-string">"note"</span>]);
+                        $(<span class="hljs-string">"#delete_button"</span>).show();
+                    }
+                )
+            })
+        }
+
+        <span class="hljs-comment">//插入、更新和删除</span>
+        $(<span class="hljs-string">"#save_button"</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"> event </span>) </span>{
+            event.preventDefault();
+            <span class="hljs-keyword">var</span> title = $(<span class="hljs-string">"#title"</span>);
+            <span class="hljs-keyword">var</span> note = $(<span class="hljs-string">"#note"</span>);
+
+            <span class="hljs-keyword">if</span> ( title.attr(<span class="hljs-string">"data-id"</span>) ) {
+                updateNote( title, note );
+            } <span class="hljs-keyword">else</span> {
+                insertNote( title, note );
+            }
+        });
+
+        insertNote = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"> title, note </span>) </span>{
+            db.transaction( <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"> tx </span>) </span>{
+                tx.executeSql( <span class="hljs-string">"INSERT INTO notes ( title, note ) VALUES ( ?, ? )"</span>,
+                                [title.val(), note.val()],
+                <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"> tx, result </span>) </span>{
+                    <span class="hljs-keyword">var</span> id = result.insertId;
+                    alert( <span class="hljs-string">'Record '</span> + id + <span class="hljs-string">' saved!'</span> );
+                    title.attr(<span class="hljs-string">"data-id"</span>, result.insertId );
+                    addToNoteList( id, title.val() );
+                    $(<span class="hljs-string">"#delete_button"</span>).show();
+                },
+                <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+                    alert(<span class="hljs-string">"The note could not be saved."</span>);
+                }
+                );
+            });
+        };
+
+        updateNote = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"> title, note</span>) </span>{
+            <span class="hljs-keyword">var</span> id = title.attr(<span class="hljs-string">"data-id"</span>);
+            db.transaction(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">tx</span>)</span>{
+                tx.executeSql(<span class="hljs-string">"UPDATE notes set title = ?, note = ? where id = ?"</span>,
+                    [title.val(), note.val(), id],
+                <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"> tx, result </span>) </span>{
+                    alert(<span class="hljs-string">'Record '</span> + id + <span class="hljs-string">' updated!'</span> );
+                    $(<span class="hljs-string">"#notes &gt; li[data-id="</span> + id <span class="hljs-string">"]"</span>).html(title.val());
+                },
+                <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+                    alert(<span class="hljs-string">"The note was not updated!"</span>);
+                }
+                );
+            });
+        };
+
+        $(<span class="hljs-string">"#delete_button"</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+            event.preventDefault();
+            <span class="hljs-keyword">var</span> title = $(<span class="hljs-string">"#title"</span>);
+            deleteNote(title);
+        });
+
+        deleteNote = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">title</span>) </span>{
+            <span class="hljs-keyword">var</span> id = title.attr(<span class="hljs-string">"data-id"</span>);
+            db.transaction(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">tx</span>)</span>{
+                tx.ececuteSql(<span class="hljs-string">"DELETE from notes where id = ?"</span>, [id],
+                <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"> tx, result </span>) </span>{
+                    alert( <span class="hljs-string">'Record '</span> + id + <span class="hljs-string">' deleted!'</span> );
+                    $(<span class="hljs-string">"#notes &gt; li[data-id="</span> + id + <span class="hljs-string">"]"</span> ).remove();
+                },
+                <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+                    alert(<span class="hljs-string">'The note was not deleted!'</span> );
+                }
+                )
+            })
+        }
+
+<span class="hljs-comment">// 2015-11-12</span>
+    <span class="hljs-comment">// 离线运行</span>
+        <span class="hljs-comment">// 使用 manifest 定义缓存 建立 notes.manifest 文件</span>
+            CACHE MANIFEST
+            # v = <span class="hljs-number">1.0</span><span class="hljs-number">.0</span>
+            /style.css
+            /javascript/note.js
+            /javascript/jquery.min.js
+
+        <span class="hljs-comment">// 加载离线</span>
+            <span class="hljs-comment">// &lt;script type="text/javascript" charset="utf-8" src="js/jquery.min.js"&gt;&lt;/script&gt;</span>
+
+        <span class="hljs-comment">// HTML加载</span>
+            &lt;html manifest=<span class="hljs-string">"notes.manifest"</span>&gt;
+
+        <span class="hljs-comment">// 服务器配置</span>
+            AddType text/cache-manifest .manifest
+
+            ExpiresActive On
+            ExpiresDefault <span class="hljs-string">"access"</span>
+
+
+<span class="hljs-number">012.</span>使用其他 API 锦上添花
+    <span class="hljs-comment">// 维护历史记录 支持检测</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">supportsHistory</span>(<span class="hljs-params"></span>) </span>{
+            <span class="hljs-keyword">return</span> !!( <span class="hljs-built_in">window</span>.history &amp;&amp; <span class="hljs-built_in">window</span>.history.pushState );
+        }
+
+    <span class="hljs-comment">// 保存当前状态</span>
+        $(<span class="hljs-string">"nav ul"</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"> event </span>) </span>{
+            target = $(event.target);
+            <span class="hljs-keyword">if</span>(target.is(<span class="hljs-string">"a"</span>)){
+                event.preventDefault();
+                <span class="hljs-keyword">if</span>( $( target.attr(<span class="hljs-string">"href"</span>) ).hasClass(<span class="hljs-string">"hidden"</span>) ) {
+                    <span class="hljs-keyword">if</span>( supportsHistory() ){
+                        <span class="hljs-keyword">var</span> tab = $(target).attr(<span class="hljs-string">"href"</span>);
+                        <span class="hljs-keyword">var</span> stateObject = {tab:tab};
+                        <span class="hljs-built_in">window</span>.history.pushState( stateObject, tab );
+                    };
+                $(<span class="hljs-string">".visible"</span>).removeClass(<span class="hljs-string">"visible"</span>).addClass(<span class="hljs-string">"hidden"</span>).hiden();
+                $(target.attr(<span class="hljs-string">"href"</span>)).removeClass(<span class="hljs-string">"hidden"</span>).addClass(<span class="hljs-string">"visible"</span>).show();
+                };
+            };
+        });
+
+    <span class="hljs-comment">// 获取当前状态</span>
+        <span class="hljs-keyword">if</span> ( supportsHistory() ) {
+            <span class="hljs-built_in">window</span>.onpopstate = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"> event </span>) </span>{
+                <span class="hljs-keyword">if</span> ( event.state ) {
+                    <span class="hljs-keyword">var</span> tab = ( event.state[<span class="hljs-string">"tab"</span>] );
+                    $(<span class="hljs-string">".visible"</span>)
+                        .removeClass(<span class="hljs-string">"visible"</span>)
+                        .addClass(<span class="hljs-string">"hidden"</span>)
+                        .hide();
+                    $( tab )
+                        .removeClass(<span class="hljs-string">"hidden"</span>)
+                        .addClass(<span class="hljs-string">"visible"</span>)
+                        .show();
+                }
+            };
+        };
+
+    <span class="hljs-comment">// 默认状态</span>
+        <span class="hljs-keyword">if</span> ( supportsHistory() ) {
+            <span class="hljs-built_in">window</span>.history.pushState( {tab:<span class="hljs-string">"#welcome"</span>},<span class="hljs-string">"#welcome"</span>);
+            <span class="hljs-built_in">window</span>.onpopstate = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+                <span class="hljs-keyword">if</span> ( event.state ) {
+                    <span class="hljs-keyword">var</span> tab = (event.state[<span class="hljs-string">"tab"</span>]);
+                    $(<span class="hljs-string">".visible"</span>)
+                        .removeClass(<span class="hljs-string">"visible"</span>)
+                        .addClass(<span class="hljs-string">"hidden"</span>)
+                        .hide();
+                    $(tab)
+                        .removeClass(<span class="hljs-string">"hidden"</span>)
+                        .addClass(<span class="hljs-string">"visible"</span>)
+                        .show();
+                }
+            }
+        }
+
+    <span class="hljs-comment">// 跨域对话</span>
+    <span class="hljs-comment">// WebSockets</span>
+    <span class="hljs-comment">// Geolocation</span>
+</code></pre>

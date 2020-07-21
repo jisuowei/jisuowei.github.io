@@ -15,7 +15,7 @@
 
 @font-face {
     font-family: 'webConsolas';
-    src: url('../fonts/webConsolas.woff') format('woff');
+    src: url('../../static/fonts/webConsolas.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }

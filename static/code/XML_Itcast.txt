@@ -1,0 +1,372 @@
+<pre><code class="js hljs javascript">
+<span class="hljs-comment">/*
+
+    XML 传智播客
+
+    2015-10-19
+    ~
+    2015-10-23 Noted by Chisw
+
+    2016-09-12 Modified
+
+*/</span>
+
+
+<span class="hljs-comment">// 2015-10-19</span>
+    历史：
+        <span class="hljs-number">1969</span> GML    &gt;    <span class="hljs-number">1985</span> SGML    &gt;    <span class="hljs-number">1993</span> HTML    &gt;    <span class="hljs-number">1998</span> XML
+        XML extensiable markup language
+
+    用途：
+        <span class="hljs-number">1.</span>可以作为程序间通讯的标准（ajax &gt; text/xml/json）
+        <span class="hljs-number">2.</span>可以作为配置文件使用
+            php中连接数据库
+                &lt;?php
+                    $conn = mysql_connect(<span class="hljs-string">"localhost"</span>,<span class="hljs-string">"root"</span>,<span class="hljs-string">"root"</span>);
+                ?&gt;
+            配置文件
+                <span class="hljs-comment">/*
+                    &lt;dinfo&gt;
+                    &lt;host&gt;123.11.11.23&lt;/host&gt;
+                    &lt;user&gt;&lt;/user&gt;
+                    &lt;type&gt;&lt;/type&gt;
+                    &lt;/dinfo&gt;
+                */</span>
+        <span class="hljs-number">3.</span>小型数据库
+
+    语法：
+        一个XML文件分为如下几个部分内容
+            文档声明
+                <span class="hljs-comment">// &lt;?xml version="1.0" encoding="utf-8" standalone="no"&gt;</span>
+
+            元素
+                每个XML文档必须有且只有一个根元素。
+                根元素是一个完全包括文档中其他所有元素的元素。
+                命名区分大小写。
+                不能以数字或下划线开头。
+                不能以xml开头。
+                名称中间不能包括冒号。
+
+            属性
+                <span class="hljs-comment">// '    '</span>
+                <span class="hljs-comment">// "    "</span>
+
+            注释
+                &lt;!--<span class="hljs-regexp">/--&gt;
+
+            CDATA区、特殊字符
+                /</span><span class="hljs-regexp">/ &lt;intro&gt;&lt;![CDATA[agag$%&lt;&gt;&lt;&gt;]]&gt;&lt;/i</span>ntro&gt;
+                <span class="hljs-comment">// &lt;![CDATA[...]]&gt;</span>
+                可以存储二进制文件
+
+            处理指令( PI processing instruction)
+                <span class="hljs-comment">// &lt;?xml-stylesheet type="text/css" href="classes.css" ?&gt;</span>
+
+        用xml来描述一个班级信息：
+            <span class="hljs-comment">/*
+                &lt;?xml version="1.0" encoding="utf-8"&gt;
+                &lt;班级&gt;
+                &lt;stu&gt;
+                &lt;name&gt;孙悟空&lt;/name&gt;
+                &lt;sex&gt;男&lt;/sex&gt;
+                &lt;age&gt;500&lt;/age&gt;
+                &lt;/stu&gt;
+                &lt;stu&gt;
+                &lt;name&gt;白骨精&lt;/name&gt;
+                &lt;sex&gt;女&lt;/sex&gt;
+                &lt;age&gt;100&lt;/age&gt;
+                &lt;/stu&gt;
+                &lt;/班级&gt;
+            */</span>
+
+    DTD:
+        <span class="hljs-built_in">document</span> type definition 文档类型定义  同类型的还有 Schema
+        
+        引入：
+            <span class="hljs-comment">/*
+                &lt;!DOCTYPE 班级 SYSTEM/PUBLIC "DTDname.dtd"&gt;
+
+                &lt;?xml version="1.0" encoding="utf-8" ?&gt;
+
+                &lt;!ELEMENT 班级 (学生+)&gt;
+                &lt;!ELEMENT 学生 (名字,年龄,介绍)&gt;
+                &lt;!ELEMENT 年龄 (#PCDATA)&gt;
+            */</span>
+
+        校验XML文档正确性：
+            <span class="hljs-comment">// &lt;script&gt;</span>
+                <span class="hljs-comment">// 创建xml文档解析器对象：</span>
+                <span class="hljs-keyword">var</span> xmldoc = <span class="hljs-keyword">new</span> ActiveXObject(<span class="hljs-string">"Microsoft.XMLDOM"</span>);
+                <span class="hljs-comment">// 开启xml校验：</span>
+                xmldoc.validateOnParse = <span class="hljs-string">"true"</span>;
+                <span class="hljs-comment">// 装载xml文档：</span>
+                xmldoc.load(<span class="hljs-string">"book.xml"</span>);
+                <span class="hljs-comment">// 获取错误信息：</span>
+                xmldoc.parseError.reason;
+                xmldoc.parseError.line;
+            <span class="hljs-comment">// &lt;/script&gt;</span>
+
+<span class="hljs-comment">// 2015-10-20</span>
+    DTD文档的声明及引用
+        内部DTD文档
+            <span class="hljs-comment">// &lt;!DOCTYPE 根元素 [定义内容]&gt;</span>
+        外部DTD文档
+            <span class="hljs-comment">// &lt;!DOCTYPE 根元素 SYSTEM "DTD文件路径"&gt;</span>
+        内外部DTD文档结合
+            <span class="hljs-comment">// &lt;!DOCTYPE 根元素 SYSTEM "DTD文件路径" [定义内容]&gt;</span>
+
+        语法：
+            <span class="hljs-comment">// &lt;!ELEMENT NAME CONTENT&gt;</span>
+            关键字  元素名称  元素类型
+
+
+                ()    用来给元素分组
+                |    在列出的对象中选择一个
+                +    该对象最少出现一次或多次
+                *    该对象允许出现零次或多次
+                ?    该对象可以出现，但只能出现<span class="hljs-number">0</span>或<span class="hljs-number">1</span>次
+                ,    对象必须按指定的顺序出现
+
+            &lt;!ATTLIST 元素名字
+            属性名称 类型 属性特点
+            属性名称 类型 属性特点
+            &gt;
+
+                类型：
+                    CDATA                 可以是字符或者数字
+                    ID                     属性值是唯一的且字母开头
+                    IDREF/IDREFS          id引用
+                    Enumerated           枚举
+                    ENTITY/ENTITIES     实体
+
+                属性特点：
+                    #REQUIRED            该属性必须有
+                    #IMPLIED            可有可无
+                    #FIXED value         固定值
+                    #Deafault value     初始值
+
+        <span class="hljs-comment">// &lt;!DOCTYPE CATALOG [</span>
+
+        <span class="hljs-comment">// &lt;!ENTITY AUTHOR "John Doe"&gt;</span>
+        <span class="hljs-comment">// &lt;!ENTITY COMPANY "JD Power Tools, Inc."&gt;</span>
+        <span class="hljs-comment">// &lt;!ENTITY EMAIL "jd@js-tools.com"&gt;</span>
+
+        <span class="hljs-comment">// &lt;!ELEMENT CATALOG (PRODUCT+)&gt;</span>
+
+        <span class="hljs-comment">// &lt;!ELEMENT PRODUCT (SPECIFICATIONS+,OPTIONS?,PRICE+,NOTES?)&gt;</span>
+        <span class="hljs-comment">// &lt;!ATTLIST PRODUCT</span>
+        NAME CDATA #IMPLIED
+        CATEGORY     (HandTool|Table|Shop-Profesional) <span class="hljs-string">"HandTool"</span>
+        PARTNUM     CDATA #IMPLIED
+        PLANT         (Pittsburgh|Milwaukee|Chicago) <span class="hljs-string">"Chicago"</span>
+        INVENTORY     (InStock|Backordered|Discontinued) <span class="hljs-string">"InStock"</span>&gt;
+
+        <span class="hljs-comment">// &lt;!ELEMENT SPECIFICATIONS (#CDATA)&gt;</span>
+        <span class="hljs-comment">// &lt;!ATTLIST SPECIFICATIONS</span>
+        WEIGHT     CDATA #IMPLIED
+        POWER     CDATA #IMPLIED&gt;
+
+        <span class="hljs-comment">// &lt;!ELEMENT OPTIONS (#PCDATA)&gt;</span>
+        <span class="hljs-comment">// &lt;!ATTLIST OPTIONS</span>
+        FINISH         (Metal|Polished|Mate) <span class="hljs-string">"Mate"</span>
+        ADAPTER        (Included|Optional|NotApplicable) <span class="hljs-string">"Include"</span>
+        CASE         (HardShell|Soft|NotApplicate) <span class="hljs-string">"HardShell"</span>&gt;
+
+        <span class="hljs-comment">// &lt;!ELEMENT PRICE(#CDATA)&gt;</span>
+        <span class="hljs-comment">// &lt;!ATTLIST PRICE</span>
+        MSRP         CDATA #IMPLIED
+        WHOLESALE     CDATA #IMPLIED
+        STREET        CDATA #IMPLIED
+        SHIPPING    CDATA #IMPLIED&gt;
+
+        <span class="hljs-comment">// &lt;!ELEMENT NOTES (#PCDATA)&gt;</span>
+
+        ]&gt;
+
+
+        <span class="hljs-comment">/*
+            &lt;?xml version="1.0" encoding="utf-8" ?&gt;
+            &lt;!DOCTYPE CATALOG SYSTEM "product.dtd"&gt;
+            &lt;CATALOG&gt;
+            &lt;PRODUCT NAME="FRIDGE" CATEGORY="HandTool" Plant="Chicage" INVENTORY="Discontinued"&gt;
+            &lt;SPECIFICATIONS WEIGHT="80KG" POWER="1000W"&gt;Hair&lt;/SPECIFICATIONS&gt;
+            &lt;PRICE&gt;1000&lt;/PRICE&gt;
+            &lt;NOTES&gt;小心轻放&lt;/NOTES&gt;
+            &lt;/PRODUCT&gt;
+            &lt;/CATALOG&gt;
+        */</span>
+
+
+        <span class="hljs-comment">// &lt;script language="javascript"&gt;</span>
+            <span class="hljs-keyword">var</span> xmldoc = <span class="hljs-keyword">new</span> ActiveXObject(<span class="hljs-string">"Microsoft.XMLDOM"</span>);
+            xmldoc.validateOnParse = <span class="hljs-literal">true</span>;
+            xmldoc.load(<span class="hljs-string">"product.xml"</span>);
+            <span class="hljs-built_in">document</span>.write(<span class="hljs-string">"The Error = "</span> + xmldoc.parseError.reason + <span class="hljs-string">"&lt;br&gt;"</span>);
+            <span class="hljs-built_in">document</span>.write(<span class="hljs-string">"The Error line is "</span> + xmldoc.parseError.line + <span class="hljs-string">"&lt;br&gt;"</span>);
+        <span class="hljs-comment">// &lt;/script&gt;</span>
+
+
+<span class="hljs-comment">// 2015-10-22</span>
+        使用PHP对XML进行操作
+            PHP与DOM、PHP与XPath、Simple与XML
+            CRUD Create Retrieve Update Delete
+        <span class="hljs-comment">/*
+            &lt;?xml version="1.0" encoding="utf-8" ?&gt;
+            &lt;班级&gt;
+                &lt;学生&gt;
+                    &lt;名字&gt;周星驰&lt;/名字&gt;
+                    &lt;年龄&gt;23&lt;/年龄&gt;
+                    &lt;介绍&gt;学习刻苦&lt;/介绍&gt;
+                &lt;/学生&gt;
+                &lt;学生&gt;
+                    &lt;名字&gt;林青霞&lt;/名字&gt;
+                    &lt;年龄&gt;32&lt;/年龄&gt;
+                    &lt;介绍&gt;是一个好学生&lt;/介绍&gt;
+                &lt;/学生&gt;
+            &lt;/班级&gt;
+        */</span>
+
+        &lt;?php
+            <span class="hljs-comment">// 创建 DOMDocument 对象</span>
+            $xmldoc = <span class="hljs-keyword">new</span> DOMDocument();
+            <span class="hljs-comment">// 加载 xml</span>
+            $xmldoc -&gt; load(<span class="hljs-string">"classes.xml"</span>);
+            <span class="hljs-comment">// 获得所有学生</span>
+            $stu = $xmldoc -&gt; getElementsByTagName(<span class="hljs-string">"学生"</span>);
+            <span class="hljs-comment">// 获取第一个学生</span>
+            $stu1 = $stu -&gt; item(<span class="hljs-number">0</span>);
+            <span class="hljs-comment">// 获取所有名字</span>
+            $stu1_name = $stu1 -&gt; getElementsByTagName(<span class="hljs-string">"名字"</span>);
+            <span class="hljs-comment">// 获取第一个名字的值</span>
+            echo $stu1_name -&gt; item(<span class="hljs-number">0</span>) -&gt; nodeValue;
+        ?&gt;
+
+<span class="hljs-comment">// 2015-10-23</span>
+        &lt;?php
+            $xmldoc = <span class="hljs-keyword">new</span> DOMDocument();
+            $xmldoc -&gt; load(<span class="hljs-string">"classes.xml"</span>);
+            $root = $xmldoc -&gt; getElementsByTagName(<span class="hljs-string">"班级"</span>) -&gt; item(<span class="hljs-number">0</span>);
+            $stu_node = $xmldoc -&gt; createElement(<span class="hljs-string">"学生"</span>);
+
+            $stu_node_name = $xmldoc -&gt; createElement(<span class="hljs-string">"名字"</span>);
+            $stu_node_name -&gt; nodeValue = <span class="hljs-string">"Jay"</span>;
+            $stu_node -&gt; appendChild($stu_node_name);
+
+            $stu_node_age = $xmldoc -&gt; createElement(<span class="hljs-string">"年龄"</span>);
+            $stu_node_age -&gt; nodeValue = <span class="hljs-string">"80"</span>;
+            $stu_node -&gt; appendChild($stu_node_age);
+
+            $root -&gt; appendChild($stu_node);
+
+            $xmldoc -&gt; save(<span class="hljs-string">"classes.xml"</span>);
+        ?&gt;
+
+    增删改
+        load()
+        save()
+        item( index )
+        appendChild()
+        removeChild()
+        parentNode
+        nodeType
+        setAttribute( string $name, string $value )
+
+    小词典
+        <span class="hljs-comment">/*
+            &lt;?xml version="1.0" encoding="utf-8" ?&gt;
+            &lt;words&gt;
+                &lt;word&gt;
+                    &lt;en&gt;boy&lt;/en&gt;
+                    &lt;ch&gt;男孩&lt;/ch&gt;
+                &lt;/word&gt;
+                &lt;word&gt;
+                    &lt;en&gt;girl&lt;/en&gt;
+                    &lt;ch&gt;女孩&lt;/ch&gt;
+                &lt;/word&gt;
+                &lt;word&gt;
+                    &lt;en&gt;school&lt;/en&gt;
+                    &lt;ch&gt;学校&lt;/ch&gt;
+                &lt;/word&gt;
+            &lt;/words&gt;
+        */</span>
+        &lt;?php
+            $type = $_REQUEST[<span class="hljs-string">'type'</span>];
+
+            $xmldoc = <span class="hljs-keyword">new</span> DOMDocument();
+            $xmldoc -&gt; load(<span class="hljs-string">"words.xml"</span>);
+
+            <span class="hljs-keyword">if</span> ( $type == <span class="hljs-string">"query"</span> ) {
+
+                $query_word = $_REQUEST[<span class="hljs-string">'engword'</span>];
+
+                $words = $xmldoc -&gt; getElementsByTagName(<span class="hljs-string">"word"</span>);
+                $isEnter = <span class="hljs-literal">false</span>;
+
+                <span class="hljs-keyword">for</span> ( $i = <span class="hljs-number">0</span> ; $i &lt; $words -&gt; length; $i++ ) {
+                    $word = $words -&gt; item( $i );
+                    $word_en = getNodeVal( $word, <span class="hljs-string">"en"</span> );
+                    <span class="hljs-keyword">if</span> ( $query_word == $word_en ) {
+                        $isEnter = <span class="hljs-literal">true</span>;
+                        echo $query_word.<span class="hljs-string">"-Translate: &lt;br/&gt;"</span>.getNodeVal( $word, <span class="hljs-string">"ch"</span> );
+                    }
+                }
+                <span class="hljs-keyword">if</span> ( !$isEnter ) {
+                    echo <span class="hljs-string">"&lt;br/&gt;Can not find the result!"</span>;
+                }
+                echo <span class="hljs-string">"&lt;a href='wordView.php'&gt;Go back&lt;/a&gt;"</span>;
+            }
+
+            <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getNodeVal</span>(<span class="hljs-params"> $MyNode, $tagName </span>) </span>{
+                <span class="hljs-keyword">return</span> $MyNode -&gt;getElementsByTagName( $tagName ) -&gt; item( <span class="hljs-number">0</span> ) -&gt; nodeValue;
+            }
+
+        ?&gt;
+        <span class="hljs-comment">/*
+            &lt;html&gt;
+                &lt;head&gt;
+                    &lt;meta http-equiv="content-type" content="text/html;charset=utf-8" /&gt;
+                &lt;/head&gt;
+                &lt;img src="ciba.png" width="200px" /&gt;
+                &lt;h1&gt;查询单词&lt;/h1&gt;
+                &lt;form action="wordProcess.php" method="post"&gt;
+                    请输入英文单词：&lt;input type="text" name="engword" /&gt;
+                    &lt;input type="hidden" name="type" value="query" /&gt;
+                    &lt;input type="submit" value="查询" /&gt;
+                &lt;/form&gt;
+            &lt;/html&gt;
+        */</span>
+
+    XPath:
+        phpDOM 可以跨层取出，但是不能保持层次关系，使用 xpath 就可以了。
+        <span class="hljs-comment">/*
+            &lt;html&gt;
+            &lt;?php
+                $xmldoc = new DOMDocument();
+                $xmldoc -&gt; load("test.xml");
+
+                $domXPath = new DOMXPath($xmldoc);
+
+                $node_list = $domXPath -&gt; query("/AAA/DDD/CCC");
+
+                echo $node_list -&gt; length;
+            ?&gt;
+            &lt;/html&gt;
+        */</span>
+
+    Simple:
+        将 XML 文件装载成对象
+        <span class="hljs-comment">/*
+            &lt;html&gt;
+            &lt;?php
+                $lib = simple_load_file("books.xml");
+
+                $books = $lib -&gt; book;
+                $book = $books[0];
+            ?&gt;
+            &lt;/html&gt;
+        */</span>
+
+        <span class="hljs-number">1</span>、直接装载文件
+        <span class="hljs-number">2</span>、装载 dom 对象
+        <span class="hljs-number">3</span>、装载 string (该 string 要求按照 xml 文件的标准写)
+</code></pre>

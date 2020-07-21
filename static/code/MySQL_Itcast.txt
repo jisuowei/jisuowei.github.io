@@ -1,0 +1,367 @@
+<pre><code class="js hljs javascript">
+<span class="hljs-comment">/*
+
+    MySQL 传智播客
+
+    2015-10-10
+    ~
+    2015-10-17 Noted by Chisw
+
+    2016-09-10 Modified
+
+*/</span>
+
+
+<span class="hljs-comment">// 2015-10-10</span>
+    添加环境变量
+        计算机&gt;属性&gt;高级&gt;环境变量&gt;双击编辑&gt;添加 mysql.exe 路径
+
+    登录数据库命令
+        cmd &gt; mysql -u[username] -p[password] -h[host ip]
+
+    创建数据库命令
+        mysql &gt; create database [db name];
+        mysql &gt; create database [db name] DEFAULT CHARACTER [char];
+
+    查看已经创建的数据库信息
+        show create database [db name];
+
+    查看 mysql 中安装的所有数据库
+        show databases;
+
+    删除数据库
+        drop database [db name];
+    
+    配置 windows 的 hosts 文件
+
+    数据表是由行和列组成，列是由同类信息组成，每列成为一个字段，每列的标题成为字段名
+    行包括列若干的信息项，一行数据称为一条记录，它表达一定意义的信息组合
+    一个数表是由一条或多条记录组成，没有记录的表称为空表
+
+    每个字段（列）所包含的数据类型都是相同的，字段的类型规定了字段中的数据类型
+    MySQL中的列的类型包括：数值、字符串、日期
+    在创建表的时候除了可以指定字段的类型外还可以指定该类型的详细描述，如数字是否带小数
+
+    数据表的类型
+        InnoDB 与 MyISAM这两个是最常用的
+        InnoDB 支持锁和事务处理
+        MyISAM 不支持事物处理 但是访问速度较快
+
+
+<span class="hljs-comment">// 2015-10-12</span>
+图书案例：
+    <span class="hljs-number">1.</span> isbn            字符串    <span class="hljs-number">30</span>
+    <span class="hljs-number">2.</span> book_name    字符串    <span class="hljs-number">20</span>
+    <span class="hljs-number">3.</span> price        浮点     float
+    <span class="hljs-number">4.</span> author         字符串    <span class="hljs-number">50</span>
+    <span class="hljs-number">5.</span> date         日期        date
+    <span class="hljs-number">6.</span> sell_count     数字     int
+    <span class="hljs-number">7.</span> description     字符串     text
+
+    create database mysqlstudy;
+    use mysqlstudy;
+
+    create table book (
+        isbn varchar(<span class="hljs-number">30</span>),
+        book_name varchar(<span class="hljs-number">20</span>),
+        price float,
+        author varchar(<span class="hljs-number">50</span>),
+        date date,
+        sell_count int,
+        description text
+    ); 
+
+    INSERT INTO book
+    (isbn,book_name,price,author,date,sell_count,description)
+    VALUES
+    (<span class="hljs-string">"7-111-205-123"</span>,<span class="hljs-string">"MYSQL"</span>,<span class="hljs-number">23.5</span>,<span class="hljs-string">"chisw"</span>,<span class="hljs-string">'2011-08-27'</span>,<span class="hljs-number">5</span>,<span class="hljs-string">"DESCRIPTION"</span>);
+
+    select * <span class="hljs-keyword">from</span> book;
+
+<span class="hljs-comment">// 2015-10-13</span>
+    department
+    employee
+
+    create table department (
+        id int,
+        name varchar(<span class="hljs-number">10</span>),
+        manager varchar(<span class="hljs-number">20</span>),
+        create_dt bigint
+    );
+
+    create table employee (
+        id int,
+        name varchar(<span class="hljs-number">20</span>),
+        sex tinyint,
+        department_id int,
+        create_dt bigint,
+        create_ip varchar(<span class="hljs-number">15</span>)
+    );
+
+    create table checkin (
+        id int,
+        employee_id int,
+        flag tinyint,
+        inrun bigint,
+        offrun bigint
+    );
+
+    show columns <span class="hljs-keyword">from</span> department;
+
+    INSERT INTO department
+    (id, name, manager, create_dt)
+    VALUES
+    (<span class="hljs-number">1</span>, <span class="hljs-string">"Chisw"</span>, <span class="hljs-string">"Jisuowei"</span>, <span class="hljs-number">20151012123045</span>),
+    (<span class="hljs-number">2</span>, <span class="hljs-string">"Chiue"</span>, <span class="hljs-string">"Jisuowei"</span>, <span class="hljs-number">20151012123046</span>),
+    (<span class="hljs-number">3</span>, <span class="hljs-string">"Chien"</span>, <span class="hljs-string">"Jisuowei"</span>, <span class="hljs-number">20151012123047</span>);
+
+    select * <span class="hljs-keyword">from</span> department;
+
+    INSERT INTO employee
+    (id, name, sex, department_id, create_dt, create_ip)
+    VALUES
+    (<span class="hljs-number">1</span>, <span class="hljs-string">"Xiaoming"</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">20111213161725</span>, <span class="hljs-string">"192.168.1.2"</span>),
+    (<span class="hljs-number">2</span>, <span class="hljs-string">"Xiaozhang"</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">20111213161726</span>, <span class="hljs-string">"192.168.1.2"</span>);
+
+    select * <span class="hljs-keyword">from</span> employee;
+
+    <span class="hljs-comment">// 创建表的时候可以指定字段的默认值</span>
+    create table user (
+        id int,
+        name varchar(<span class="hljs-number">15</span>) <span class="hljs-keyword">default</span> <span class="hljs-string">'defaultname'</span>
+    );
+
+    <span class="hljs-comment">// 常用命令</span>
+        备份
+            <span class="hljs-comment">// mysql&gt;quit;</span>
+            <span class="hljs-comment">// A&gt;mysqldump -u -p dbname &gt; d:/backup.sql</span>
+
+        还原
+            <span class="hljs-comment">// A&gt;mysql -u -p dbname &lt; d:/backup.sql</span>
+
+        修改当前用户的密码
+            <span class="hljs-comment">// A&gt;mysqladmin -u -p password newp</span>
+
+        关键字不可用作表名、字段名，若必须使用则使用以下格式输入
+            <span class="hljs-comment">// '名字'</span>
+
+    <span class="hljs-comment">// SQL语句</span>
+        Structured Query Language 包括四个部分：
+        数据定义语言（DDL）：CREATE/DROP/ALTER.
+        数据操作语言（DML）：INSERT/UPDATE/DELETE
+        数据查询语言（DQL）：SELECT
+        数据控制语句（DCL）：GRANT/REVOKE/COMMIT/ROLLBACK.
+
+        <span class="hljs-comment">// 添加、删除字段</span>
+            alter table user add school varchar(<span class="hljs-number">30</span>);
+            alter table user drop column Create_ip;
+
+        <span class="hljs-comment">// 修改一个字段的名称</span>
+            CHANGE password pwd varchar(<span class="hljs-number">30</span>) defalut <span class="hljs-string">'bj'</span>;
+
+        <span class="hljs-comment">// 删除数据表</span>
+            drop table user;
+
+        <span class="hljs-comment">// 查看数据表的信息</span>
+            show create table address;
+            show columns <span class="hljs-keyword">from</span> addr;
+
+<span class="hljs-comment">// 2015-10-14</span>
+        <span class="hljs-comment">// 插入数据</span>
+            INSERT INTO tbname
+            ()
+            VALUES
+            ();
+
+        <span class="hljs-comment">// 删除数据</span>
+            <span class="hljs-keyword">delete</span> <span class="hljs-keyword">from</span> user where Id=<span class="hljs-number">1</span>;
+
+        <span class="hljs-comment">// 查询指定字段和数目的数据</span>
+            select email <span class="hljs-keyword">from</span> users limit <span class="hljs-number">10</span>;
+
+        <span class="hljs-comment">// 排序 desc-&gt;倒序</span>
+            select id, email, username, sex <span class="hljs-keyword">from</span> users order by sex asc limit <span class="hljs-number">10</span>;
+
+        <span class="hljs-comment">// 计数</span>
+            select count(*) <span class="hljs-keyword">from</span> users;
+
+        <span class="hljs-comment">// 随机</span>
+            select id, email, username <span class="hljs-keyword">from</span> users order by rand() limit <span class="hljs-number">10</span>;
+
+        <span class="hljs-comment">// 别名</span>
+            select username AS NAME, email AS EML <span class="hljs-keyword">from</span> users;
+
+        <span class="hljs-comment">// 模糊查询</span>
+            select id, username, name <span class="hljs-keyword">from</span> users where name like <span class="hljs-string">'张%'</span>;
+            like <span class="hljs-string">'%张'</span>;
+            like <span class="hljs-string">'张_'</span>;
+
+        <span class="hljs-comment">// limit</span>
+            limit <span class="hljs-number">200</span>,<span class="hljs-number">50</span>;  <span class="hljs-comment">// 从200行后显示50条数据</span>
+
+        <span class="hljs-comment">// update</span>
+            update user set Username=<span class="hljs-string">'yyy'</span>,set Nickname=<span class="hljs-string">'zzz'</span> where id=<span class="hljs-number">111</span> and nickname=<span class="hljs-string">'kaixin'</span>;
+
+        <span class="hljs-comment">// not equals</span>
+            select * <span class="hljs-keyword">from</span> user where id !=<span class="hljs-number">1</span> and !=<span class="hljs-number">4</span>;
+            select * <span class="hljs-keyword">from</span> user where id &lt;&gt;<span class="hljs-number">1</span> and &lt;&gt;<span class="hljs-number">4</span>;
+            select * <span class="hljs-keyword">from</span> user where id not <span class="hljs-keyword">in</span>(<span class="hljs-number">1</span>,<span class="hljs-number">4</span>);
+
+<span class="hljs-comment">// 2015-10-15</span>
+        <span class="hljs-comment">// 创建一个新用户</span>
+            grant [all/select,insert,update,<span class="hljs-keyword">delete</span>] on [dbname].[tbname] to [user]@[host] identified by<span class="hljs-string">'[psw]'</span>;
+
+    <span class="hljs-comment">// 算术运算符</span>
+        <span class="hljs-comment">// +-*/%</span>
+
+    <span class="hljs-comment">// 比较运算符</span>
+        <span class="hljs-comment">// &lt;&gt;=</span>
+
+    <span class="hljs-comment">// 逻辑运算符</span>
+        not and or
+
+    <span class="hljs-comment">// 常见函数</span>
+        LOWER(str|column)
+        UPPER(str|column)
+        CONCAT(str1|column1,str2|column2,...)
+        SUBSTRING/SUBSTR(str|column,index,length)
+        LENGTH(str|column)
+        INSTR(str|column)
+        LTRIM(str|column)
+        RTRIM(str|column)
+        REPLACE(str|column,select_str,replace_str)
+        REVERSE(str|column)
+        SPACE(num)
+
+    <span class="hljs-comment">// 数学函数</span>
+        ABS()
+        MOD()
+        PI()
+        RAND()
+        ROUND()
+        SQRT()
+
+    <span class="hljs-comment">// 时间函数</span>
+        DATE()
+
+    <span class="hljs-comment">// 聚合函数</span>
+        AVG()
+        COUNT()
+        SUM()
+        MAX()
+        MIN()
+
+    <span class="hljs-comment">// 集合和分组</span>
+        select city, count(*) <span class="hljs-keyword">from</span> user group by city;
+        select sex, city, count(*) <span class="hljs-keyword">from</span> user group by sex, city;
+        select owner,count(*) <span class="hljs-keyword">as</span> aa <span class="hljs-keyword">from</span> gg_term group by owner having aa&gt;<span class="hljs-number">5</span> order by aa desc;
+
+    <span class="hljs-comment">// 多表查询</span>
+        select product.pid, product.name, creater, user.name <span class="hljs-keyword">from</span> product, user where product.creater=user.uid limit <span class="hljs-number">1</span>;
+
+<span class="hljs-comment">// 2015-10-17</span>
+    <span class="hljs-comment">// 约束</span>
+        约束是保护数据完整性的一种方法
+        通过限制字段中的数据和表与表之间的数据来保证完整性
+            create table car (
+                <span class="hljs-string">`id`</span> int(<span class="hljs-number">11</span>) NOT NULL AUTO_INCREMENT,
+                name varchar(<span class="hljs-number">20</span>),
+                PRIMARY KEY(id)
+            );
+
+        唯一性约束可以保证字段中的数据是唯一的
+        唯一性约束的字段可以设置NULL
+        一个表中可以有多个唯一性约束
+            create table user (
+                <span class="hljs-string">`id`</span> int(<span class="hljs-number">11</span>) NOT NULL AUTO_INCREAMENT,
+                email varchar(<span class="hljs-number">30</span>),
+                username varchar(<span class="hljs-number">30</span>),
+                password varchar(<span class="hljs-number">32</span>),
+
+                PRIMARY KEY(id),
+                UNIQUE KEY(email),
+                UNIQUE KEY(username)
+            );
+
+        外键约束用来保证多表之间数据的完整性
+        设置外键必须是INNODB类型的
+        创建的外键必须加上一个索引
+        如果两个表之间有如下关系：
+            表B的某字段是表A的主键，这个字段就是表B的外键
+            create table <span class="hljs-string">`product`</span> (
+                <span class="hljs-string">`pid`</span> bigint(<span class="hljs-number">20</span>) NOT NULL AUTO_ICREMENT,
+                PRIMARY KEY(<span class="hljs-string">`pid`</span>),
+                KEY <span class="hljs-string">`creater`</span> (<span class="hljs-string">`creater`</span>),
+                CONSTRAINT <span class="hljs-string">`product_ibfk_1`</span>,
+                FOREIGN KEY(<span class="hljs-string">`creater`</span>) REFERENCES <span class="hljs-string">`user`</span> (<span class="hljs-string">`uid`</span>)
+            );
+
+    <span class="hljs-comment">// 索引</span>
+        是对数据库表中一列或多列的值进行排序的一种结构
+        使用索引可以快速访问数据库表中的特定信息
+        大大加快检索速度
+        加速表和表之间的连接
+        在使用分组和排序的子句进行数据检索时，可以显著减少查询中分组和排序的时间
+
+        索引需要占用物理空间
+        当对表中数据进行增加、删除和修改的时候，索引也要动态的维护，降低了数据的维护速度
+
+        普通索引由关键字KEY或INDEX定义的索引的唯一任务是加快对数据的访问速度
+        因此，应该只为那些最经常出现在查询条件或排序条件中的数据列创建索引
+        只要有可能，就应该选择一个数据最整齐，最紧凑的数据列来创建索引
+
+        主索引必须为主键字段创建一个索引，这个索引就是所谓的主索引
+        主索引和唯一索引的唯一区别是：前者在定义时使用的关键字是PRIMARY而不是UNIQUE
+
+        如果为某个外键字段定义了一个外键约束条件，MySQL就会定义一个内部索引来帮助自己以
+        最有效的方式去管理和使用外键约束条件
+
+        复合索引是在多个列上建立的
+        复合索引的创建方法和创建单一索引的方法完全一样
+        但复合索引在数据库操作期间所需的开销更小，可以代替多个单一索引
+        当表的行数远远大于索引键的数据时，使用这种方式可以明显加快表的查询速度
+
+    <span class="hljs-comment">// 事务</span>
+        SELECT ... LOCK IN SHARE MODE (共享锁)
+        SELECT ... FOR UPDATE (排它锁)
+
+        原子性 一致性 隔离性 永久性
+
+    <span class="hljs-comment">// 数据库规范</span>
+        <span class="hljs-number">1.</span>尽量将表最大限度拆分，避免数据出现重复出现在多张表的情况
+        <span class="hljs-number">2.</span>简单化表与表之间的关联关系，尽量使用主键作为表关联的依据
+        <span class="hljs-number">3.</span>尽量符合三范式的要求
+            <span class="hljs-number">1</span>）    [<span class="hljs-number">1</span>]所有字段属性都已经定义
+                [<span class="hljs-number">2</span>]每个字段只能包含一个值
+                [<span class="hljs-number">3</span>]所有表均有主键
+            <span class="hljs-number">2</span>）    [<span class="hljs-number">1</span>]符合第一范式
+                [<span class="hljs-number">2</span>]表与表的关系依赖于主键
+            <span class="hljs-number">3</span>）    [<span class="hljs-number">1</span>]符合第二范式
+                [<span class="hljs-number">2</span>]表中有多个字段依赖其他表的主键，那么将这些依赖关系抽取出来放在一个表中
+
+    <span class="hljs-comment">// 存储过程</span>
+        存储过程与变成语言中的过程相似，就是将某些需要多次调用以实现某个特定任务的代码
+        编写成一个过程，将其保存在数据库当中
+        当使用的时候直接调用存储过程的名字即可
+        特点：    存储过程一颗包含一条或多条SQL语句
+                存储过程可以接受输入参数并且可以返回输出值
+                一个存储过程可以调用另一个存储过程
+        优点：    存储过程存放于数据库中，所以运行速度更快
+                存储过程可以减少网络开销
+                存储过程可被多个用户共享和重用
+        MySQL <span class="hljs-number">5.1</span>以上支持存储程序和函数
+
+        创建、查看、删除存储过程
+            delimiter $$
+            create procedure
+                tbname (IN name varchar(<span class="hljs-number">23</span>))
+            BEGIN
+                SELECT * FROM book WHERE title=name;
+            END
+
+            DROP FUNCTION func_name;
+
+            SHOW FUNCTION STATUS;
+
+            SHOW CREATE FUNCTION test_func;
+</code></pre>

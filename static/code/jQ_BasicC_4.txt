@@ -1,0 +1,1093 @@
+<pre><code class="js hljs javascript">
+<span class="hljs-comment">/*
+
+    jQuery 基础教程 第4版
+
+    2016-04-06
+    ~
+    2016-07-03 Noted by Chisw
+
+    2016-09-06 Modified
+
+*/</span>
+
+
+<span class="hljs-number">001.</span>入门
+<span class="hljs-number">002.</span>特色
+<span class="hljs-number">003.</span>代码的执行  <span class="hljs-comment">// function hasClass(){}</span>
+<span class="hljs-number">004.</span><span class="hljs-built_in">console</span>.log()
+<span class="hljs-number">005.</span>选择器
+<span class="hljs-number">006.</span>就绪 .ready()
+<span class="hljs-number">007.</span>出让 $ 符号
+<span class="hljs-number">008.</span>on .on(<span class="hljs-string">'evt'</span>,func)
+<span class="hljs-number">009.</span>上下文 <span class="hljs-keyword">this</span>  <span class="hljs-comment">// 单选按钮样式切换</span>
+<span class="hljs-number">010.</span>事件简写
+<span class="hljs-number">011.</span>toggleClass  <span class="hljs-comment">// 样式切换</span>
+<span class="hljs-number">012.</span>hover .hover()  <span class="hljs-comment">// 可以避免事件传播问题</span>
+<span class="hljs-number">013.</span>事件传播 event propagation
+<span class="hljs-number">014.</span>事件目标 停止事件传播
+<span class="hljs-number">015.</span>阻止默认操作
+<span class="hljs-number">016.</span>事件委托 is()
+<span class="hljs-number">017.</span>模仿用户操作 .trigger()
+<span class="hljs-number">018.</span>键盘事件响应 key <span class="hljs-keyword">in</span>
+<span class="hljs-number">019.</span>css .css
+<span class="hljs-number">020.</span>动效 .show() .hide() .fadeIn() .fadeOut() .slideDown() .slideUp() .fadeTo()
+<span class="hljs-number">021.</span>动画 .animate()  <span class="hljs-comment">// 可以 chaning .animate().animate()</span>
+<span class="hljs-number">022.</span>索引 .eq(index)
+<span class="hljs-number">023.</span>属性 .attr() == .prop()
+<span class="hljs-number">024.</span>取值 .val() 表单的值
+<span class="hljs-number">025.</span>创建元素 $() 创建元素并追加到页面
+<span class="hljs-number">026.</span>元素遍历方法 .each()  <span class="hljs-comment">// 添加脚注</span>
+<span class="hljs-number">027.</span>join .join(<span class="hljs-string">''</span>)
+<span class="hljs-number">028.</span>close .clone() 复制元素  <span class="hljs-comment">// 参数为 true 则绑定事件</span>
+<span class="hljs-number">029.</span>DOM DOM总结
+<span class="hljs-number">030.</span>AJXA-load .load()  <span class="hljs-comment">// jQuery AJAX</span>
+<span class="hljs-number">031.</span>AJXA-<span class="hljs-built_in">JSON</span>    $.getJSON()
+<span class="hljs-number">032.</span>AJXA-getJS $.getScript()  <span class="hljs-comment">// 按需执行脚本</span>
+<span class="hljs-number">033.</span>AJXA-XML $.get()
+<span class="hljs-number">034.</span><span class="hljs-keyword">return</span> <span class="hljs-literal">false</span> 返回<span class="hljs-literal">false</span>还是阻止默认动作
+<span class="hljs-number">035.</span>jQuery插入head
+<span class="hljs-number">036.</span>JSONP（<span class="hljs-built_in">JSON</span> <span class="hljs-keyword">with</span> Padding，填充式<span class="hljs-built_in">JSON</span>）
+<span class="hljs-number">037.</span>低级Ajax方法
+<span class="hljs-number">038.</span>基于jQuery开发的插件
+<span class="hljs-number">039.</span>图片悬停显示遮罩信息
+<span class="hljs-number">040.</span>jQuery事件委托
+<span class="hljs-number">041.</span>无穷滚动
+<span class="hljs-number">042.</span>节流事件
+<span class="hljs-number">043.</span>表格排序
+<span class="hljs-number">044.</span>使用<span class="hljs-built_in">JSON</span>排序和构建行
+<span class="hljs-number">045.</span>闭包
+<span class="hljs-number">046.</span>简明参考
+
+
+<span class="hljs-comment">// 2016-04-06</span>
+<span class="hljs-number">001.</span>入门
+    $(<span class="hljs-string">'div.content'</span>).find(<span class="hljs-string">'p'</span>);    <span class="hljs-comment">// 获取文档元素 解决DOM遍历的痛苦</span>
+
+    $(<span class="hljs-string">'ul &gt; li:first'</span>).addClass(<span class="hljs-string">'active'</span>);    <span class="hljs-comment">// 改变样式</span>
+
+    $(<span class="hljs-string">'#container'</span>).append(<span class="hljs-string">'&lt;a href="more.html"&gt;More&lt;/a&gt;'</span>);    <span class="hljs-comment">// 改变文档内容</span>
+
+    $(<span class="hljs-string">'button.show-details'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{    <span class="hljs-comment">// 事件操作</span>
+        $(<span class="hljs-string">'div.details'</span>).show();
+    });
+
+    $(<span class="hljs-string">'div.details'</span>).slideDown();    <span class="hljs-comment">// 动态效果</span>
+
+    $(<span class="hljs-string">'div.details'</span>).load(<span class="hljs-string">'more.html #content'</span>);    <span class="hljs-comment">// 无刷新加载</span>
+
+    $.each(obj, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">key, value</span>) </span>{    <span class="hljs-comment">// 简化常见数据结构操作</span>
+        total += value;
+    });
+
+
+<span class="hljs-number">002.</span>特色
+    利用CSS选择器优势
+    支持扩展，避免特性蠕变 feature creep
+    抽象浏览器不一致性
+    总是面向集合，隐式迭代 implicit interation
+    将多重操作集于一行，连缀 chaining
+
+
+<span class="hljs-number">003.</span>代码的执行  <span class="hljs-comment">// function hasClass(){}</span>
+    <span class="hljs-comment">// jQuery式</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">addHighlightClass</span>(<span class="hljs-params"></span>) </span>{
+        $(<span class="hljs-string">'div.poem-stanza'</span>).addClass(<span class="hljs-string">'highlight'</span>);
+    }
+
+    $(<span class="hljs-built_in">document</span>).ready(addHighlightClass);
+    <span class="hljs-comment">// 匿名函数式</span>
+    $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        $(<span class="hljs-string">'div.poem-stanza'</span>).addClass(<span class="hljs-string">'highlight'</span>);
+    });
+    <span class="hljs-comment">// 纯js式</span>
+    <span class="hljs-built_in">window</span>.onload = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> divs = <span class="hljs-built_in">document</span>.getElementsByTagName(<span class="hljs-string">'div'</span>);
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;divs.length; i++) {
+            <span class="hljs-keyword">if</span>( hasClass(divs[i], <span class="hljs-string">'poem-stanza'</span>) &amp;&amp; !hasClass(divs[i], <span class="hljs-string">'highlight'</span>) ) {
+                div[i].className += <span class="hljs-string">' hightlight'</span>;
+            }
+        }
+
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">hasClass</span>(<span class="hljs-params">elem, cls</span>) </span>{
+            <span class="hljs-keyword">var</span> reClass = <span class="hljs-keyword">new</span> <span class="hljs-built_in">RegExp</span>(<span class="hljs-string">' '</span> + cls + <span class="hljs-string">' '</span>);
+            <span class="hljs-keyword">return</span> reClass.test(<span class="hljs-string">' '</span> + ele.className + <span class="hljs-string">' '</span>);
+        }
+    };
+
+
+<span class="hljs-comment">// 2016-04-07</span>
+<span class="hljs-number">004.</span><span class="hljs-built_in">console</span>.log()
+    渐进增强 progressive enhancement
+    平稳退化 graceful degradation
+
+
+<span class="hljs-number">005.</span>选择器
+    <span class="hljs-comment">//否定式伪类</span>
+    $(<span class="hljs-string">'#select li:not(.horizontal)'</span>).addClass();
+    <span class="hljs-comment">//以 ^ 开头的属性选择器    结尾用 &amp;</span>
+    $(<span class="hljs-string">'a[href^="mailto:"]'</span>).addClass();
+    <span class="hljs-comment">//基于上下文内容    区分大小写</span>
+    $(<span class="hljs-string">'td:contains(test)'</span>).addClass();
+    <span class="hljs-comment">//表单</span>
+    :input
+    :button
+    :enabled
+    :disabled
+    :checked
+    :selected
+    <span class="hljs-comment">//过滤</span>
+    $(<span class="hljs-string">'tr'</span>).filter(<span class="hljs-string">':even'</span>).addClass(<span class="hljs-string">'alt'</span>);
+    <span class="hljs-comment">//同辈元素</span>
+    .next()
+    .nextAll()
+
+    .prev()
+    .prevAll()
+
+    .siblings()
+    <span class="hljs-comment">//父子</span>
+    .parent()
+    .children()
+    <span class="hljs-comment">//index</span>
+    $(<span class="hljs-string">'#my-element'</span>).get(<span class="hljs-number">0</span>).tagName;
+    $(<span class="hljs-string">'#my-element'</span>)[<span class="hljs-number">0</span>].tagName;
+
+
+<span class="hljs-comment">// 2016-04-08</span>
+<span class="hljs-number">006.</span>就绪 .ready()
+    $(<span class="hljs-built_in">document</span>).reday(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{..});
+    $(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{..});
+
+    <span class="hljs-built_in">window</span>.onload 虽然可以注册多个函数，但却不能保证按顺序执行。
+
+
+<span class="hljs-number">007.</span>出让 $ 符号
+    jQuery.noConflict();
+
+    jQuery(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$</span>)</span>{..});
+
+
+<span class="hljs-number">008.</span>on .on(<span class="hljs-string">'evt'</span>,func)
+    $(<span class="hljs-string">'#switcher-large'</span>).on(<span class="hljs-string">'click'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{..});
+
+
+<span class="hljs-number">009.</span>上下文 <span class="hljs-keyword">this</span>  <span class="hljs-comment">// 单选按钮样式切换</span>
+    $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        $(<span class="hljs-string">'input'</span>).on(<span class="hljs-string">'click'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            <span class="hljs-comment">// $('input').removeClass();    不给参数则全部移除</span>
+            $(<span class="hljs-string">'input'</span>).removeClass(<span class="hljs-string">'selected'</span>);
+            $(<span class="hljs-keyword">this</span>).addClass(<span class="hljs-string">'selected'</span>);
+        })
+    })
+
+
+<span class="hljs-number">010.</span>事件简写
+    $(<span class="hljs-string">'ele'</span>).click().blur().keydown().scroll()
+
+
+<span class="hljs-number">011.</span>toggleClass  <span class="hljs-comment">// 样式切换</span>
+    $(<span class="hljs-string">'ele'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        $(<span class="hljs-string">'ele'</span>).toggleClass(<span class="hljs-string">'class'</span>);
+    });
+
+
+<span class="hljs-number">012.</span>hover .hover()  <span class="hljs-comment">// 可以避免事件传播问题</span>
+$(<span class="hljs-string">'ele'</span>).hover(func,func);  <span class="hljs-comment">// 移入移出两个方法</span>
+
+
+<span class="hljs-number">013.</span>事件传播 event propagation
+    事件捕获 从最外层开始
+    事件冒泡 从最内层开始      <span class="hljs-comment">// jQuery首选</span>
+
+
+<span class="hljs-number">014.</span>事件目标 停止事件传播
+    $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        $(<span class="hljs-string">'#switcher'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+            <span class="hljs-keyword">if</span>(event.target == <span class="hljs-keyword">this</span>) {
+                $(<span class="hljs-string">'#switcher button'</span>).toggleClass(<span class="hljs-string">'hidden'</span>);
+                <span class="hljs-comment">// 停止事件传播</span>
+                event.stopPropagation();
+            }
+        });
+    });
+
+
+<span class="hljs-number">015.</span>阻止默认操作
+    event.preventDefault();
+    <span class="hljs-comment">// return false;</span>
+
+
+<span class="hljs-number">016.</span>事件委托 is()
+    <span class="hljs-comment">// if($(event.target).is('button'))</span>
+    $(<span class="hljs-string">'#switcher'</span>).on(<span class="hljs-string">'click'</span>, <span class="hljs-string">'button'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{..});
+    <span class="hljs-comment">// 移除事件 $('#switcher').off('click');</span>
+
+
+<span class="hljs-number">017.</span>模仿用户操作 .trigger()
+ $(<span class="hljs-string">'#switcher'</span>).trigger(<span class="hljs-string">'click'</span>);  <span class="hljs-comment">// .click()</span>
+
+
+<span class="hljs-number">018.</span>键盘事件响应 key <span class="hljs-keyword">in</span>
+    $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> triggers = {
+            D: <span class="hljs-string">'default'</span>,
+            N: <span class="hljs-string">'narrow'</span>,
+            L: <span class="hljs-string">'large'</span>
+    };
+
+    $(<span class="hljs-built_in">document</span>).keyup(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+        <span class="hljs-keyword">var</span> key = <span class="hljs-built_in">String</span>.fromCharCode(event.which);
+        <span class="hljs-keyword">if</span> (key <span class="hljs-keyword">in</span> triggers) {
+            $(<span class="hljs-string">'#switcher-'</span> + triggers[key]).click();
+        }
+        });
+    });
+
+
+<span class="hljs-number">019.</span>css .css
+    获取 .css(<span class="hljs-string">''</span>);
+    设置 .css({<span class="hljs-string">''</span>:<span class="hljs-string">''</span>});  <span class="hljs-comment">// 自动兼容浏览器前缀</span>
+
+    $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> $speech = $(<span class="hljs-string">'div.speech'</span>);
+        $(<span class="hljs-string">'#switcher-large'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            <span class="hljs-keyword">var</span> num = <span class="hljs-built_in">parseFloat</span>($speech.css(<span class="hljs-string">'fontSize'</span>));
+        });
+    });
+
+    $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> $speech = $(<span class="hljs-string">'div.speech'</span>);
+        <span class="hljs-keyword">var</span> defaultSize = $speech.css(<span class="hljs-string">'fontSize'</span>);
+        $(<span class="hljs-string">'#switcher button'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            <span class="hljs-keyword">var</span> num = <span class="hljs-built_in">parseFloat</span>($speech.css(<span class="hljs-string">'fontSize'</span>));
+            <span class="hljs-keyword">switch</span> (<span class="hljs-keyword">this</span>.id) {
+                <span class="hljs-keyword">case</span> <span class="hljs-string">'switcher-large'</span>:
+                    num *= <span class="hljs-number">1.4</span>;
+                    <span class="hljs-keyword">break</span>;
+                <span class="hljs-keyword">case</span> <span class="hljs-string">'switcher-small'</span>:
+                    num /= <span class="hljs-number">1.4</span>;
+                    <span class="hljs-keyword">break</span>;
+                <span class="hljs-keyword">default</span>:
+                    num = <span class="hljs-built_in">parseFloat</span>(defaultSize);
+            }
+            $speech.css(<span class="hljs-string">'fontSize'</span>, num + <span class="hljs-string">'px'</span>);
+        });
+    });
+
+
+<span class="hljs-number">020.</span>动效 .show() .hide() .fadeIn() .fadeOut() .slideDown() .slideUp() .fadeTo()
+    slow <span class="hljs-number">600</span>
+    fast <span class="hljs-number">200</span>
+    str    <span class="hljs-number">400</span>
+
+    show hide             是逐渐设置高宽
+    fadeIn fadeOut         是一上来就设置好高宽
+    slideDown slideUp     仅仅改变高度
+
+
+<span class="hljs-comment">// 2016-04-09</span>
+<span class="hljs-number">021.</span>动画 .animate()  <span class="hljs-comment">// 可以 chaning .animate().animate()</span>
+    .animate({<span class="hljs-string">''</span>:<span class="hljs-string">''</span>,<span class="hljs-string">''</span>:<span class="hljs-string">''</span>}, duration, easing, func);
+    样式， 周期， 缓动类型， 回调函数
+
+    $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> $firstPara = $(<span class="hljs-string">'p'</span>).eq(<span class="hljs-number">1</span>);
+        $firstPara.hide();
+        $(<span class="hljs-string">'a.more'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+            event.preventDefault();
+            $firstPara.animate({height: <span class="hljs-string">'toggle'</span>}, <span class="hljs-string">'slow'</span>);
+            <span class="hljs-keyword">var</span> $link = $(<span class="hljs-keyword">this</span>);
+            <span class="hljs-keyword">if</span> ($link.text() == <span class="hljs-string">'read more'</span>) {
+                $link.text(<span class="hljs-string">'read less'</span>); 
+            } <span class="hljs-keyword">else</span> {
+                $link.text(<span class="hljs-string">'read more'</span>);
+            }
+        });
+    });
+
+
+<span class="hljs-number">022.</span>索引 .eq(index)
+    $(<span class="hljs-string">'p'</span>).eq(<span class="hljs-number">2</span>).css(..);
+
+
+<span class="hljs-number">023.</span>属性 .attr() == .prop()
+
+
+<span class="hljs-number">024.</span>取值 .val() 表单的值
+
+
+<span class="hljs-number">025.</span>创建元素 $() 创建元素并追加到页面
+    $(<span class="hljs-string">'&lt;a&gt;a&lt;/a&gt;'</span>).insertAfter(<span class="hljs-string">'body'</span>);
+
+    .insertBefore()  <span class="hljs-comment">// 嵌前</span>
+    .insertAfter()
+    .prependTo()  <span class="hljs-comment">// 内部开头</span>
+    .appendTo()  <span class="hljs-comment">// 内部末尾</span>
+
+
+<span class="hljs-number">026.</span>遍历 .each() 元素遍历方法  <span class="hljs-comment">// 添加脚注</span>
+    $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> $notes = $(<span class="hljs-string">'&lt;ol id="notes"&gt;&lt;/ol&gt;'</span>).insertBefore(<span class="hljs-string">'#footer'</span>);
+        $(<span class="hljs-string">'span.footnote'</span>).each(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index</span>) </span>{
+            $(<span class="hljs-string">'&lt;sup&gt;'</span> + (index + <span class="hljs-number">1</span>) + <span class="hljs-string">'&lt;/sup&gt;'</span>).insertBefore(<span class="hljs-keyword">this</span>);
+            $(<span class="hljs-keyword">this</span>).appendTo($notes).wrap(<span class="hljs-string">'&lt;li&gt;&lt;/li&gt;'</span>);
+        });
+    });
+
+
+<span class="hljs-number">027.</span>join .join(<span class="hljs-string">''</span>)
+    <span class="hljs-keyword">var</span> str = <span class="hljs-string">'a'</span> + <span class="hljs-string">'b'</span> + <span class="hljs-string">'c'</span>;
+    <span class="hljs-keyword">var</span> str = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>].join(<span class="hljs-string">''</span>);
+
+
+<span class="hljs-number">028.</span>clone .clone() 复制元素  <span class="hljs-comment">// 参数为 true 则绑定事件</span>
+    $(<span class="hljs-string">'div.chapter p:eq(0)'</span>).clone().insertBefore(<span class="hljs-string">'div.chapter'</span>); 
+
+
+<span class="hljs-number">029.</span>DOM总结
+    <span class="hljs-comment">// 在每个匹配的元素的外部插入新元素</span>
+    .wrap() .wrapAll() .wrapInner()
+    <span class="hljs-comment">// 替换</span>
+    .replaceAll() .replaceWith()
+    <span class="hljs-comment">// 移除匹配元素</span>
+    .empty()
+    <span class="hljs-comment">// 移除而不删除</span>
+    .remove() detach()
+
+
+<span class="hljs-comment">// 2016-04-10</span>
+<span class="hljs-number">030.</span>AJXA-load .load()    <span class="hljs-comment">//jQuery AJAX</span>
+    $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        $(<span class="hljs-string">'#letter-a a'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+            event.preventDefault();
+            $(<span class="hljs-string">'#dictionary'</span>).load(<span class="hljs-string">'a.html'</span>);
+            alert(<span class="hljs-string">'Loaded!'</span>);    <span class="hljs-comment">//也可能在未加载完成时弹出 因为是异步的</span>
+        });
+    });
+
+
+<span class="hljs-comment">// 2016-04-29</span>
+<span class="hljs-number">031.</span>AJXA-<span class="hljs-built_in">JSON</span>    $.getJSON()
+    <span class="hljs-comment">// 在对象字面量和数组字面量的基础上，JSON格式的语法具有很强的表达能力，但对其中的</span>
+    <span class="hljs-comment">// 值也有一定的限制。例如，JSON规定所有对象键以及所有字符串值，都必须包含在双引号中。</span>
+    <span class="hljs-comment">// 而且，函数也不是有效的JSON值。由于存在这些限制，开发人员最好不手工编辑JSON，而应该</span>
+    <span class="hljs-comment">// 用服务器端语言来生成。</span>
+
+    从逻辑上说，没有该方法适用的DOM
+    元素；作为结果的对象只能提供给脚本，而不能插入到页面中。为此，getJSON()是作为全局
+    jQuery对象（由jQuery库定义的jQuery或$对象）的方法定义的，也就是说，它不是个别jQuery
+    对象实例（即通过$()函数创建的对象）的方法。 
+
+    <span class="hljs-comment">/*
+        b.json
+        [ 
+             { 
+                 "term": "BACCHUS", 
+                 "part": "n.", 
+                 "definition": "A convenient deity invented by the...", 
+                 "quote": [ 
+                     "Is public worship, then, a sin,", 
+                     "And resolutely thump and whack us?" 
+                 ], 
+                 "author": "Jorace" 
+             }, 
+             { 
+                 "term": "BACKBITE", 
+                 "part": "v.t.", 
+                 "definition": "To speak of a man as you find him when..." 
+             }, 
+             { 
+                 "term": "BEARD", 
+                 "part": "n.", 
+                 "definition": "The hair that is commonly cut off by..." 
+             }
+        ]
+    */</span>
+
+    $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        $(<span class="hljs-string">'#letter-b a'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+            event.preventDefault();
+            $.getJSON(<span class="hljs-string">'b.json'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+                <span class="hljs-keyword">var</span> html = <span class="hljs-string">''</span>;
+                $.each(data, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">entryIndex, entry</span>) </span>{
+                    html += <span class="hljs-string">'&lt;div&gt;'</span>;
+                    html += <span class="hljs-string">'&lt;h3&gt;'</span> + entry.term + <span class="hljs-string">'&lt;/h3&gt;'</span>;
+                    html += <span class="hljs-string">'&lt;div&gt;'</span> + entry.part + <span class="hljs-string">'&lt;/div&gt;'</span>;
+                    html += <span class="hljs-string">'&lt;div&gt;'</span>;
+                    html += entry.definition;
+                    <span class="hljs-keyword">if</span> (entry.quote) {
+                        html += <span class="hljs-string">'&lt;div&gt;'</span>;
+                        $.each(entry.quote, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">lineIndex, line</span>) </span>{
+                            html += <span class="hljs-string">'&lt;div&gt;'</span> + line + <span class="hljs-string">'&lt;/div&gt;'</span>;
+                        });
+                        <span class="hljs-keyword">if</span> (entry.author) {
+                            html += <span class="hljs-string">'&lt;div&gt;'</span> + entry.author + <span class="hljs-string">'&lt;/div&gt;'</span>;
+                        }
+                        html += <span class="hljs-string">'&lt;/div&gt;'</span>;
+                    }
+                    html += <span class="hljs-string">'&lt;/div&gt;'</span>;
+                    html += <span class="hljs-string">'&lt;/div&gt;'</span>;
+                });
+                $(<span class="hljs-string">'#dictionary'</span>).html(html);
+            });
+        });
+    });
+
+    尽管<span class="hljs-built_in">JSON</span>格式很简洁，但它却不容许任何错误。所有方括号、花括号、引号和逗号都必须
+    合理且正确地使用，否则文件不会加载。而且，在多数浏览器中，当文件加载失败时我们看不到
+    任何错误信息；脚本只是静默地彻底终止运转。 
+
+    由于现代浏览器调用原生的<span class="hljs-built_in">JSON</span>.parse()就能解析这种格式的文件，所以读取
+    <span class="hljs-built_in">JSON</span>文件的速度非常快。另外，<span class="hljs-built_in">JSON</span>文件中的错误可能会导致页面上的脚本静默地中止运行，
+    甚至还会带来其他的负面影响。因此，这种数据必须由信得过的人仔细构建。 
+
+
+<span class="hljs-number">032.</span>AJXA-$.getScript()  <span class="hljs-comment">//按需执行脚本</span>
+    $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        $(<span class="hljs-string">'#letter-c a'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+            event.preventDefault();
+            $.getScript(<span class="hljs-string">'c.js'</span>);
+        });
+    });
+
+
+<span class="hljs-number">033.</span>AJXA-XML $.get()
+    <span class="hljs-comment">/*
+        c.xml
+        &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+        &lt;entries&gt;
+            &lt;entry term="DEFAME" part="v.t."&gt;
+                &lt;definition&gt;
+                    To lie about another.To tell the truth about another.
+                &lt;/definition&gt;
+            &lt;/entry&gt;
+            &lt;entry term="DEFENCELESS" part="adj."&gt;
+                &lt;definition&gt;
+                    Unable to attack.
+                &lt;/definition&gt;
+            &lt;/entry&gt;
+            &lt;entry term="DELUSION" part="n."&gt;
+                &lt;definition&gt;
+                    The father of a most respectable family, comprising
+                    Enthusiasm, Affection, Self-denial, Faith, Hope,
+                    Charity and many other goodly sons and daughters.
+                &lt;/definition&gt;
+                &lt;quote author="Mumfrey Mappel"&gt;
+                    &lt;line&gt;All hail, Delusion!Were it not for thee&lt;/line&gt;
+                    &lt;line&gt;The world turned topsy-turvy we should see;
+                        &lt;/line&gt;
+                    &lt;line&gt;For Vice, respectable with cleanly fancies,
+                        &lt;/line&gt;
+                    &lt;line&gt;Would fly abandoned Virtue's gross advances.
+                        &lt;/line&gt;
+                &lt;/quote&gt;
+            &lt;/entry&gt;
+        &lt;/entries&gt;
+    */</span>
+
+    $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        $(<span class="hljs-string">'#letter-d a'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+            event.preventDefault();
+            $.get(<span class="hljs-string">'d.xml'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+                $(<span class="hljs-string">'#dictionary'</span>).empty();
+                $(data).find(<span class="hljs-string">'entry'</span>).each(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+                    <span class="hljs-keyword">var</span> $entry = $(<span class="hljs-keyword">this</span>);
+                    <span class="hljs-keyword">var</span> html = <span class="hljs-string">'&lt;div&gt;'</span>;
+                    html += <span class="hljs-string">'&lt;h3&gt;'</span> + $entry.attr(<span class="hljs-string">'term'</span>);
+                        html += <span class="hljs-string">'&lt;/h3&gt;'</span>;
+                    html += <span class="hljs-string">'&lt;div&gt;'</span> + $entry.attr(<span class="hljs-string">'part'</span>);
+                        html += <span class="hljs-string">'&lt;/div&gt;'</span>;
+                    html += <span class="hljs-string">'&lt;div&gt;'</span>;
+                    html += $entry.find(<span class="hljs-string">'definition'</span>).text();
+                    <span class="hljs-keyword">var</span> $quote = $entry.find(<span class="hljs-string">'quote'</span>);
+                    <span class="hljs-keyword">if</span> ($quote.length) {
+                        html += <span class="hljs-string">'&lt;div&gt;'</span>;
+                        $quote.find(<span class="hljs-string">'line'</span>).each(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+                            html += <span class="hljs-string">'&lt;div&gt;'</span>;
+                                html += $(<span class="hljs-keyword">this</span>).text() + <span class="hljs-string">'&lt;/div&gt;'</span>;
+                        });
+                        <span class="hljs-keyword">if</span> ($quote.attr(<span class="hljs-string">'author'</span>)) {
+                            html += <span class="hljs-string">'&lt;div&gt;'</span>;
+                                html += $quote.attr(<span class="hljs-string">'author'</span>) + <span class="hljs-string">'&lt;/div&gt;'</span>;
+                        }
+                        html += <span class="hljs-string">'&lt;/div&gt;'</span>;
+                    }
+                    html += <span class="hljs-string">'&lt;/div&gt;'</span>;
+                    html += <span class="hljs-string">'&lt;/div&gt;'</span>;
+                    $(<span class="hljs-string">'#dictionary'</span>).append($(html));
+                });
+            });
+        });
+    });
+
+    通过以上对各种数据格式优缺点的分析，我们知道在不需要与其他应用程序共享数据的情况
+    下，以HTML片段提供外部数据一般来说是最简单的。如果数据需要重用，而且其他应用程序也
+    可能因此受到影响，那么在性能和文件大小方面具有优势的<span class="hljs-built_in">JSON</span>通常是不错的选择。而当远程
+    应用程序未知时，XML则能够为良好的互操作性提供最可靠的保证。 
+
+    <span class="hljs-comment">// 服务器端</span>
+    $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        $(<span class="hljs-string">'#letter-e a'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+            event.preventDefault();
+            <span class="hljs-keyword">var</span> requestData = {term: $(<span class="hljs-keyword">this</span>).text()};
+            $.get(<span class="hljs-string">'e.php'</span>, requestData, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+            <span class="hljs-comment">// $.post('e.php', requestData, function(data) {</span>
+                $(<span class="hljs-string">'#dictionary'</span>).html(data);
+            });
+        });
+    });
+
+
+<span class="hljs-number">034.</span><span class="hljs-keyword">return</span> <span class="hljs-literal">false</span> 返回<span class="hljs-literal">false</span>还是阻止默认动作
+    在本章的click处理程序中，我们传入了event对象并使用event.preventDefault()而不是<span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>结束该处理程序。
+    当默认动作是重新加载页面或打开新页面时，我们推荐这种做法。例如，如果click处理程序中包含JavaScript错误，
+    那么在第一行代码中（在碰到错误之前）阻止默认动作就能确保不会提交表单，而且浏览器的错误控制台也会收到错误报告。
+    第<span class="hljs-number">3</span>章曾介绍过，<span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>意味着同时调用event.preventDefault()和event. stopPropagation()。
+    因此要想停止事件冒泡，我们还得再调用后者。
+
+
+<span class="hljs-comment">// 2016-06-21</span>
+<span class="hljs-number">035.</span>jQuery插入head
+    $(<span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'script'</span>))
+    .attr(<span class="hljs-string">'src'</span>, <span class="hljs-string">'http://example.com/example.js'</span>)
+    .appendTo(<span class="hljs-string">'head'</span>);
+
+
+<span class="hljs-number">036.</span>JSONP（<span class="hljs-built_in">JSON</span> <span class="hljs-keyword">with</span> Padding，填充式<span class="hljs-built_in">JSON</span>）
+    JSONP的格式是把标准<span class="hljs-built_in">JSON</span>文件包装在一对圆括号中，圆括号又前置一个任意字符串。这
+    个字符串，即所谓的P（Padding，填充），由请求数据的客户端来决定。而且，由于有一对圆括
+    号，因此返回的数据在客户端可能会导致一次函数调用，或者是为某个变量赋值——取决于客户
+    端请求中发送的填充字符串。
+
+
+<span class="hljs-number">037.</span>低级Ajax方法
+    $.ajax({
+        url: <span class="hljs-string">'a.html'</span>,
+        success: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+            $(<span class="hljs-string">'#dictionary'</span>).html(data);
+        }
+    });
+
+    避免浏览器缓存来自服务器的响应。非常适合服务器动态生成数据的情况。 
+    抑制正常情况下所有Ajax交互都可以触发的全局处理程序（例如通过$.ajaxStart()注册的处理程序）。 
+    在远程主机需要认证的情况下，可以提供用户名和密码。 
+
+
+<span class="hljs-comment">// 2016-07-03</span>
+<span class="hljs-number">038.</span>基于jQuery开发的插件
+    <span class="hljs-comment">// 立即调用的函数表达式</span>
+    (<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$</span>) </span>{
+        <span class="hljs-comment">//..</span>
+    })(jQuery);
+
+    <span class="hljs-comment">// 添加新的全局函数</span>
+    (<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$</span>) </span>{
+        $.sum = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"> array </span>) </span>{
+            <span class="hljs-keyword">var</span> total = <span class="hljs-number">0</span>;
+
+            $.each( array, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index, value</span>) </span>{
+                value = $.trim( value );
+                value = <span class="hljs-built_in">parseFloat</span>( value ) || <span class="hljs-number">0</span>;
+                total += value;
+            });
+            <span class="hljs-keyword">return</span> total;
+        };
+    })(jQuery);
+
+    <span class="hljs-comment">// 避免命名冲突</span>
+    (<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$</span>) </span>{
+        $.mathUtils = {
+            sum: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">array</span>) </span>{
+                <span class="hljs-keyword">var</span> total = <span class="hljs-number">0</span>;
+
+                $.each(array, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index, value</span>) </span>{
+                    value = $.trim(value);
+                    value = <span class="hljs-built_in">parseFloat</span>(value) || <span class="hljs-number">0</span>;
+
+                    total += value;
+                });
+                <span class="hljs-keyword">return</span> total;
+            },
+            average: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">array</span>) </span>{
+                <span class="hljs-keyword">if</span> ($.isArray(array)) {
+                    <span class="hljs-keyword">return</span> $.mathUtils.sum(array) / array.length;
+                }
+                <span class="hljs-keyword">return</span> <span class="hljs-string">''</span>;
+            }
+        };
+    })(jQuery);
+
+    $.mathUtils.sum(sum);
+    $.mathUtils.average(average);
+
+    jQuery.fn对象是jQuery.prototype的别名，使用别名是出于简洁的考虑。
+
+
+<span class="hljs-number">039.</span>图片悬停显示遮罩信息
+    $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        $(<span class="hljs-string">'div.photo'</span>).hover(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            $(<span class="hljs-keyword">this</span>).find(<span class="hljs-string">'.details'</span>).fadeTo(<span class="hljs-string">'fast'</span>, <span class="hljs-number">0.7</span>);
+        }, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            $(<span class="hljs-keyword">this</span>).find(<span class="hljs-string">'.details'</span>).fadeOut(<span class="hljs-string">'fast'</span>);
+        });
+    });
+
+
+<span class="hljs-number">040.</span>jQuery事件委托
+    $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ 
+        $(<span class="hljs-string">'#gallery'</span>).on(<span class="hljs-string">'mouseenter mouseleave'</span>, <span class="hljs-string">'div.photo'</span>, 
+        <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{ 
+            <span class="hljs-keyword">var</span> $details = $(<span class="hljs-keyword">this</span>).find(<span class="hljs-string">'.details'</span>); 
+            <span class="hljs-keyword">if</span> (event.type == <span class="hljs-string">'mouseenter'</span>) { 
+                $details.fadeTo(<span class="hljs-string">'fast'</span>, <span class="hljs-number">0.7</span>); 
+            } <span class="hljs-keyword">else</span> { 
+                $details.fadeOut(<span class="hljs-string">'fast'</span>); 
+            } 
+        }); 
+    }); 
+
+
+<span class="hljs-number">041.</span>无穷滚动
+    (<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">$</span>) </span>{ 
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">checkScrollPosition</span>(<span class="hljs-params"></span>) </span>{ 
+            <span class="hljs-keyword">var</span> distance = $(<span class="hljs-built_in">window</span>).scrollTop() + $(<span class="hljs-built_in">window</span>).height(); 
+            <span class="hljs-keyword">if</span> ($(<span class="hljs-string">'#container'</span>).height() &lt;= distance) { 
+                $(<span class="hljs-built_in">document</span>).trigger(<span class="hljs-string">'nextPage'</span>); 
+            } 
+        } 
+     
+        $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ 
+            $(<span class="hljs-built_in">window</span>).scroll(checkScrollPosition).trigger(<span class="hljs-string">'scroll'</span>); 
+        }); 
+    })(jQuery); 
+
+
+<span class="hljs-number">042.</span>节流事件
+    $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ 
+        <span class="hljs-keyword">var</span> timer = <span class="hljs-number">0</span>; 
+        $(<span class="hljs-built_in">window</span>).scroll(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ 
+            <span class="hljs-keyword">if</span> (!timer) { 
+                timer = setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ 
+                    checkScrollPosition(); 
+                    timer = <span class="hljs-number">0</span>; 
+                }, <span class="hljs-number">250</span>); 
+            } 
+        }).trigger(<span class="hljs-string">'scroll'</span>); 
+    }); 
+
+
+<span class="hljs-number">043.</span>表格排序
+    $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ 
+        <span class="hljs-keyword">var</span> $table1 = $(<span class="hljs-string">'#t-1'</span>); 
+        <span class="hljs-keyword">var</span> $headers = $table1.find(<span class="hljs-string">'thead td'</span>).slice(<span class="hljs-number">0</span>); 
+        $headers 
+            .wrapInner(<span class="hljs-string">'&lt;a href="#"&gt;&lt;/a&gt;'</span>) 
+            .addClass(<span class="hljs-string">'sort'</span>); 
+
+        $headers.on(<span class="hljs-string">'click'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{ 
+            event.preventDefault(); 
+            <span class="hljs-keyword">var</span> column = $(<span class="hljs-keyword">this</span>).index(); 
+            <span class="hljs-keyword">var</span> rows = $table1.find(<span class="hljs-string">'tbody &gt; tr'</span>).get(); 
+            rows.sort(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">a, b</span>) </span>{ 
+                <span class="hljs-keyword">var</span> keyA = $(a).children(<span class="hljs-string">'td'</span>).eq(column).text(); 
+                keyA = $.trim(keyA).toUpperCase(); 
+                <span class="hljs-keyword">var</span> keyB = $(b).children(<span class="hljs-string">'td'</span>).eq(column).text(); 
+                keyB = $.trim(keyB).toUpperCase(); 
+                <span class="hljs-keyword">if</span> (keyA &lt; keyB) <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>; 
+                <span class="hljs-keyword">if</span> (keyA &gt; keyB) <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>; 
+                <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>; 
+            }); 
+         
+            $.each(rows, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index, row</span>) </span>{ 
+                $table1.children(<span class="hljs-string">'tbody'</span>).append(row); 
+            }); 
+        }); 
+    }); 
+
+
+<span class="hljs-number">044.</span>使用<span class="hljs-built_in">JSON</span>排序和构建行
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">buildRow</span>(<span class="hljs-params">row</span>) </span>{ 
+        <span class="hljs-keyword">var</span> authors = []; 
+        $.each(row.authors, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index, auth</span>) </span>{ 
+            authors[index] = auth.first_name + <span class="hljs-string">' '</span> + auth.last_name; 
+        }); 
+        <span class="hljs-keyword">var</span> html = <span class="hljs-string">'&lt;tr&gt;'</span>; 
+            html += <span class="hljs-string">'&lt;td&gt;&lt;img src="images/'</span> + row.img + <span class="hljs-string">'"&gt;&lt;/td&gt;'</span>; 
+            html += <span class="hljs-string">'&lt;td&gt;'</span> + row.title + <span class="hljs-string">'&lt;/td&gt;'</span>; 
+            html += <span class="hljs-string">'&lt;td&gt;'</span> + authors.join(<span class="hljs-string">', '</span>) + <span class="hljs-string">'&lt;/td&gt;'</span>; 
+            html += <span class="hljs-string">'&lt;td&gt;'</span> + row.published + <span class="hljs-string">'&lt;/td&gt;'</span>; 
+            html += <span class="hljs-string">'&lt;td&gt;$'</span> + row.price + <span class="hljs-string">'&lt;/td&gt;'</span>; 
+        html += <span class="hljs-string">'&lt;/tr&gt;'</span>; 
+        <span class="hljs-keyword">return</span> html; 
+    } 
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">buildRows</span>(<span class="hljs-params">rows</span>) </span>{ 
+        <span class="hljs-keyword">var</span> allRows = $.map(rows, buildRow); 
+        <span class="hljs-keyword">return</span> allRows.join(<span class="hljs-string">''</span>); 
+    } 
+
+    $.getJSON(<span class="hljs-string">'books.json'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">json</span>) </span>{ 
+        $(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ 
+            <span class="hljs-keyword">var</span> $table3 = $(<span class="hljs-string">'#t-3'</span>); 
+            $table3.find(<span class="hljs-string">'tbody'</span>).html(buildRows(json)); 
+        }); 
+    }); 
+    
+
+<span class="hljs-number">045.</span>闭包
+    能够跻身支持内部函数声明的编程语言行列，对JavaScript来说应该算是一种幸运。许多传统
+    的编程语言（例如C），都会把全部函数集中在顶级作用域中。而支持内部函数的语言，则允许开
+    发者在必要的地方集合小型实用函数，以避免污染命名空间。 
+
+    所谓内部函数，就是定义在另一个函数中的函数。 
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">outerFn</span>(<span class="hljs-params"></span>) </span>{ 
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">innerFn</span>(<span class="hljs-params"></span>) </span>{ 
+        } 
+    } 
+
+    <span class="hljs-comment">// innerFn()就是一个被包含在outerFn()作用域中的内部函数。这意味着，在outerFn()</span>
+    <span class="hljs-comment">// 内部调用innerFn()是有效的，而在outerFn()外部调用innerFn()则是无效的。下列代码会</span>
+    <span class="hljs-comment">// 导致一个JavaScript错误。 </span>
+
+
+<span class="hljs-number">046.</span>简明参考
+<span class="hljs-comment">// 简单的CSS选择符 </span>
+    *                      所有元素 
+    #id                  带有给定ID的元素 
+    element              给定类型的所有元素 
+    .class              带有给定类的所有元素 
+    a, b                  与a或b匹配的元素 
+    a b                  作为a后代的b匹配的元素 
+    a &gt; b                  作为a子元素的b匹配的元素 
+    a + b                  作为a后面直接同辈元素的b匹配的元素 
+    a ~ b                  作为a后面同辈的b匹配的元素 
+<span class="hljs-comment">// 在同辈元素间定位</span>
+    :nth-child(index)      作为其父元素第index个子元素的元素（从<span class="hljs-number">1</span>开始计数） 
+    :nth-child(even)      作为其父元素第偶数个子元素的元素（从<span class="hljs-number">1</span>开始计数） 
+    :nth-child(odd)      作为其父元素第奇数个子元素的元素（从<span class="hljs-number">1</span>开始计数） 
+    :nth-child(formula) 作为其父元素第n个子元素的元素（从<span class="hljs-number">1</span>开始计数）。formula（公式）的格式为an+b，a、b为整数 
+    :nth-last-child()      与:nth-child()相同，只不过是从最后一个元素开始倒计数 
+    :first-child          作为其父元素第一个子元素的元素 
+    :last-child          作为其父元素最后一个子元素的元素 
+    :only-child          作为其父元素唯一一个子元素的元素 
+    :nth-<span class="hljs-keyword">of</span>-type()      与:nth-child()相同，只不过只计相同元素 
+    :nth-last-<span class="hljs-keyword">of</span>-type()    与:nth-<span class="hljs-keyword">of</span>-type()相同，只不过是从最后一个元素开始倒计数 
+    :first-<span class="hljs-keyword">of</span>-type      同名的同辈元素中的第一个元素 
+    :last-<span class="hljs-keyword">of</span>-type          同名的同辈元素中的最后一个元素 
+    :only-<span class="hljs-keyword">of</span>-type          没有同名的同辈元素的元素 
+<span class="hljs-comment">// 在匹配的元素间定位 </span>
+    :first                 结果集中的第一个元素 
+    :last                  结果集中的最后一个元素 
+    :not(a)              结果集中与a不匹配的所有元素 
+    :even                  结果集中的偶数元素（从<span class="hljs-number">0</span>开始计数） 
+    :odd                  结果集中的奇数元素（从<span class="hljs-number">0</span>开始计数） 
+    :eq(index)          结果集中索引为index的元素（从<span class="hljs-number">0</span>开始计数） 
+    :gt(index)              结果集中所有位于给定索引之后（大于该索引）的元素（从<span class="hljs-number">0</span>开始计数） 
+    :lt(index)          结果集中所有位于给定索引之前（小于该索引）的元素（从<span class="hljs-number">0</span>开始计数） 
+<span class="hljs-comment">// 属性 </span>
+    [attr]              带有属性attr的元素 
+    [attr=<span class="hljs-string">"value"</span>]      attr属性的值为value的元素 
+    [attr!=<span class="hljs-string">"value"</span>]      attr属性的值不为value的元素 
+    [attr^=<span class="hljs-string">"value"</span>]      attr属性的值以value开头的元素 
+    [attr$=<span class="hljs-string">"value"</span>]      attr属性的值以value结尾的元素 
+    [attr*=<span class="hljs-string">"value"</span>]      attr属性的值包含子字符串value的元素 
+    [attr~=<span class="hljs-string">"value"</span>]      attr属性的值是空格分隔的多个字符串，其中一个字符串的值为value的元素 
+    [attr|=<span class="hljs-string">"value"</span>]      attr属性的值等于value或者以value开头后跟一个连字符的元素 
+<span class="hljs-comment">// 表单 </span>
+    :input              所有&lt;input&gt;、&lt;select&gt;、&lt;textarea&gt;和&lt;button&gt;元素 
+    :text                  type=<span class="hljs-string">"text"</span>的&lt;input&gt;元素 
+    :password              type=<span class="hljs-string">"password"</span>的&lt;input&gt;元素 
+    :file                  type=<span class="hljs-string">"file"</span>的&lt;input&gt;元素 
+    :radio              type=<span class="hljs-string">"radio"</span>的&lt;input&gt;元素 
+    :checkbox              type=<span class="hljs-string">"checkbox"</span>的&lt;input&gt;元素 
+    :submit              type=<span class="hljs-string">"submit"</span>的&lt;input&gt;元素 
+    :image              type=<span class="hljs-string">"image"</span>的&lt;input&gt;元素 
+    :reset              type=<span class="hljs-string">"reset"</span>的&lt;input&gt;元素 
+    :button              type=<span class="hljs-string">"button"</span>的&lt;input&gt;元素及&lt;button&gt;元素 
+    :enabled              启用的表单元素 
+    :disabled              禁用的表单元素 
+    :checked              选中的复选框和单选按钮元素 
+    :selected              选中的&lt;option&gt;元素 
+<span class="hljs-comment">// 其他自定义选择符</span>
+    :root                  文档的根元素 
+    :header              标题元素（如&lt;h1&gt;、&lt;h2&gt;） 
+    :animated              其动画正在播放的元素 
+    :contains(text)      包含给定文本text的元素 
+    :empty              不包含子节点的元素 
+    :has(a)              后代元素中至少有一个与a匹配的元素 
+    :parent              包含子节点的元素 
+    :hidden              隐藏的元素，包括通过CSS隐藏的元素及&lt;input type=<span class="hljs-string">"hidden"</span> /&gt; 
+    :visible              与:hidden匹配的元素相反 
+    :focus              获得键盘焦点的元素 
+    :lang(language)      具有给定（在元素的lang属性或&lt;meta&gt;标签中声明的）语言代码的元素 
+    ：target              URI标识符指向的目标元素 
+<span class="hljs-comment">// 筛选元素 </span>
+    .filter(selector)      与给定的选择符selector匹配的选中元素 
+    .filter(callback)      回调函数callback返回<span class="hljs-literal">true</span>的选中元素 
+    .eq(index)          从<span class="hljs-number">0</span>开始计数的第index个选中元素 
+    .first()              选中元素中的第一个元素 
+    .last()              选中元素中的最后一个元素 
+    .slice(start, [end])从<span class="hljs-number">0</span>开始计数的给定范围内的选中元素 
+    .not(selector)      选中元素中与给定选择符不匹配的元素 
+    .has(selector)      选中元素中有后代匹配给定选择符的元素 
+<span class="hljs-comment">// 后代元素 </span>
+    .find(selector)      与给定选择符selector匹配的后代元素 
+    .contents()          子节点（包括文本节点） 
+    .children([selector])子节点，可以传入可选的选择符selector进一步筛选 
+<span class="hljs-comment">// 同辈元素 </span>
+    .next([selector])   每个选中元素紧邻的下一个同辈元素，可以传入可选的选择符selector进一步筛选 
+    .nextAll([selector])  每个选中元素之后的所有同辈元素，可以传入可选的选择符selector进一步筛选 
+    .nextUntil([selector],[filter])  每个选中元素之后、直至但不包含第一个匹配selector元素的同辈元素，
+                可以传入可选的选择符filter进一步筛选 
+    .prev([selector])  每个选中元素紧邻的上一个同辈元素，可以传入可选的选择符selector进一步筛选 
+    .prevAll([selector]) 每个选中元素之前的所有同辈元素，可以传入可选的选择符selector进一步筛选 
+    .prevUntil([selector],[filter])  每个选中元素之前、直至但不包含第一个匹配selector元素的同辈元素，
+                可以传入可选的选择符filter进一步筛选 
+    .siblings([selector])  所有同辈元素，可以传入可选的选择符selector进一步筛选 
+<span class="hljs-comment">// 祖先元素</span>
+    .parent([selector])  每个选中元素的父元素，可以传入可选的选择符selector进一步筛选 
+    .parents([selector])  每个选中元素的所有祖先元素，可以传入可选的选择符selector进一步筛选 
+    .parentsUntil([selector],[filter])  每个选中元素的所有祖先元素，直至但不包含第一个匹配selector的祖先元素，
+                可以传入可选的选择符filter进一步筛选 
+    .closest(selector)  与选择符selector匹配的第一个元素，遍历路径从选中元素开始，沿DOM树向上在其中祖先节点中的查找 
+    .offsetParent()      第一个选中元素被定位的父元素（如，通过relative或absolute定位） 
+<span class="hljs-comment">// 集合操作</span>
+    .add(selector)      选中的元素，加上与给定选择符匹配的元素 
+    .addBack()          选中的元素，加上内部jQuery栈中之前选中的那一组元素 
+    .end()              内部jQuery栈中之前选中的元素 
+    .map(callback)      对每个选中元素调用回调函数callback之后的结果 
+    .pushStack(elements)  指定的元素 
+<span class="hljs-comment">// 操作选中的元素</span>
+    .is(selector)          确定匹配的元素中是否有传入的选择符匹配的元素 
+    .index()              取得匹配元素相对于其同辈元素的索引 
+    .index(element)     取得匹配元素中与指定元素对应的DOM节点的索引 
+    $.contains(a,b)      确定DOM节点b是否包含DOM节点a 
+    .each(callback)      迭代匹配的元素，针对每个元素执行callback函数 
+    .length              取得匹配元素的数量 
+    .get()              取得与匹配元素对应的DOM节点的列表 
+    .get(index)          取得匹配元素中与指定索引对应的DOM节点 
+    .toArray()          取得与匹配元素对应的DOM节点的列表 
+<span class="hljs-comment">// 绑定 </span>
+    .ready(handler)      绑定在DOM和CSS完全加载后调用的处理程序handler 
+    .on(type, [selector],[data], handler) 绑定在给定类型的事件type发送到元素时调用的处理程序handler；
+                如果提供了selector则执行事件委托 
+    .on(events, [selector] , [data])  根据events对象中的事件绑定多个事件处理程序 
+    .off(type, [selector], [handler])  解除元素上绑定的处理程序 
+    .bind(type, [data], handler)  绑定在给定类型的事件type发送到元素时调用的处理程序handler；一般都用.on()代替 
+    .one(type, [data], handler)  绑定在给定类型的事件type发送到元素时调用的处理程序handler，并在handler被调用后立即解除绑定 
+    .unbind([type], [handler])  解除元素上绑定的处理程序（可以指定事件类型或处理程序，不指定则解除所有绑定）  
+    .delegate(selector, type, [data], handler) 绑定当给定事件发送到与selector匹配的后代元素后调用的处理程序 
+    .delegate(selector, handlers)  绑定当给定事件发送到与selector匹配的后代元素后调用的处理程序 
+    .undelegate(selector, type, [handler]) 解除之前通过.delegate()绑定的到元素上的处理程序 
+<span class="hljs-comment">// 简写绑定</span>
+    .blur(handler)      绑定当元素失去键盘焦点时调用的处理程序 
+    .change(handler)      绑定当元素的值改变时调用的处理程序 
+    .click(handler)      绑定当元素被单击时调用的处理程序 
+    .dblclick(handler)  绑定当元素被双击时调用的处理程序 
+    .error(handler)      绑定当元素接收到错误事件（取决于浏览器）时调用的处理程序 
+    .focus(handler)     绑定当元素获得键盘焦点时调用的处理程序 
+    .focusin(handler)      绑定当元素或后代元素获得键盘焦点时调用的处理程序 
+    .focusout(handler)  绑定当元素或后代元素失去键盘焦点时调用的处理程序 
+    .keydown(handler)      绑定当元素拥有键盘焦点且有键被按下时调用的处理程序 
+    .keypress(handler)  绑定当元素拥有键盘焦点且有按键事件发生时调用的处理程序 
+    .keyup(handler)      绑定当元素拥有键盘焦点且有键被释放时调用的处理程序 
+    .load(handler)      绑定当元素加载完成时调用的处理程序 
+    .mousedown(handler) 绑定当在元素中按下鼠标键时调用的处理程序 
+    .mouseenter(handler)绑定当鼠标指针进入元素时调用的处理程序。不受事件冒泡影响 
+    .mouseleave(handler)绑定当鼠标指针离开元素时调用的处理程序。不受事件冒泡影响 
+    .mousemove(handler) 绑定当在元素中移动鼠标指针时调用的处理程序 
+    .mouseout(handler)  绑定当鼠标指针离开元素时调用的处理程序 
+    .mouseover(handler) 绑定当鼠标指针进入元素时调用的处理程序 
+    .mouseup(handler)      绑定当在元素中释放鼠标键时调用的处理程序 
+    .resize(handler)      绑定当调整元素大小时调用的处理程序 
+    .scroll(handler)      绑定当元素的滚动位置改变时调用的处理程序 
+    .select(handler)      绑定当元素中的文本被选中时调用的处理程序 
+    .submit(handler)      绑定当表单元素被提交后调用的处理程序 
+    .unload(handler)      绑定当元素从内存中被卸载后调用的处理程序 
+    .hover(enter, leave)绑定在鼠标进入元素时调用的enter和鼠标离开元素时调用的leave 
+<span class="hljs-comment">// 触发事件 </span>
+    .trigger(type, [data])  触发元素上的事件并执行该事件的默认操作 
+    .triggerHandler(type, [data])  触发元素上的事件，但不执行任何默认操作 
+<span class="hljs-comment">// 简写触发方法</span>
+    .blur()              触发blur事件 
+    .change()              触发change事件 
+    .click()              触发click事件 
+    .dblclick()          触发dblclick事件 
+    .error()              触发error事件 
+    .focus()              触发focus事件 
+    .keydown()          触发keydown事件 
+    .keypress()         触发keypress事件 
+    .keyup()              触发keyup事件 
+    .select()              触发select事件 
+    .submit()              触发submit事件 
+<span class="hljs-comment">// 实用方法 </span>
+    $.proxy(fn,context) 创建一个新的在指定上下文中执行的函数 
+<span class="hljs-comment">// 预定义效果 </span>
+    .show()              显示匹配的元素 
+    .hide()              隐藏匹配的元素 
+    .show(speed, [callback])  通过高度、宽度及透明度动画显示匹配的元素 
+    .hide(speed, [callback])  通过高度、宽度及透明度动画隐藏匹配的元素 
+    .toggle([speed], [callback])  显示或隐藏匹配的元素 
+    .slideDown([speed], [callback])  以滑入方式显示匹配的元素 
+    .slideUp([speed], [callback])  以滑出方式隐藏匹配的元素 
+    .slideToggle([speed], [callback])  以滑动方式显示或隐藏匹配的元素 
+    .fadeIn([speed], [callback])  以淡入方式显示匹配的元素 
+    .fadeOut([speed], [callback])  以淡出方式隐藏匹配的元素 
+    .fadeToggle([speed], [callback])  以淡入淡出方式显示或隐藏匹配的元素 
+    .fadeTo(speed, opacity, [callback])  调整匹配元素的不透明度 
+<span class="hljs-comment">// 自定义动画</span>
+    .animate(attributes, [speed], [easing], [callback]) 针对指定的CSS属性执行自定义动画 
+    .animate(attributes, options)  .animate()的底层接口，支持对动画队列的控制 
+<span class="hljs-comment">// 队列操作</span>
+    .queue([queueName])  取得第一个匹配元素上的动画队列 
+    .queue([queueName],callback)  在动画队列的最后添加回调函数 
+    .queue([queueName],newQueue)  以新队列替换原队列 
+    .dequeue([queueName])  执行队列中的下一个动画 
+    .clearQueue([queueName])  清除所有未执行的函数 
+    .stop([clearQueue], [jumpToEnd])  停止当前播放的动画，然后启动排列的动画（如果有） 
+    .finish([queueName])  停止当前播放的动画并将所有排队的动画立即提前到它们的目标值 
+    .delay(duration, [queueName])  在执行队列中的下一项前等待duration毫秒 
+    .promise([queueName],[target])  在集合中所有排队的操作完成后返回一个待解决的承诺对象 
+<span class="hljs-comment">// 特性与属性 </span>
+    .attr(key)          取得特性key的值 
+    .attr(key, value)      设置特性key的值为value 
+    .attr(key, fn)      设置特性key的值为fn（基于每个匹配的元素单独调用）返回的结果 
+    .attr(obj)          根据传入的键值对参数设置属性的值 
+    .removeAttr(key)      删除特性key 
+    .prop(key)          取得属性key的值 
+    .prop(key,value)      设置属性key的值为value 
+    .prop(key,fn)          将设置属性key的值为fn（基于每个匹配的元素单独调用）返回的结果 
+    .prop(obj)          设置属性值，以键值对形式传入 
+    .removeProp(key)      删除属性key
+    <span class="hljs-comment">// .addClass(class) 为每个匹配的元素添加传入的类</span>
+    <span class="hljs-comment">// .removeClass(class)  从每个匹配的元素中删除传入的类 </span>
+    <span class="hljs-comment">// .toggleClass(class)  （针对每个匹配的元素）如果传入的类存在则删除该类，否则添加该类 </span>
+    <span class="hljs-comment">// .hasClass(class) 如果匹配的元素中至少有一个包含传入的类，则返回true </span>
+    .val()              取得第一个匹配元素的value属性的值 
+    .val(value)          设置每个匹配元素的value属性的值为传入的value 
+<span class="hljs-comment">// 内容 </span>
+    .html()              取得第一个匹配元素的HTML内容 
+    .html(value)          将每个匹配元素的HTML内容设置为传入的value 
+    .text()              取得所有匹配元素的文本内容，返回一个字符串 
+    .text(value)          设置每个匹配元素的文本内容为传入的value 
+<span class="hljs-comment">// CSS </span>
+    .css(key)              取得CSS属性key的值 
+    .css(key, value)      设置CSS属性key的值为传入的value 
+    .css(obj)              根据传入的键值对参数设置CSS属性的值 
+<span class="hljs-comment">// 尺寸</span>
+    .offset()              取得第一个匹配元素相对于视口的上、左坐标值（单位：像素） 
+    .position()          取得第一个匹配元素相对于.offsetParent()返回元素的上、左坐标（单位：像素） 
+    .scrollTop()         取得第一个匹配元素的垂直滚动位置 
+    .scrollTop(value)      设置每个匹配元素的垂直滚动位置为传入的value 
+    .scrollLeft()          取得第一个匹配元素的水平滚动位置 
+    .scrollLeft(value)  设置每个匹配元素的水平滚动位置为传入的value 
+    .height()              取得第一个匹配元素的高度 
+    .height(value)      设置每个匹配元素的高度为传入的value 
+    .width()              取得第一个匹配元素的宽度 
+    .width(value)          设置每个匹配元素的宽度为传入的value 
+    .innerHeight()      取得第一个匹配元素的包含内边距但不包含边框的高度 
+    .innerWidth()          取得第一个匹配元素的包含内边距但不包含边框的宽度 
+    .outerHeight(includeMargin)  取得第一个匹配元素的包含内边距、边框及可选的外边距的高度 
+    .outerWidth(includeMargin)  取得第一个匹配元素的包含内边距、边框及可选的外边距的宽度 
+<span class="hljs-comment">// 插入 </span>
+    .append(content)      在每个匹配元素内部的末尾插入content 
+    .appendTo(selector) 将匹配的元素插入到selector选择符匹配的元素内部的末尾 
+    .prepend(content)      在每个匹配元素内部的开头插入content 
+    .prependTo(selector)将匹配的元素插入到selector选择符匹配的元素内部的开头 
+    .after(content)      在每个匹配元素的后面插入content 
+    .insertAfter(selector)  将匹配的元素插入到selector选择符匹配的元素的后面 
+    .before(content)      在每个匹配元素的前面插入content 
+    .insertBefore(selector)  将匹配的元素插入到selector选择符匹配的元素的前面 
+    .wrap(content)      将匹配的每个元素包装在content中 
+    .wrapAll(content)      将匹配的每个元素作为一个单元包装在content中 
+    .wrapInner(content) 将匹配的每个元素内部的内容包装在content中 
+<span class="hljs-comment">// 替换 </span>
+    .replaceWith(content)  将匹配的元素替换为content 
+    .replaceAll(selector)  将selector选择符匹配的元素替换为匹配的元素 
+<span class="hljs-comment">// 删除</span>
+    .empty()              删除每个匹配元素的子节点 
+    .remove([selector]) 从DOM中删除匹配的节点，也可以通过selector选择符筛选 
+    .detach([selector]) 从DOM中删除匹配的节点，也可以通过selector选择符筛选，但保留jQuery给它们添加的数据 
+    .unwrap()              删除元素的父元素 
+<span class="hljs-comment">// 复制 </span>
+    .clone([withHandlers],[deepWithHandlers])  返回所有匹配元素的副本，也可以复制事件处理程序 
+<span class="hljs-comment">// 数据</span>
+    .data(key)          取得与第一个匹配元素关联的key键的数据项 
+    .data(key, value)      设置与每个匹配元素关联的key键的数据项为value 
+    .removeData(key)      移除与每个匹配元素关联的key键的数据项 
+<span class="hljs-comment">// Ajax方法-发送请求 </span>
+    $.ajax([url], options)  使用传入的options生成一次Ajax请求。这是一个通常由其他便捷方法调用的底层方法 
+    .load(url, [data], [callback])  向传入的url生成一次Ajax请求，然后将响应放在匹配的元素中 
+    $.get(url, [data], [callback], [returnType]) 使用GET方法向传入的url生成一次Ajax请求 
+    $.getJSON(url, [data], [callback])  向传入的url生成一次Ajax请求，并且将响应作为<span class="hljs-built_in">JSON</span>数据结构解析 
+    $.getScript(url, [callback])  向传入的url生成一次Ajax请求，并且将响应作为JavaScript脚本执行 
+    $.post(url, [data], [callback], [returnType]) 使用POST方法向传入的url生成一次Ajax请求 
+<span class="hljs-comment">// Ajax方法-监视请求 </span>
+    .ajaxComplete(handler)  绑定当任意Ajax事务完成后调用的处理程序 
+    .ajaxError(handler)      绑定当任意Ajax事务发生错误时调用的处理程序 
+    .ajaxSend(handler)      绑定当任意Ajax事务开始时调用的处理程序 
+    .ajaxStart(handler)      绑定当任意Ajax事务开始但没有其他Ajax事务活动时调用的处理程序 
+    .ajaxStop(handler)      绑定当任意Ajax事务结束但没有其他Ajax事务还在活动时调用的处理程序 
+    .ajaxSuccess(handler)      绑定当任意Ajax事务成功完成时调用的处理程序 
+<span class="hljs-comment">// Ajax方法-配置</span>
+    $.ajaxSetup(options)   为后续的Ajax事务设置默认选项 
+    $.ajaxPrefilter([dataTypes], handler)  在$.Ajax()处理每个请求之前，修改每个Ajax请求的选项 
+    $.ajaxTransport(transportFunction)  为Ajax事务定义一个新的传输机制 
+<span class="hljs-comment">// Ajax方法-实用方法</span>
+    .serialize()              将一组表单控件的值编码为一个查询字符串 
+    .serializeArray()          将一组表单控件的值编码为一个<span class="hljs-built_in">JSON</span>数据结构 
+    $.param(obj)              将任意值的对象编码为一个查询字符串 
+    $.globalEval(code)      在全局上下文中求值给定的JavaScript字符串 
+    $.parseJSON(json)          将给定的<span class="hljs-built_in">JSON</span>字符串转换为JavaScript对象 
+    $.parseXML(xml)          将给定的XML字符串转换为XML文档 
+    $.parseHTML(html)          将给定的HTML字符串转换为DOM元素 
+<span class="hljs-comment">// Ajax方法-创建对象</span>
+    $.Deferred([setupFunction])  返回一个新的延迟对象 
+    $.when(deferreds)          在给定的延迟对象解决了之后返回一个待解决的承诺对象 
+<span class="hljs-comment">// Ajax方法-延迟对象的方法 </span>
+    .resolve([args])          解决延迟对象并使用给定的参数调用完成回调函数 
+    .resolveWith(context,[args])  解决延迟对象并使用给定的参数调用完成回调函数，同时让关键字<span class="hljs-keyword">this</span>引用回调函数中的context 
+    .reject([args])          拒绝延迟对象并使用给定的参数调用失败回调函数 
+    .rejectWith(context,[args])  拒绝延迟对象并使用给定的参数调用失败回调函数，同时让关键字<span class="hljs-keyword">this</span>引用回调函数中的context 
+    .notify([args])          执行progress回调 
+    .notifyWith(context, [args])  执行progress回调并将关键字<span class="hljs-keyword">this</span>设定为引用context 
+    .promise([target])      返回与当前延迟对象对应的承诺对象 
+<span class="hljs-comment">// Ajax方法-承诺对象的方法 </span>
+    .done(callback)          当对象被解决之后调用callback 
+    .fail(callback)          当对象被拒绝之后调用callback 
+    .always([callback])      当对象被解决或被拒绝之后调用callback 
+    .then(doneCallbacks,failCallbacks)  当对象被解决之后调用doneCallbacks，或在对象被拒绝之后调用failCallbacks 
+    .progress(callback)      当对象每次接收到进度通知时就执行callback 
+    .isRejected()              如果对象被拒绝了，返回<span class="hljs-literal">true</span> 
+    .isResolved()              如果对象被解决了，返回<span class="hljs-literal">true</span> 
+    .state()                  根据当前状态运行 <span class="hljs-string">'pending'</span>、<span class="hljs-string">'resolved'</span>或<span class="hljs-string">'rejected'</span> 
+    .pipe([doneFilter],[failFilter])  返回一个新的承诺对象，该对象在原始承诺对象被解决时也会被解决，可选地通过一个函数来进行筛选 
+<span class="hljs-comment">// jQuery对象的属性</span>
+    $.support                  返回一个属性对象，表示浏览器是否支持各种特性和标准 
+<span class="hljs-comment">// 数组和对象 </span>
+    $.each(collection, callback)  迭代遍历集合，针对集合中的每一项执行回调函数 
+    $.extend(target, addition, ...)  扩展target对象，即将后面传入对象的属性添加到这个对象中 
+    $.grep(array, callback, [invert])  通过使用回调函数测试来筛选数组  
+    $.makeArray(object)      将对象转换为一个数组 
+    $.map(array, callback)  针对数组中每一项执行回调函数，将返回的结果组织成一个新数组返回 
+    $.inArray(value, array) 确定数组array中是否包含值value；如果value没有包含在array中，则返回<span class="hljs-number">1</span> 
+    $.merge(array1, array2) 合并数组array1和array2 
+    $.unique(array)          从数组中移除重复的DOM元素 
+<span class="hljs-comment">// 对象内省</span>
+    $.isArray(object)          确定object是不是一个数组 
+    $.isEmptyObject(object) 确定object是不是空的 
+    $.isFunction(object)      确定object是不是一个函数 
+    $.isPlainObject(object) 确定object是不是通过对象字面量或<span class="hljs-keyword">new</span> <span class="hljs-built_in">Object</span>创建的 
+    $.isNumeric(object)      确定object是不是数值 
+    $.isWindow(object)      确定object是不是浏览器窗口 
+    $.isXMLDoc(object)      确定object是不是XML节点 
+    $.type(object)          取得object的JavaScript类 
+<span class="hljs-comment">// 其他 </span>
+    $.trim(string)          从字符串末尾移除空白符 
+    $.noConflict([removeALL])  向其他库让渡$标识符使用权，恢复使用jQuery标识符 
+    $.noop()                  一个什么也不做的函数 
+    $.now()                  返回当前时间，以自纪元时间戳开始到现在的秒数表示 
+    $.holdReady(hold)          防止触发ready事件或者释放当前的保留 
+</code></pre>

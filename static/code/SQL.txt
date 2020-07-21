@@ -1,0 +1,929 @@
+<pre><code class="js hljs javascript">
+<span class="hljs-comment">/*
+
+    SQL W3C
+
+    2015-09-13
+    ~
+    2015-09-13 Noted by Chisw
+
+*/</span>
+
+
+<span class="hljs-number">001.</span>简介
+<span class="hljs-number">002.</span>SELECT 
+<span class="hljs-number">003.</span>WHERE
+<span class="hljs-number">004.</span>AND &amp; OR
+<span class="hljs-number">005.</span>ORDER BY
+<span class="hljs-number">006.</span>INSERT INTO
+<span class="hljs-number">007.</span>UPDATE
+<span class="hljs-number">008.</span>DELETE  删除表中的行
+<span class="hljs-number">009.</span>TOP
+<span class="hljs-number">010.</span>LIKE
+<span class="hljs-number">011.</span>通配符
+<span class="hljs-number">012.</span>IN
+<span class="hljs-number">013.</span>BETWEEN
+<span class="hljs-number">014.</span>Aliases
+<span class="hljs-number">015.</span>JOIN
+<span class="hljs-number">016.</span>UNION
+<span class="hljs-number">017.</span>SELECT INTO
+<span class="hljs-number">018.</span>CREATE DATABASE
+<span class="hljs-number">019.</span>CREATE TABLE
+<span class="hljs-number">020.</span>Constraints（NOT NULL， UNIQUE， PRIMARY KEY， FOREIGN KEY， CHECK， DEFAULT）
+<span class="hljs-number">021.</span>CREATE INDEX
+<span class="hljs-number">022.</span>DROP
+<span class="hljs-number">023.</span>ALTER
+<span class="hljs-number">024.</span>AUTO INCREMENT
+<span class="hljs-number">025.</span>VIEW
+<span class="hljs-number">026.</span><span class="hljs-built_in">Date</span>
+<span class="hljs-number">027.</span>Nulls
+<span class="hljs-number">028.</span>isnull()
+<span class="hljs-number">029.</span>数据类型
+<span class="hljs-number">030.</span>服务器
+<span class="hljs-number">031.</span>Functions
+
+
+<span class="hljs-number">001.</span>简介
+使我们有能力访问数据库
+除了 SQL 标准之外，大部分 SQL 数据库程序都拥有它们自己的私有扩展！
+如何使用SQL访问和处理数据系统中的数据
+    MySQL/SQL Server/Access/Oracle/Sybase/DB2
+
+SQL:Structured Query Language
+    是一种 ANSI (American National Standards Insititute)标准计算机语言
+
+如何在网站中使用SQL
+    RDBMS 数据库程序 + 服务器端脚本语言（PHP/ASP） + SQL + HTML/CSS
+
+    RDBMS
+        Relational Database Management System 关系型数据库管理系统
+        是 SQL 的基础，同样是所有现代数据库系统的基础
+        RDBMS 中的数据存储在被称为 表 的数据库对象中
+        表 是相关的数据项的集合，它由列和行组成
+
+对大小写不敏感
+某些数据库要求每条命令末端使用分号 某些必须使用
+
+SQL 分为两个部分：
+    数据操作语言 DML
+        SELECT                  <span class="hljs-comment">// 查</span>
+        UPDATE                  <span class="hljs-comment">// 改</span>
+        DELETE                  <span class="hljs-comment">// 删</span>
+        INSERT INTO             <span class="hljs-comment">// 增</span>
+
+    数据定义语言 DDL
+        CREATE DATABASE         <span class="hljs-comment">// 创建 数据库</span>
+        ALTER DATABASE          <span class="hljs-comment">// 修改 数据库</span>
+
+        CREATE TABLE            <span class="hljs-comment">// 创建 数据库表</span>
+        ALTER TABLE             <span class="hljs-comment">// 变更 数据库表 </span>
+        DROP TABLE              <span class="hljs-comment">// 删除 数据库表</span>
+
+        CREATE INDEX            <span class="hljs-comment">// 创建 索引</span>
+        DROP INDEX              <span class="hljs-comment">// 删除 索引</span>
+
+
+
+<span class="hljs-number">002.</span>SELECT 
+<span class="hljs-comment">// 从表中选取数据,结果被存储在一个结果表中,称为结果集</span>
+
+<span class="hljs-comment">// 单个，多个，所有</span>
+    SELECT columns_name FROM table_name
+    SELECT last_name,first_name FROM table_name
+    SELECT * FROM table_name
+
+<span class="hljs-comment">// DISTINCT 关键词使重复的值只出现一次</span>
+    SELECT DISTINCT Company FROM Orders
+
+
+<span class="hljs-number">003.</span>WHERE
+<span class="hljs-comment">// SELECT 列 FROM 表 WHERE 列 运算符 值</span>
+    SELECT * FROM Customers WHERE CustomerID = <span class="hljs-number">1</span>;
+    SELECT * FROM Persons WHERE City=<span class="hljs-string">'Beijing'</span>
+
+ <span class="hljs-comment">// 运算符</span>
+    =       &lt;&gt;        &gt;
+    &lt;        &gt;=       &lt;=
+    BETWEEN     // 在某个范围内
+    LIKE        // 搜索某种模式
+    IN          // 指定针对某个列的多个可能值
+
+
+004.AND &amp; OR
+// 可在 WHERE 子语句中把两个或多个条件结合起来
+
+// 并且
+    SELECT * FROM Persons WHERE FirstName='Thomas' AND LastName='Carter'
+
+// 或者
+    SELECT * FROM Persons WHERE firstname='Thomas' OR lastname='Carter'
+
+// 结合二者以及括号使用
+    SELECT * FROM Persons WHERE (FirstName='Thomas' OR FirstName='William') AND LastName='Carter'
+
+
+005.ORDER BY
+// SELECT ··· = SELECT Company, OrderNumber FROM Orders
+
+// 默认升序 ASC
+    SELECT ··· ORDER BY Company
+
+// 以数字顺序显示顺序号（OrderNumber）
+    SELECT ··· ORDER BY Company, OrderNumber
+
+// DESC 倒序
+    SELECT ··· ORDER BY Company DESC
+
+// 逆字母顺序显示公司名 以数字顺序显示顺序号
+    SELECT ··· ORDER BY Company DESC, OrderNumber ASC
+
+
+006.INSERT INTO
+// 向表格中插入新的行
+    INSERT INTO table_name VALUES (值1, 值2,..)
+
+// 指定列插入
+    INSERT INTO table_name (列1, 列2,..) VALUES (值1, 值2,..)
+        // 没有指定插入值的会 null ；每条记录都有一个唯一的数字
+
+
+007.UPDATE
+// UPDATE 表 SET 列 = 新值 WHERE 列 = 某值
+
+// 更新某一行中的一个列
+    UPDATE Person SET FirstName = 'Fred'
+    WHERE LastName = 'Wilson'
+
+// 更新某一行中的若干列
+    UPDATE Person SET Address = 'Zhongshan 23', City = 'Nanjing'
+    WHERE LastName = 'Wilson'
+
+    // 如果省略了 WHERE 将更改所有行中的列
+
+
+008.DELETE  删除表中的行
+// DELETE FROM 表 WHERE 列 = 值
+    DELETE FROM Person WHERE LastName = 'Wilson'
+
+// 删除所有数据的两种方式 但表的结构、属性和索引都是完整的
+    DELETE FROM table_name
+    DELETE * FROM table_name
+
+
+009.TOP
+// 规定返回多少个
+    SELECT TOP number|percent column_name(s) FROM table_name
+
+// MySQL
+    SELECT * FROM Persons LIMIT 5
+// Oracle
+    SELECT * FROM Persons WHERE ROWNUM &lt;= 5
+// SQL Server/MS Access
+    SELECT TOP 5 * FROM Persons
+    SELECT TOP 50 PERCENT * FROM Persons
+
+
+010.LIKE
+// 在 WHERE 子句中搜索列中的指定模式
+    SELECT column_name(s) FROM table_name WHERE column_name LIKE pattern;
+// "%" 可用于定义通配符
+    WHERE City LIKE 'startwith%';
+    WHERE City LIKE '%endwith';
+    WHERE City LIKE '%contain%';
+    WHERE City NOT LIKE '%except%';
+
+
+011.通配符
+    %           // 替代 0 或多个字符
+    _           // 替代 1 个字符
+    [charlist]  // 字符列中的任何单一字符
+    [^charlist] // 不在字符列中的任何单一字符
+    [!charlist] // 同上
+
+    WHERE City LIKE '_berlin';
+    WHERE City LIKE 'L_n_on';
+    WHERE City LIKE '[bsp]%';
+    WHERE City LIKE '[a-c]%';
+    WHERE City LIKE '%[!x-z]';
+
+
+012.IN
+// 允许在 WHERE 子句中规定多个值
+    SELECT column_name(s) FROM table_name
+    WHERE column_name IN (value1,value2,..)
+
+// 选取姓氏为 Adams 和 Carter 的人
+    SELECT * FROM Persons
+    WHERE LastName IN ('Adams','Carter')
+
+
+013.BETWEEN
+// 请注意，在不同的数据库中，BETWEEN 操作符会产生不同的结果
+// 选取介于两个值之间但不包括两个测试值的字段
+// 选取介于两个值之间且包括两个测试值的字段
+// 选取介于两个值之间且包括第一个测试值但不包括最后测试值的字段
+// 因此，请检查您的数据库是如何处理 BETWEEN 操作符的
+
+// 在 WHERE 子句中使用 选取介于两个值之间的数据范围
+    SELECT column_name(s) FROM table_name
+    WHERE column_name
+    BETWEEN value1 AND value2
+
+// 在 10-20 之间
+    SELECT * FROM Products
+    WHERE Price BETWEEN 10 AND 20;
+
+// 不在 10-20 之间
+    SELECT * FROM Products
+    WHERE Price NOT BETWEEN 10 AND 20;
+
+// 并且
+    SELECT * FROM Products
+    WHERE (Price BETWEEN 10 AND 20)
+    AND NOT CategoryID IN (1,2,3);
+
+// 字母
+    SELECT * FROM Products
+    WHERE ProductName BETWEEN 'C' AND 'M';
+
+// 日期
+    SELECT * FROM Products
+    WHERE OrderDate BETWEEN #07/04/1996# AND #07/09/1996#;
+
+
+014.Aliases
+// 为 列名称 和 表名称 指定别名
+
+// 表 在后
+    SELECT column_name FROM table_name AS alias_name
+
+// 列 在前
+    SELECT column_name AS alias_name FROM table_name
+
+    SELECT po.OrderID, p.LastName, p.FirstName
+    FROM Persons AS p, Product_Orders AS po
+    WHERE p.LastName='Adams' AND p.FirstName='John'
+
+    // 使用情境：
+    //  在查询中涉及超过一个表
+    //  在查询中使用了函数
+    //  列名称很长或者可读性差
+    //  需要把两个及以上的列结合在一起
+
+
+015.JOIN
+// 用于根据两个或多个表中的列之间的关系，从这些表中查询数据
+
+// 数据库中的表可通过键将彼此联系起来
+// 主键（Primary Key）是一个列，在这个列中的每一行的值都是唯一的
+// 在表中，每个主键的值都是唯一的。这样做的目的是在不重复每个表中的所有数据的情况下，把表间的数据交叉捆绑在一起
+
+    SELECT Persons.LastName, Persons.FirstName, Orders.OrderNo
+    FROM Persons, Orders
+    WHERE Persons.Id_P = Orders.Id_P  // 匹配动作
+
+    SELECT Persons.LastName, Persons.FirstName, Orders.OrderNo
+    FROM Persons INNER JOIN Orders
+    ON Persons.Id_P = Orders.Id_P  // 匹配动作
+    ORDER BY Persons.LastName
+
+// 求交
+    INNER JOIN          // 至少一个匹配 返回行  INNER JOIN 与 JOIN 是相同的
+
+// 左边的重要 左边全部打出
+    LEFT JOIN           // 主语站左边
+    RIGHT JOIN          // 主语站右边
+
+// 求和 返回左右所有行
+    FULL JOIN           // 在某些数据库中称 FULL OUTER JOIN
+
+
+016.UNION
+// 用来合并 SELECT 语句结果集（尾首相接） **过滤相同值** 不过滤使用 UNION ALL
+// UNION 内部的 SELECT 语句必须拥有相同数量的列 列也必须拥有相似的数据类型
+// 每条 SELECT 语句中的列的顺序必须相同
+    SELECT column_name(s) FROM table_name1
+    UNION/UNION ALL
+    SELECT column_name(s) FROM table_name2
+
+
+017.SELECT INTO
+// 从一个表中选取数据，然后把数据插入另一个表中
+    SELECT *|column_name(s)
+    INTO new_table_name [IN externaldatabase] 
+    FROM old_tablename
+
+// 复制件
+    SELECT *
+    INTO Persons_backup
+    FROM Persons
+
+// 向另一个数据库中拷贝表
+    SELECT *
+    INTO Persons IN 'Backup.mdb'
+    FROM Persons
+
+// 带有 WHERE 子句
+    SELECT LastName,Firstname
+    INTO Persons_backup
+    FROM Persons
+    WHERE City='Beijing'
+
+// 多个复杂
+    SELECT Persons.LastName,Orders.OrderNo
+    INTO Persons_Order_Backup
+    FROM Persons
+    INNER JOIN Orders
+    ON Persons.Id_P=Orders.Id_P
+
+
+018.CREATE DATABASE
+// 创建数据库
+    CREATE DATABASE database_name
+
+
+019.CREATE TABLE
+// 创建数据库中的表
+    CREATE TABLE 表名称
+    (
+    列名称1 数据类型,
+    列名称2 数据类型,
+    列名称3 数据类型,
+    ..
+    )
+
+// 实例
+    CREATE TABLE Persons
+    (
+    Id_P int,
+    LastName varchar(255),
+    FirstName varchar(255),
+    Address varchar(255),
+    City varchar(255)
+    )
+
+
+020.Constraints
+// 创建表时规定约束（通过 CREATE TABLE 语句），或者在表创建之后也可以（通过 ALTER TABLE 语句）
+
+// NOT NULL
+    // 强制字段始终包含值 如果不向字段添加值 就无法插入新记录或者更新记录
+    Id_P int NOT NULL  // 直接加在句尾
+
+// UNIQUE
+    // 唯一标识数据库表中的每条记录 提供了唯一性的保证
+    // PRIMARY KEY 拥有自动定义的 UNIQUE 约束
+    // 每个表可以有多个 UNIQUE 约束 但只能有一个 PRIMARY KEY 约束
+
+    // 1.定义约束列
+        // MySQL
+        Id_P int NOT NULL,
+        UNIQUE (Id_P)  // 再定义
+
+        // SQL Server / Oracle / MS Access
+        Id_P int NOT NULL UNIQUE  // 加在句尾
+
+    // 2.命名并为多个列定义 UNIQUE 约束
+    Id_P int NOT NULL,
+    LastName varchar(255) NOT NULL,
+    CONSTRAINT uc_PersonID UNIQUE (Id_P,LastName)  // 再定义
+
+    // 3.1 修改未命名
+    ALTER TABLE Persons
+    ADD UNIQUE (Id_P)
+
+    // 3.2 修改已命名
+    ALTER TABLE Persons
+    ADD CONSTRAINT uc_PersonID UNIQUE (Id_P,LastName)
+
+    // 4.撤销
+        // MySQL
+        ALTER TABLE Persons
+        DROP INDEX uc_PersonID
+
+        // SQL Server / Oracle / MS Access
+        ALTER TABLE Persons
+        DROP CONSTRAINT uc_PersonID
+
+// PRIMARY KEY 主键
+    // 约束唯一标识数据库表中的每条记录 必须包含唯一的值 不能包含 NULL 值
+    // 每个表都应该有且只有一个主键
+
+    // 1.定义约束列
+        // MySQL
+        Id_P int NOT NULL,
+        PRIMARY KEY (Id_P)  // 再定义
+
+        // SQL Server / Oracle / MS Access
+        Id_P int NOT NULL PRIMARY KEY  // 加在句尾
+
+    // 2.命名并为多个列定义 PRIMARY KEY 约束
+    Id_P int NOT NULL,
+    LastName varchar(255) NOT NULL,
+    CONSTRAINT pk_PersonID PRIMARY KEY (Id_P,LastName)  // 再定义
+
+    // 3.1 修改未命名
+    ADD PRIMARY KEY (Id_P)
+
+    // 3.2 修改已命名
+    ADD CONSTRAINT pk_PersonID PRIMARY KEY (Id_P,LastName)
+
+    // 4.撤销
+        // MySQL
+        ALTER TABLE Persons
+        DROP PRIMARY KEY
+
+        // SQL Server / Oracle / MS Access
+        ALTER TABLE Persons
+        DROP CONSTRAINT pk_PersonID
+
+// FOREIGN KEY 外键 REFERENCES
+    // 指向另一个表的主键
+    // 预防破坏表之间连接的动作
+    // 防止非法数据插入外键列，因为它必须是它指向的那个表中的值之一
+
+    // 1.定义约束列
+        // MySQL
+        Id_O int NOT NULL,
+        FOREIGN KEY (Id_P) REFERENCES Persons(Id_P)
+
+        // SQL Server / Oracle / MS Access
+        Id_O int NOT NULL PRIMARY KEY,
+        Id_P int FOREIGN KEY REFERENCES Persons(Id_P)
+
+    // 2.命名并为多个列定义 FOREIGN KEY 约束
+    Id_O int NOT NULL,
+    Id_P int,
+    PRIMARY KEY (Id_O),
+    CONSTRAINT fk_PerOrders FOREIGN KEY (Id_P)
+    REFERENCES Persons(Id_P)
+
+    // 3.1 修改未命名
+    ALTER TABLE Orders
+    ADD FOREIGN KEY (Id_P)
+    REFERENCES Persons(Id_P)
+
+    // 3.2 修改已命名
+    ALTER TABLE Orders
+    ADD CONSTRAINT fk_PerOrders
+    FOREIGN KEY (Id_P)
+    REFERENCES Persons(Id_P)
+
+    // 4.撤销
+        // MySQL
+        ALTER TABLE Orders
+        DROP FOREIGN KEY fk_PerOrders
+
+        // SQL Server / Oracle / MS Access
+        ALTER TABLE Orders
+        DROP CONSTRAINT fk_PerOrders
+
+// CHECK
+    // 限制列中的值的范围
+
+    // 1.定义约束列
+        // MySQL
+        Id_P int NOT NULL,
+        CHECK (Id_P&gt;0)
+
+        // SQL Server / Oracle / MS Access
+        Id_P int NOT NULL CHECK (Id_P&gt;0)
+
+    // 2.命名并为多个列定义 CHECK 约束
+    CONSTRAINT chk_Person CHECK (Id_P&gt;0 AND City='Sandnes')
+
+    // 3.1 修改未命名
+    ALTER TABLE Persons
+    ADD CHECK (Id_P&gt;0)
+
+    // 3.2 修改已命名
+    ALTER TABLE Persons
+    ADD CONSTRAINT chk_Person CHECK (Id_P&gt;0 AND City='Sandnes')
+
+    // 4.撤销
+        // MySQL
+        ALTER TABLE Persons
+        DROP CONSTRAINT chk_Person
+
+        // SQL Server / Oracle / MS Access
+        ALTER TABLE Persons
+        DROP CHECK chk_Person
+
+// DEFAULT
+    // 用来插入默认值
+
+    // 创建 DEFAULT 约束
+    City varchar(255) DEFAULT 'Sandnes'
+
+    // 插入系统值
+    OrderDate date DEFAULT GETDATE()
+
+    // 修改追加
+        // MySQL
+        ALTER TABLE Persons
+        ALTER City SET DEFAULT 'SANDNES'
+
+        // SQL Server / Oracle / MS Access
+        ALTER TABLE Persons
+        ALTER COLUMN City SET DEFAULT 'SANDNES'
+
+    // 撤销
+        // MySQL
+        ALTER TABLE Persons
+        ALTER City DROP DEFAULT
+
+        // SQL Server / Oracle / MS Access
+        ALTER TABLE Persons
+        ALTER COLUMN City DROP DEFAULT
+
+
+021.CREATE INDEX
+// 用于在表中创建索引 加快速高效地查询数据 用户无法看到
+    // 创建
+    CREATE INDEX index_name
+    ON table_name (column_name)
+
+    // 创建唯一
+    CREATE UNIQUE INDEX index_name
+    ON table_name (column_name)
+
+    // 降序
+    CREATE INDEX PersonIndex
+    ON Person (LastName DESC)
+
+    // 多个
+    CREATE INDEX PersonIndex
+    ON Person (LastName, FirstName)
+
+
+022.DROP
+// 删除索引
+    // Microsoft SQLJet (Microsoft Access)
+    DROP INDEX index_name ON table_name
+    // MS SQL Server
+    DROP INDEX table_name.index_name
+    // IBM DB2 和 Oracle
+    DROP INDEX index_name
+    // MySQL
+    ALTER TABLE table_name DROP INDEX index_name
+
+// 删除表：表的结构、属性以及索引也会被删除
+    DROP TABLE 表名称
+
+        // 清空而不删除表
+        TRUNCATE TABLE 表名称
+
+// 删除数据库
+    DROP DATABASE 数据库名称
+
+
+023.ALTER
+// 添加列
+    ALTER TABLE table_name
+    ADD column_name datatype
+
+// 删除列
+    ALTER TABLE table_name 
+    DROP COLUMN column_name  // 某些数据库不允许这种方式 
+
+// 修改列类型
+    ALTER TABLE table_name
+    ALTER COLUMN column_name datatype
+
+
+024.AUTO INCREMENT
+// 自动地创建主键字段的值
+
+// MySQL
+    P_Id int NOT NULL AUTO_INCREMENT,
+    // 修改起始值
+    ALTER TABLE Persons AUTO_INCREMENT=100
+
+// SQL Server（IDENTITY ）
+    P_Id int PRIMARY KEY IDENTITY,
+    // 修改起始值 以 20 起始且递增 10
+    P_Id int PRIMARY KEY IDENTITY(20,10)
+
+// Access
+    P_Id int PRIMARY KEY AUTOINCREMENT
+    // 修改起始值 以 20 起始且递增 10
+    P_Id int PRIMARY KEY AUTOINCREMENT(20,10)
+
+// Oracle
+    // 必须通过 sequence 对创建 auto-increment 字段（该对象生成数字序列）
+    CREATE SEQUENCE seq_person
+    MINVALUE 1
+    START WITH 1
+    INCREMENT BY 1
+    CACHE 10  // 规定了为了提高访问速度要存储多少个序列值
+
+
+025.VIEW
+// 视图是基于 SQL 语句的结果集的可视化的表，包含行和列，就像一个真实的表；
+// 数据库的设计和结构不会受到视图中的函数、where 或 join 语句的影响；
+// **视图总是显示最近的数据；每当用户查询视图时，数据库引擎通过使用 SQL 语句来重建数据。**
+
+// 语法
+    CREATE VIEW view_name AS
+    SELECT column_name(s)
+    FROM table_name
+    WHERE condition
+
+// 实例
+    CREATE VIEW [Current Product List] AS
+    SELECT ProductID,ProductName
+    FROM Products
+    WHERE Discontinued=No
+
+    // 查询
+    SELECT * FROM [Current Product List]
+
+// 更新
+    SQL CREATE OR REPLACE VIEW Syntax
+    CREATE OR REPLACE VIEW view_name AS
+    SELECT column_name(s)
+    FROM table_name
+    WHERE condition
+
+// 撤销
+    SQL DROP VIEW Syntax
+    DROP VIEW view_name
+
+
+026.Date
+// MySQL
+    NOW()           // 当前日期和时间 Date默认值
+    CURDATE()       // 当前日期
+    CURTIME()       // 当前时间
+    DATE()          // 日期或日期/时间表达式的日期部分
+
+    EXTRACT(unit FROM date)             // 日期/时间 参数 单独部分
+    DATE_ADD(date,INTERVAL expr type)   // 给日期添加指定的时间间隔
+    DATE_SUB(date,INTERVAL expr type)   // 从日期减去指定的时间间隔
+        // 间隔
+            // MICROSECOND
+            // SECOND
+            // MINUTE
+            // HOUR
+            // DAY
+            // WEEK
+            // MONTH
+            // QUARTER
+            // YEAR
+            // SECOND_MICROSECOND
+            // MINUTE_MICROSECOND
+            // MINUTE_SECOND
+            // HOUR_MICROSECOND
+            // HOUR_SECOND
+            // HOUR_MINUTE
+            // DAY_MICROSECOND
+            // DAY_SECOND
+            // DAY_MINUTE
+            // DAY_HOUR
+            // YEAR_MONTH
+
+    DATEDIFF()      // 返回两个日期之间的天数
+        // SELECT DATEDIFF('2008-12-30','2008-12-29') AS DiffDate
+
+    DATE_FORMAT(date,format)    // 用不同的格式显示日期/时间
+        // DATE_FORMAT(NOW(),'%b %d %Y %h:%i %p')
+            // %a   缩写星期名
+            // %b   缩写月名
+            // %c   月，数值
+            // %D   带有英文前缀的月中的天
+            // %d   月的天，数值(00-31)
+            // %e   月的天，数值(0-31)
+            // %f   微秒
+            // %H   小时 (00-23)
+            // %h   小时 (01-12)
+            // %I   小时 (01-12)
+            // %i   分钟，数值(00-59)
+            // %j   年的天 (001-366)
+            // %k   小时 (0-23)
+            // %l   小时 (1-12)
+            // %M   月名
+            // %m   月，数值(00-12)
+            // %p   AM 或 PM
+            // %r   时间，12-小时（hh:mm:ss AM 或 PM）
+            // %S   秒(00-59)
+            // %s   秒(00-59)
+            // %T   时间, 24-小时 (hh:mm:ss)
+            // %U   周 (00-53) 星期日是一周的第一天
+            // %u   周 (00-53) 星期一是一周的第一天
+            // %V   周 (01-53) 星期日是一周的第一天，与 %X 使用
+            // %v   周 (01-53) 星期一是一周的第一天，与 %x 使用
+            // %W   星期名
+            // %w   周的天 （0=星期日, 6=星期六）
+            // %X   年，其中的星期日是周的第一天，4 位，与 %V 使用
+            // %x   年，其中的星期一是周的第一天，4 位，与 %v 使用
+            // %Y   年，4 位
+            // %y   年，2 位
+
+// SQL Server
+    GETDATE()       // 当前日期和时间
+    DATEPART()      // 日期/时间的单独部分
+    DATEADD(datepart,number,date)   // 在日期中添加或减去指定的时间间隔
+        // 年    yy, yyyy
+        // 季度   qq, q
+        // 月    mm, m
+        // 年中的日 dy, y
+        // 日    dd, d
+        // 周    wk, ww
+        // 星期   dw, w
+        // 小时   hh
+        // 分钟   mi, n
+        // 秒    ss, s
+        // 毫秒   ms
+        // 微妙   mcs
+        // 纳秒   ns
+    DATEDIFF()      // 返回两个日期之间的时间
+    CONVERT(data_type(length),data_to_be_converted,style)   // 用不同的格式显示日期/时间
+        // Style ID Style 格式
+        // 100 或者 0 mon dd yyyy hh:miAM （或者 PM）
+        // 101  mm/dd/yy
+        // 102  yy.mm.dd
+        // 103  dd/mm/yy
+        // 104  dd.mm.yy
+        // 105  dd-mm-yy
+        // 106  dd mon yy
+        // 107  Mon dd, yy
+        // 108  hh:mm:ss
+        // 109 或者 9 mon dd yyyy hh:mi:ss:mmmAM（或者 PM）
+        // 110  mm-dd-yy
+        // 111  yy/mm/dd
+        // 112  yymmdd
+        // 113 或者 13    dd mon yyyy hh:mm:ss:mmm(24h)
+        // 114  hh:mi:ss:mmm(24h)
+        // 120 或者 20    yyyy-mm-dd hh:mi:ss(24h)
+        // 121 或者 21    yyyy-mm-dd hh:mi:ss.mmm(24h)
+        // 126  yyyy-mm-ddThh:mm:ss.mmm（没有空格）
+        // 130  dd mon yyyy hh:mi:ss:mmmAM
+        // 131  dd/mm/yy hh:mi:ss:mmmAM
+
+// 查询
+    SELECT * FROM Orders WHERE OrderDate='2008-12-26'
+
+    // 如果您希望使查询简单且更易维护，那么请不要在日期中使用时间部分
+        2008-12-26 YES
+        2008-12-26 16:23:55 NO
+
+
+027.Nulls
+// 遗漏的未知数据：添加记录时 没有给列规定值
+// 无法使用比较运算符来测试
+
+// 处理
+    // 带有NULL值
+    SELECT LastName,FirstName,Address FROM Persons
+    WHERE Address IS NULL
+
+    // 不带有
+    SELECT LastName,FirstName,Address FROM Persons
+    WHERE Address IS NOT NULL
+
+
+028.isnull()
+// 如果值为 null 该如何处理的函数
+    // SQL Server / MS Access
+    SELECT ProductName,UnitPrice*(UnitsInStock+ISNULL(UnitsOnOrder,0))
+    FROM Products
+
+    // Oracle
+    NVL(UnitsOnOrder,0)
+
+    // MySQL
+    IFNULL(UnitsOnOrder,0)
+    COALESCE(UnitsOnOrder,0)
+
+
+029.数据类型
+// 常用类型
+    // 整数 在括号内规定数字最大位数
+        integer(size)
+        int(size)
+        smallint(size)
+        tinyint(size)
+
+    // 容纳带有小数的数字 "size" 规定数字最大位数 "d" 规定小数点右侧最大位数
+        decimal(size,d)
+        numeric(size,d)
+
+    // 固定长度字符串（字母、数字、特殊字符）括号中规定长度
+        char(size)
+
+    // 可变长度字符串（字母、数字、特殊字符）括号中规定最大长度
+        varchar(size)
+
+    // 日期
+        date(yyyymmdd)
+
+
+030.服务器
+// 现代的 SQL 服务器构建在 RDBMS 之上
+DBMS - 数据库管理系统（Database Management System）
+    数据库管理系统是一种可以访问数据库中数据的计算机程序
+    DBMS 使我们有能力在数据库中提取、修改或者存贮信息
+    不同的 DBMS 提供不同的函数供查询、提交以及修改数据
+
+RDBMS - 关系数据库管理系统（Relational Database Management System）
+    关系数据库管理系统 （RDBMS） 也是一种数据库管理系统，其数据库是根据数据间的关系来组织和访问数据的
+    20 世纪 70 年代初，IBM 公司发明了 RDBMS
+    RDBMS 是 SQL 的基础，也是所有现代数据库系统的基础
+    诸如 Oracle、SQL Server、IBM DB2、Sybase、MySQL 以及 Microsoft Access
+
+
+031.Functions
+// Aggregate 函数：面向一系列的值，并返回一个单一的值
+// Scalar 函数：面向某个单一的值，并返回基于输入值的一个单一的值
+
+avg()  // 平均值
+    SELECT AVG(OrderPrice) AS OrderAverage FROM Orders
+
+
+count()  // 返回指定列的值的数目（NULL 不计入）
+    SELECT COUNT(column_name) FROM table_name
+
+    // 返回表中的记录数
+    SELECT COUNT(*) FROM table_name
+
+    // 返回指定列的不同值的数目
+    SELECT COUNT(DISTINCT column_name) FROM table_name
+
+
+first()  // 指定的字段中第一个记录的值
+    SELECT FIRST(OrderPrice) AS FirstOrderPrice FROM Orders
+
+
+last()  // 返回指定的字段中最后一个记录的值
+    SELECT LAST(OrderPrice) AS LastOrderPrice FROM Orders
+
+
+max()  // 返回一列中的最大值 不包括 NULL
+    SELECT MAX(OrderPrice) AS LargestOrderPrice FROM Orders
+
+
+min()  // 回一列中的最小值 不包括 NULL
+    SELECT MIN(OrderPrice) AS SmallestOrderPrice FROM Orders
+
+
+sum()  // 返回数值列的总数
+    SELECT SUM(OrderPrice) AS OrderTotal FROM Orders
+
+
+group by  // 合计函数 (比如 SUM) 常常需要添加 GROUP BY 语句，根据一个或多个列对结果集进行分组
+    SELECT Customer,SUM(OrderPrice) FROM Orders
+    GROUP BY Customer
+
+
+having  // 在 SQL 中增加 HAVING 子句原因是，WHERE 关键字无法与合计函数一起使用
+    SELECT column_name, aggregate_function(column_name)
+    FROM table_name
+    WHERE column_name operator value
+    GROUP BY column_name
+    HAVING aggregate_function(column_name) operator value
+
+    // 查找订单总金额少于 2000 的客户
+    SELECT Customer,SUM(OrderPrice) FROM Orders
+    GROUP BY Customer
+    HAVING SUM(OrderPrice)&lt;2000
+
+
+ucase()  // 把字段的**值**转换为大写
+    SELECT UCASE(LastName) as LastName,FirstName FROM Persons
+
+
+lcase()  // 小写
+
+
+mid()  // 从文本字段中提取字符
+    SELECT MID(column_name,start[,length]) FROM table_name
+    SELECT MID(City,1,3) as SmallCity FROM Persons
+
+
+len()  // 返回文本字段中值的长度
+    SELECT LEN(column_name) FROM table_name
+    SELECT LEN(City) as LengthOfCity FROM Persons
+
+
+round()  // 把数值字段舍入为指定的小数位数
+    SELECT ROUND(column_name,decimals) FROM table_name
+
+    // 舍入为最接近的整数
+    SELECT ProductName, ROUND(UnitPrice,0) as UnitPrice FROM Products
+
+
+now()  // 返回当前的日期和时间
+    SELECT NOW() FROM table_name
+
+    // 显示当天的日期所对应的名称和价格
+    SELECT ProductName, UnitPrice, Now() as PerDate FROM Products
+
+
+format()  // 对字段的显示进行格式化
+    SELECT FORMAT(column_name,format) FROM table_name
+
+    // 显示每天日期所对应的名称和价格（日期的显示格式是 "YYYY-MM-DD"）
+    SELECT ProductName, UnitPrice, FORMAT(Now(),'YYYY-MM-DD') as PerDate
+    FROM Products
+
+</code></pre>

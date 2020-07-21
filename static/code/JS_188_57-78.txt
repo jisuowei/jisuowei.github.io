@@ -1,0 +1,1371 @@
+<pre><code class="js hljs ">
+<span class="hljs-comment">/*
+
+    JavaScript 编写高质量代码：改善JavaScript程序的188个建议 【成林】
+
+    2016-11-14
+    ~
+    2016-11-27 Noted by Chisw
+
+*/</span>
+
+
+<span class="hljs-number">057.</span>禁用<span class="hljs-built_in">Function</span>构造函数
+<span class="hljs-number">058.</span>灵活使用Arguments
+<span class="hljs-number">059.</span>推荐动态调用函数 call apply
+<span class="hljs-number">060.</span>比较函数调用模式
+<span class="hljs-number">061.</span>使用闭包跨域开发
+<span class="hljs-number">062.</span>在循环体和异步回调中慎重使用闭包
+<span class="hljs-number">063.</span>比较函数 调用、引用 的本质
+<span class="hljs-number">064.</span>建议通过<span class="hljs-built_in">Function</span>扩展类型 定义method
+<span class="hljs-number">065.</span>比较函数的惰性求值与非惰性求值
+<span class="hljs-number">066.</span>使用函数实现历史记录
+<span class="hljs-number">067.</span>套用函数
+<span class="hljs-number">068.</span>推荐使用链式语法
+<span class="hljs-number">069.</span>使用模块化规避缺陷
+<span class="hljs-number">070.</span>惰性实例化
+<span class="hljs-number">071.</span>推荐分支函数
+<span class="hljs-number">072.</span>惰性载入函数
+<span class="hljs-number">073.</span>函数绑定有价值
+<span class="hljs-number">074.</span>使用高阶函数
+<span class="hljs-number">075.</span>函数柯里化
+<span class="hljs-number">076.</span>重视函数节流
+<span class="hljs-number">077.</span>推荐作用域安全的构造函数
+<span class="hljs-number">078.</span>正确理解执行上下文和作用域链
+
+
+<span class="hljs-comment">// 2016-11-14</span>
+<span class="hljs-number">057.</span>禁用<span class="hljs-built_in">Function</span>构造函数
+<span class="hljs-comment">// 定义函数的三种方法</span>
+    <span class="hljs-comment">// 1. function语句 （命名式函数、声明式函数、函数常量）</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">(x)</span> {</span> <span class="hljs-keyword">return</span> x; }
+
+    <span class="hljs-comment">// 2. Function()构造函数</span>
+    <span class="hljs-keyword">var</span> f = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Function</span>(<span class="hljs-string">'x'</span>,<span class="hljs-string">'return x;'</span>);
+
+    <span class="hljs-comment">// 3. 函数直接量生成 （函数对象，变量叫函数引用）</span>
+    <span class="hljs-keyword">var</span> f = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(x)</span> {</span> <span class="hljs-keyword">return</span> x; }
+
+<span class="hljs-comment">// 定义比较 兼容    形式   名称   主体      性质   解析</span>
+    <span class="hljs-comment">// 1 完全兼容   句子   有名   标准语法  静态  以命令的形式构造一个函数对象</span>
+    <span class="hljs-comment">// 2 JS 1.1+   表达式  匿名   字符串   动态  解析函数体，动态创建一个新函数对象</span>
+    <span class="hljs-comment">// 3 JS 1.2+   表达式  匿名   标准语法  静态  以表达式的形式构造一个函数对象</span>
+
+    <span class="hljs-comment">// 匿名方式定义的函数称为“引用式函数”或“函数表达式”</span>
+
+<span class="hljs-comment">// 作用域比较</span>
+    <span class="hljs-comment">// 构造函数方式 具有顶级作用域，JS解释器也将其作为顶级函数编译</span>
+    <span class="hljs-comment">// function语句 和 函数直接量 方式 都有自己的作用域</span>
+
+<span class="hljs-comment">// 解析效率比较：JS 解析并非逐行 而是逐段分析执行</span>
+    <span class="hljs-comment">// 构造函数 是在运行时动态的被执行，这就是具有顶级作用域的根本原因</span>
+    <span class="hljs-comment">// function语句 和 函数直接量 结构会在执行时被提取出来优先执行</span>
+
+    <span class="hljs-comment">// 函数空转测试</span>
+    <span class="hljs-keyword">var</span> a = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>();
+    <span class="hljs-keyword">var</span> x = a.getTime();
+    <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;<span class="hljs-number">100000</span>; i++) {
+        <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>;}  <span class="hljs-comment">// new Function();</span>
+    }
+    <span class="hljs-keyword">var</span> b = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>();
+    <span class="hljs-keyword">var</span> y = b.getTime();
+    alert(y-x);
+
+    <span class="hljs-comment">// function语句被提取执行，循环时不再从头开始编译函数对象.</span>
+    <span class="hljs-comment">// 构造函数每次循环都需要动态编译一次，所以效率非常低</span>
+
+<span class="hljs-comment">// 兼容性比较</span>
+    <span class="hljs-comment">// 当然，版本问题现在已经不是问题了</span>
+
+    <span class="hljs-comment">// 构造函数和函数直接量不需要额外的编变量，直接参与运算，节省资源，运行完即释放内存</span>
+    <span class="hljs-comment">// function语句有占用内存的弊端</span>
+    <span class="hljs-comment">// 因此，对于仅使用一次的函数非常适合使用表达式的方法来创建</span>
+
+
+<span class="hljs-number">058.</span>灵活使用Arguments
+<span class="hljs-comment">// Arguments对象 是一个伪数组，可以通过下标获取参数</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;<span class="hljs-built_in">arguments</span>.length; i++) {
+            alert(<span class="hljs-built_in">arguments</span>[i]);
+        }
+    }
+    f(<span class="hljs-number">3</span>,<span class="hljs-number">3</span>,<span class="hljs-number">6</span>);  <span class="hljs-comment">// 3;3;6</span>
+
+<span class="hljs-comment">// A对象 仅能在函数体内使用，仅作为函数体的一个私有成员存在</span>
+<span class="hljs-comment">// 因此可以通过点号运算符指定 A对象 所属的函数</span>
+<span class="hljs-comment">// A对象 在函数体内是 唯一的 可指向的，一般省略前置路径，直接引用 A对象 调用标识符 arguments</span>
+
+<span class="hljs-comment">// A 不是 Array 的实例，不能直接调用数组方法，但可通过 call 或 apply 间接实现</span>
+
+<span class="hljs-comment">// A对象 中的每个元素实际上都一个变量，用来储存调用函数时传递的实参值</span>
+<span class="hljs-comment">// 通过 arguments[i] 修改实参</span>
+<span class="hljs-comment">// 通过 length 属性修改个数，增加 为undefined, 减少 为删除</span>
+
+<span class="hljs-comment">// 邮箱验证</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isEmail</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">if</span>(<span class="hljs-built_in">arguments</span>.length&gt;<span class="hljs-number">1</span>) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'只能传递一个参数'</span>);
+        <span class="hljs-keyword">var</span> reg=<span class="hljs-regexp">/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/</span>;
+        <span class="hljs-keyword">if</span>(<span class="hljs-built_in">arguments</span>[<span class="hljs-number">0</span>].search(reg) != -<span class="hljs-number">1</span>)
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+        <span class="hljs-keyword">else</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    }
+    <span class="hljs-keyword">var</span> email = <span class="hljs-string">'i@jisuowei.com'</span>;
+    alert(isEmail(email));  <span class="hljs-comment">// true</span>
+
+<span class="hljs-comment">// 通过 A对象 callee属性 检测参数个数是否一致</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">(x,y,z)</span> {</span>
+        <span class="hljs-keyword">var</span> a = <span class="hljs-built_in">arguments</span>.length;  <span class="hljs-comment">// 实参个数</span>
+        <span class="hljs-keyword">var</span> b = <span class="hljs-built_in">arguments</span>.callee.length;  <span class="hljs-comment">// 形参个数</span>
+        <span class="hljs-keyword">if</span>( a != b ) {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'参数个数不匹配'</span>);
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">return</span> x + y + z;
+        }
+    }
+    alert( f(<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>) );  <span class="hljs-comment">// 12</span>
+
+    <span class="hljs-comment">// Function对象 length属性 返回 形参个数，arguments.length 返回实参个数</span>
+    <span class="hljs-comment">// 非匿名函数中 arguments.callee 等价于函数名</span>
+
+
+<span class="hljs-comment">// 2016-11-17</span>
+<span class="hljs-number">059.</span>推荐动态调用函数 call apply
+<span class="hljs-comment">// 调用函数更便捷的方式是使用Function对象的call和apply</span>
+<span class="hljs-comment">// 二者本质没有太大区别：传参方式不同，c 传多个参，a 传数组</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">max</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> m = <span class="hljs-built_in">Number</span>.NEGATIVE_INFINITY;
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;<span class="hljs-built_in">arguments</span>.length; i++) {
+            <span class="hljs-keyword">if</span>(<span class="hljs-built_in">arguments</span>[i]&gt;m) {
+                m = <span class="hljs-built_in">arguments</span>[i];
+            }
+        }
+        <span class="hljs-keyword">return</span> m;
+    }
+    <span class="hljs-keyword">var</span> a = [<span class="hljs-number">23</span>,<span class="hljs-number">45</span>,<span class="hljs-number">2</span>,<span class="hljs-number">46</span>,<span class="hljs-number">62</span>,<span class="hljs-number">45</span>,<span class="hljs-number">56</span>,<span class="hljs-number">63</span>];
+    <span class="hljs-keyword">var</span> m = max.apply(<span class="hljs-built_in">Object</span>, a);
+    alert(m);  <span class="hljs-comment">// 63</span>
+
+<span class="hljs-comment">// c、a 可以把一个函数临时的转化为方法传递给某个对象</span>
+    <span class="hljs-comment">// 函数最终并没有作为对象的方法存在，函数被调用后，该对象方法会自动注销</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">()</span> {</span>}
+    f.call(Obejct);
+    <span class="hljs-built_in">Object</span>.f();
+
+<span class="hljs-comment">// c、a 能够更改对象内部指针（this的指向）；面向对象编程过程中极有用</span>
+    <span class="hljs-comment">// 函数 f 内部的 this 会随着绑定对象的不同而指向不同的对象，从而实现属性或方法继承</span>
+    <span class="hljs-keyword">var</span> x = <span class="hljs-string">'o'</span>;
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">a</span><span class="hljs-params">()</span> {</span> <span class="hljs-keyword">this</span>.x = <span class="hljs-string">'a'</span>; }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">b</span><span class="hljs-params">()</span> {</span> <span class="hljs-keyword">this</span>.x = <span class="hljs-string">'b'</span>; }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">c</span><span class="hljs-params">()</span> {</span> alert( x ); }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">()</span> {</span> alert( <span class="hljs-keyword">this</span>.x ); }
+    f();  <span class="hljs-comment">// 'o'</span>
+    f.call(window);  <span class="hljs-comment">// 'o'</span>
+    f.call( <span class="hljs-keyword">new</span> a() );  <span class="hljs-comment">// 'a'</span>
+    f.call( <span class="hljs-keyword">new</span> b() );  <span class="hljs-comment">// 'b'</span>
+    f.call( c );  <span class="hljs-comment">// undefined</span>
+
+
+
+<span class="hljs-comment">// c、a 在函数体内使用，参一使用 this，当前函数将继承调用函数所有成员、复制内部变量</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">this</span>.a = <span class="hljs-string">'a'</span>;
+    }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">e</span><span class="hljs-params">()</span> {</span>
+        f.call(<span class="hljs-keyword">this</span>);
+        alert(a);
+    }
+    e();  <span class="hljs-comment">// 'a'</span>
+
+
+<span class="hljs-comment">// c、a 的应用是非常灵活的，大型JS框架中会利用它们动态更改对象指针</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">r</span><span class="hljs-params">(x)</span> {</span>
+        <span class="hljs-keyword">return</span> x;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">(x)</span> {</span>
+        x[<span class="hljs-number">0</span>] = x[<span class="hljs-number">0</span>] + <span class="hljs-string">'&gt;'</span>;
+        <span class="hljs-keyword">return</span> x;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">o</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> temp = r;  <span class="hljs-comment">// 临时存储</span>
+        r = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> temp.apply(<span class="hljs-keyword">this</span>, f(<span class="hljs-built_in">arguments</span>));  <span class="hljs-comment">// 临时修改</span>
+        }
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">a</span><span class="hljs-params">()</span> {</span>
+        o();
+        alert(r(<span class="hljs-string">'='</span>));
+    }
+
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;<span class="hljs-number">10</span>; i++) {
+        a();
+    }
+
+
+<span class="hljs-number">060.</span>比较函数调用模式
+<span class="hljs-comment">// JS中，函数就是对象，对象是名值对的集合，并拥有一个到原型对象的隐藏链接</span>
+<span class="hljs-comment">// 对象字面量产生的对象连接到 object.prototype</span>
+<span class="hljs-comment">// 函数对象连接到 Function.prototype</span>
+<span class="hljs-comment">// 原型对象本身连接到 object.prototype</span>
+<span class="hljs-comment">// 函数创建时有两个隐藏属性：函数的上下文、实现函数行为的代码</span>
+
+<span class="hljs-comment">// 函数创建时也随之带一个 prototype 属性</span>
+<span class="hljs-comment">// 值是一个拥有 constructor 属性且 constructor 属性值为该函数的对象</span>
+
+<span class="hljs-comment">// 作为对象，函数可以与其它值一样在任何变量位置使用</span>
+<span class="hljs-comment">// 可以是数组元素、作为函数返回值、作为对象成员值、作为表达式，也可以拥有自己的方法</span>
+
+<span class="hljs-comment">// 调用一个函数将暂停当前函数的执行，传递控制权和参数给新函数</span>
+<span class="hljs-comment">// 除了声明时定义的形参，每个函数附加两个参数：this、arguments</span>
+<span class="hljs-comment">// this 的取值取决于JS的四种调用模式：初始化时存在差异</span>
+
+<span class="hljs-comment">// 调用运算符：跟在任何产生一个函数值的表达式之后的一对圆括号，包含0到多个逗号隔开的表达式</span>
+<span class="hljs-comment">// 每个表达式产生一个参数值，每个参数值被赋予函数声明时定义的形参名</span>
+<span class="hljs-comment">// 形参、实参个数不匹配不会导致运行错误，多则省略，少则undefined</span>
+<span class="hljs-comment">// 不会对参数进行类型检查，任何类型都可以传递给参数</span>
+
+<span class="hljs-comment">// 1. 方法调用模式</span>
+    <span class="hljs-comment">// 当一个函数被保存为对象的一个属性时，将被成为方法</span>
+    <span class="hljs-comment">// 方法被调用时，this 指向调用的对象</span>
+    <span class="hljs-comment">// 如果一个调用表达式包含一个属性存取表达式（点表达式、下标表达式）将被当作一个方法来调用</span>
+    <span class="hljs-keyword">var</span> obj = {
+        value: <span class="hljs-number">0</span>,
+        increament: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(inc)</span> {</span>
+            <span class="hljs-keyword">this</span>.value += <span class="hljs-keyword">typeof</span> inc === <span class="hljs-string">'number'</span> ? inc : <span class="hljs-number">1</span>;  <span class="hljs-comment">// 延迟绑定实现高度复用</span>
+        }
+    }
+    obj.increament();
+    document.writeln(obj.value);  <span class="hljs-comment">// 1</span>
+    obj.increament(<span class="hljs-number">2</span>);
+    document.writeln(obj.value);  <span class="hljs-comment">// 3</span>
+
+<span class="hljs-comment">// 2. 函数调用模式</span>
+    <span class="hljs-comment">// 当一个函数并非一个对象的属性时，它将被当作一个函数来调用</span>
+    <span class="hljs-comment">// 此模式下， this 指向全局对象：一个语言设计错误</span>
+        <span class="hljs-comment">// 内部函数被调用时，this 应当指向外部函数的 this 变量</span>
+        <span class="hljs-comment">// 导致方法不能利用内部函数助其工作</span>
+        <span class="hljs-comment">// 因为this绑定了错误的值，所以不能共享该方法对对象的访问权</span>
+    <span class="hljs-comment">// 解决方法：如果该方法定义一个变量并将其赋值为this，内部函数就可以通过这个变量访问this</span>
+    <span class="hljs-comment">// 按照约定：将这个变量命名为 that</span>
+    <span class="hljs-keyword">var</span> obj = {
+        value: <span class="hljs-number">1</span>,
+        doub: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">var</span> that = <span class="hljs-keyword">this</span>;
+            <span class="hljs-keyword">var</span> helper = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                that.value = that.value*<span class="hljs-number">2</span>;
+            };
+            helper();
+        }
+    }
+    obj.doub();
+    document.writeln(obj.value);  <span class="hljs-comment">// 2</span>
+
+<span class="hljs-comment">// 3. 构造器调用模式</span>
+    <span class="hljs-comment">// JS 是一门基于原型继承的语言，无类别，对象可以直接从其它对象继承属性</span>
+    <span class="hljs-comment">// 原型继承虽有强大的表现力，但偏离了主流用法，并不被广发理解</span>
+    <span class="hljs-comment">// JS 为了能够兼容基于类语言的编写风格提供了一套类似类语言的对象构建语法</span>
+    <span class="hljs-comment">// 如在函数前加 new 来调用，将创建一个隐藏链接到该函数的prototype原型对象的新实例对象</span>
+    <span class="hljs-comment">// 同时将 this 绑定到这个新实例对象上；new 前缀也会改变 return 语句的行为</span>
+    <span class="hljs-keyword">var</span> F = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(string)</span> {</span>
+        <span class="hljs-keyword">this</span>.status = string;
+    }
+    F.prototype.get = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.status;
+    }
+    <span class="hljs-keyword">var</span> f = <span class="hljs-keyword">new</span> F(<span class="hljs-string">'new object'</span>);  <span class="hljs-comment">// 没有 new 会很糟糕，不会有警告</span>
+    document.writeln(f.get());  <span class="hljs-comment">// 'new object'</span>
+
+<span class="hljs-comment">// 4. apply 调用模式</span>
+    <span class="hljs-comment">// JS是函数式面向对象编程语言，函数可以拥有方法</span>
+    <span class="hljs-comment">// apply 就是一个基本方法，使用这个方法来调用函数，并修改函数体内 this 值</span>
+    <span class="hljs-comment">// apply 包括两个参数：设置绑定给this的值、包含函数参数的数组</span>
+
+    <span class="hljs-comment">// 数组元素值相加</span>
+    <span class="hljs-keyword">var</span> array = [<span class="hljs-number">5</span>,<span class="hljs-number">4</span>];
+    <span class="hljs-keyword">var</span> add = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> i, sum = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">for</span>(i=<span class="hljs-number">0</span>; i&lt;<span class="hljs-built_in">arguments</span>.length; i++) {
+            sum += <span class="hljs-built_in">arguments</span>[i];
+        }
+        <span class="hljs-keyword">return</span> sum;
+    }
+    <span class="hljs-keyword">var</span> sum = add.apply({},array);  <span class="hljs-comment">// 9</span>
+
+    <span class="hljs-comment">// 返回对象属性值</span>
+    <span class="hljs-keyword">var</span> F = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(string)</span> {</span> <span class="hljs-keyword">this</span>.status = string; }
+    F.prototype.get = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span> <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.status; }
+    <span class="hljs-keyword">var</span> obj = { status: <span class="hljs-string">'obj'</span> };
+    <span class="hljs-keyword">var</span> status = F.prototype.get.apply(obj);  <span class="hljs-comment">// 'obj'</span>
+
+
+<span class="hljs-comment">// 2016-11-22</span>
+<span class="hljs-number">061.</span>使用闭包跨域开发
+<span class="hljs-comment">// 闭包是指词法表示包括不必计算的变量的函数，闭包函数能够使用函数外定义的变量</span>
+    <span class="hljs-comment">// 封闭性：除非主动向外界提供访问接口，否则外界无法访问闭包内部的数据</span>
+    <span class="hljs-comment">// 持久性：一般函数调用完毕系统会自动注销函数，</span>
+        <span class="hljs-comment">// 闭包函数在外部函数被调用之后，闭包结构依然保存在系统中，</span>
+        <span class="hljs-comment">// 闭包中的数据依然存在，从而实现对数据的持久使用</span>
+
+<span class="hljs-comment">// 主要包含类型标识符优先级：</span>
+    <span class="hljs-comment">// this &gt; 局部变量 &gt; 形参 &gt; arguments &gt; 函数名</span>
+
+<span class="hljs-comment">// 经典案例：</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">(x)</span> {</span>  <span class="hljs-comment">// 外部函数</span>
+        <span class="hljs-keyword">var</span> a = x;  <span class="hljs-comment">// 外部函数的局部变量，并把参数值传递给它</span>
+        <span class="hljs-keyword">var</span> b = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>  <span class="hljs-comment">// 内部函数</span>
+            <span class="hljs-keyword">return</span> a;  <span class="hljs-comment">// 访问外部函数中的局部变量</span>
+        }
+        a++;  <span class="hljs-comment">// 访问后，动态更新外部函数的变量</span>
+        <span class="hljs-keyword">return</span> b;  <span class="hljs-comment">// 内部函数</span>
+    }
+    <span class="hljs-keyword">var</span> c = f(<span class="hljs-number">5</span>);  <span class="hljs-comment">// 调用外部函数</span>
+    alert(c());  <span class="hljs-comment">// 调用内部函数，返回外部函数更新后的值 6</span>
+
+<span class="hljs-comment">// 使用闭包结构能跟踪动态环境中数据的实时变化</span>
+
+
+<span class="hljs-number">062.</span>在循环体和异步回调中慎重使用闭包
+<span class="hljs-comment">// 由于闭包的持久性，会持续占用系统资源，会造成资源紧张，甚至内存溢出</span>
+<span class="hljs-comment">// 闭包在回调函数中会带来负面影响</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">(x)</span> {</span>
+        <span class="hljs-keyword">var</span> a = [];
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;x.length; i++) {
+            <span class="hljs-keyword">var</span> temp = x[i];  <span class="hljs-comment">// temp 一直在变化 最终是'c'</span>
+            a.push( <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                alert( temp + <span class="hljs-string">' '</span> + x[i] )  <span class="hljs-comment">// 当最后一次i=2执行完就++变成了3</span>
+            });
+        }
+        <span class="hljs-keyword">return</span> a;
+    }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">e</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> a = f([<span class="hljs-string">'a'</span>,<span class="hljs-string">'b'</span>,<span class="hljs-string">'c'</span>]);
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;a.length; i++) {
+            a[i]();
+        }
+    }
+    e();  <span class="hljs-comment">// c undefined *3</span>
+
+    <span class="hljs-comment">// 解决方法：阻断闭包与最外界函数的实时联系</span>
+        <span class="hljs-comment">// 为闭包再包裹一层函数，运行时将外界动态值传入再传递给内部闭包函数</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">(x)</span> {</span>
+        <span class="hljs-keyword">var</span> a = [];
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;x.length; i++) {
+            <span class="hljs-keyword">var</span> temp = x[i];
+            a.push(
+                (<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(temp, i)</span> {</span>
+                    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                        alert( temp + <span class="hljs-string">' '</span> + x[i] )
+                    }
+                })(temp, i)
+            );
+        }
+        <span class="hljs-keyword">return</span> a;
+    }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">e</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> a = f([<span class="hljs-string">'a'</span>,<span class="hljs-string">'b'</span>,<span class="hljs-string">'c'</span>]);
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;a.length; i++) {
+            a[i]();
+        }
+    }
+    e();  <span class="hljs-comment">// 'a a','b b','c c'</span>
+
+<span class="hljs-comment">// 同一个闭包通过分别引用能够在当前环境中生成多个闭包</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">(x)</span> {</span>
+        <span class="hljs-keyword">var</span> temp = x;
+        <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(x)</span> {</span>
+            temp += x;
+            alert(temp);
+        }
+    }
+    <span class="hljs-keyword">var</span> a = f(<span class="hljs-number">50</span>);
+    <span class="hljs-keyword">var</span> b = f(<span class="hljs-number">100</span>);
+    a(<span class="hljs-number">5</span>);  <span class="hljs-comment">// 55</span>
+    b(<span class="hljs-number">10</span>);  <span class="hljs-comment">// 110</span>
+
+
+<span class="hljs-comment">// 2016-11-23</span>
+<span class="hljs-number">063.</span>比较函数 调用、引用 的本质
+<span class="hljs-comment">// 被调用之前，JS函数仅是词法上的结构没有实际价值</span>
+<span class="hljs-comment">// 预编译时，也仅是简单的分析函数的词法、语法结构</span>
+    <span class="hljs-comment">// 并根据函数标识符预定一个函数占据的内存空间，其内部结构和逻辑并没有被运行</span>
+<span class="hljs-comment">// 一旦被调用执行，其上下文环境随之产生</span>
+<span class="hljs-comment">// 上下文环境是函数运行期的一个动态环境，这个动态概念与函数的静态性是截然不同的概念</span>
+<span class="hljs-comment">// 每个函数都有一个独立的上下文环境（执行环境）</span>
+
+<span class="hljs-comment">// 引用函数时，多个变量内存储的是函数相同的入口指针地址，变量值都是相同的</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> x = <span class="hljs-number">5</span>;
+        <span class="hljs-keyword">return</span> x;
+    }
+    <span class="hljs-keyword">var</span> a = f;  <span class="hljs-comment">// 即使此处是调用f()</span>
+    <span class="hljs-keyword">var</span> b = f;  <span class="hljs-comment">// 返回值也都是数值5</span>
+    alert(a === b);  <span class="hljs-comment">// true</span>
+
+<span class="hljs-comment">// 调用函数时，函数被执行了，此时变量存储的是函数的返回值而不是地址</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> x = <span class="hljs-number">5</span>;
+        <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>  <span class="hljs-comment">// 返回一个引用类型的闭包函数</span>
+            <span class="hljs-keyword">return</span> x;
+        }
+    }
+    <span class="hljs-keyword">var</span> a = f();  <span class="hljs-comment">// 虽然闭包结构相同</span>
+    <span class="hljs-keyword">var</span> b = f();  <span class="hljs-comment">// 但存储在不同的变量里，所以指针是不同的</span>
+    alert(a===b);  <span class="hljs-comment">// false</span>
+
+<span class="hljs-comment">// 函数实例化示例</span>
+    <span class="hljs-comment">// 通过new运算符可以复制函数的结构，实现函数实例化的目的</span>
+    <span class="hljs-comment">// 实例化的过程其实就是对函数结构进行复制和初始化的操作过程</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">F</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">this</span>.x = <span class="hljs-number">5</span>;
+    }
+    <span class="hljs-keyword">var</span> a = <span class="hljs-keyword">new</span> F();
+    <span class="hljs-keyword">var</span> b = <span class="hljs-keyword">new</span> F();
+    alert(a===b);  <span class="hljs-comment">// false</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">F</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">this</span>.x = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-number">5</span>;
+        }
+    }
+    <span class="hljs-keyword">var</span> a = <span class="hljs-keyword">new</span> F();
+    <span class="hljs-keyword">var</span> b = <span class="hljs-keyword">new</span> F();
+    alert(a===b);  <span class="hljs-comment">// false</span>
+
+    <span class="hljs-comment">// 当实例化函数F并赋值给变量a时，a所引用的函数结构并非原来的函数结构</span>
+    <span class="hljs-comment">// 而是内存区中另一块复制了的函数结构，所以不相同</span>
+
+
+<span class="hljs-number">064.</span>建议通过<span class="hljs-built_in">Function</span>扩展类型 定义method
+<span class="hljs-comment">// JS 允许为语言的基本数据类型定义方法</span>
+<span class="hljs-comment">// 通过 Object.prototype 添加原型方法，该发放可以被所有对象使用</span>
+
+<span class="hljs-comment">// 通过添加 method 方法，不必使用 prototype 属性，直接调用 method 方法为各种基本类型添加方法</span>
+    <span class="hljs-built_in">Function</span>.prototype.method = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name,func)</span> {</span>
+        <span class="hljs-keyword">this</span>.prototype[name] = func;
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    }
+
+    <span class="hljs-comment">// 改善 JS 中提供的取整方法</span>
+    <span class="hljs-built_in">Number</span>.method(<span class="hljs-string">'integer'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">Math</span>[<span class="hljs-keyword">this</span>&lt;<span class="hljs-number">0</span> ? <span class="hljs-string">'ceil'</span> : <span class="hljs-string">'floor'</span>](<span class="hljs-keyword">this</span>);
+    });
+    document.write( (-<span class="hljs-number">10</span>/<span class="hljs-number">3</span>).integer() );  <span class="hljs-comment">// -3</span>
+
+    <span class="hljs-comment">// 使用正则表达式清除左右两侧空格符</span>
+    <span class="hljs-built_in">String</span>.method(<span class="hljs-string">'trim'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.replace(<span class="hljs-regexp">/^\s+|\s+$/g</span>, <span class="hljs-string">''</span>);
+    });
+    document.write(<span class="hljs-string">'"'</span> + <span class="hljs-string">' abc '</span>.trim() + <span class="hljs-string">'"'</span>);  <span class="hljs-comment">// "abc"</span>
+
+<span class="hljs-comment">// 通过为基本类型扩展方法，可以大大提高语言的表现力</span>
+<span class="hljs-comment">// 由于 JS 原型继承的本质，所有原型方法立刻被赋予到所有的实例</span>
+<span class="hljs-comment">// 即使该实例在原型方法创建之前就存在</span>
+
+<span class="hljs-comment">// ***基本类型的原型是公共结构，扩展时需要避免覆盖基类的原生方法</span>
+    <span class="hljs-built_in">Function</span>.prototype.method = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name, func)</span> {</span>
+        <span class="hljs-keyword">if</span>(!<span class="hljs-keyword">this</span>.prototype[name]) {
+            <span class="hljs-keyword">this</span>.prototype[name] = func;
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+        }
+    };
+
+<span class="hljs-comment">// for in 在原型使用表现很糟糕，可以使用 hasOwnProperty 筛选出继承而来的属性</span>
+
+
+<span class="hljs-number">065.</span>比较函数的惰性求值与非惰性求值
+<span class="hljs-comment">// JS 中使用函数式编程应深刻理解表达式，主动使用表达式的连续运算来组织代码</span>
+
+<span class="hljs-comment">// 1.运算元中除了默认的数据类型外，函数也作为一个重要的运算元参与运算</span>
+<span class="hljs-comment">// 2.运算符中除了预定义的运算符外，函数也作为一个重要的运算符进行计算和组织代码</span>
+
+<span class="hljs-comment">// 惰性求值语言中，参数不被调用，无论参数是直接量还是表达式，都不占用系统资源</span>
+
+<span class="hljs-comment">// JS 是非惰性求值，那么问题来了</span>
+    <span class="hljs-keyword">var</span> a = <span class="hljs-number">2</span>;
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">(x)</span> {</span>
+        <span class="hljs-keyword">return</span> x;
+    }
+    alert( f(a,a=a*a) );  <span class="hljs-comment">// 2 参二虽然不使用但依然计算并赋值</span>
+    alert( f(a) );  <span class="hljs-comment">// 4</span>
+
+    <span class="hljs-comment">// **表达式不管是否被使用，只要在执行代码行中都会被计算</span>
+    <span class="hljs-comment">// 如果在函数的参数中无意添加了表达式，即使对结果没有影响，也会对程序产生潜在影响</span>
+
+    <span class="hljs-comment">// 一个导致系统崩溃的栗子：函数f没有参数，但调用时会执行传递进去的表达式</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">()</span> {</span>}
+    f( <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span> <span class="hljs-keyword">while</span>(<span class="hljs-literal">true</span>); } )
+
+<span class="hljs-comment">// 惰性函数模式：一种将对函数或请求的处理延迟到真正需要结果时进行的通用概念</span>
+<span class="hljs-comment">// 从惰性编程的角度可以帮助消除代码中多余的计算</span>
+    <span class="hljs-comment">// 在 Scheme 中，delay特殊表单接受一个代码块，不会立即执行，</span>
+    <span class="hljs-comment">// 而是将代码和参数作为一个 promise存储起来，需要时再运行</span>
+
+<span class="hljs-comment">// 全局变量t来存储时间对象存在安全隐患；每次调用都要重新计算，效率不够优化</span>
+    <span class="hljs-keyword">var</span> t;
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">()</span> {</span>
+        t = t ? t : <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>();
+        <span class="hljs-keyword">return</span> t;
+    }
+    f();
+
+    <span class="hljs-comment">// 使用闭包：仍然没有提高调用时的效率，每次调用依然需要求值</span>
+    <span class="hljs-keyword">var</span> f = (<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> t;
+        <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            t = t ? t: <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>();
+            <span class="hljs-keyword">return</span> t;
+        }
+    })();
+    f();
+
+    <span class="hljs-comment">// 首次调用将实例化一个新的Date对象并重置f到一个新的函数上，f在其闭包内包含Date对象</span>
+    <span class="hljs-comment">// 首次调用结束前，f 的新函数值也已被调用并简单的返回 t 保留在闭包内的值</span>
+    <span class="hljs-keyword">var</span> f = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> t = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>();
+        f = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> t;
+        }
+        <span class="hljs-keyword">return</span> f();
+    };
+    f();
+
+
+<span class="hljs-number">066.</span>使用函数实现历史记录
+<span class="hljs-comment">// 记忆优化：函数利用对象去记住先前的操作结果以避免无谓的运算</span>
+
+<span class="hljs-comment">// 斐波那契数列</span>
+    <span class="hljs-comment">// 函数被调用了453次 循环11+自身442</span>
+    <span class="hljs-keyword">var</span> fibonacci = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(n)</span> {</span>
+        <span class="hljs-keyword">return</span> n &lt; <span class="hljs-number">2</span> ? n : fibonacci(n-<span class="hljs-number">1</span>) + fibonacci(n-<span class="hljs-number">2</span>);
+    };
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;=<span class="hljs-number">10</span>; i+=<span class="hljs-number">1</span>) {
+        document.write(i + <span class="hljs-string">':'</span> + fibonacci(i) + <span class="hljs-string">', '</span>);
+    }
+    <span class="hljs-comment">// 0:0, 1:1, 2:1, 3:2, 4:3, 5:5, 6:8, 7:13, 8:21, 9:34, 10:55,</span>
+
+    <span class="hljs-comment">// 使用记忆 调用29次 循环11+自身18</span>
+    <span class="hljs-keyword">var</span> fibonacci = (<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> memo = [<span class="hljs-number">0</span>,<span class="hljs-number">1</span>];
+        <span class="hljs-keyword">var</span> fib = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(n)</span> {</span>
+            <span class="hljs-keyword">var</span> res = memo[n];
+            <span class="hljs-keyword">if</span>( <span class="hljs-keyword">typeof</span> res !== <span class="hljs-string">'number'</span> ) {
+                res = fib(n-<span class="hljs-number">1</span>) + fib(n-<span class="hljs-number">2</span>);
+                memo[n] = res;
+            }
+            <span class="hljs-keyword">return</span> res;
+        }
+        <span class="hljs-keyword">return</span> fib;
+    }());
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;=<span class="hljs-number">10</span>; i++) {
+        document.write(i + <span class="hljs-string">':'</span> + fibonacci(i) + <span class="hljs-string">', '</span>);
+    }
+
+<span class="hljs-comment">// 函数抽象化：构造带记忆功能的函数</span>
+    <span class="hljs-comment">// memoizer 函数将取得一个初始的 memo 数组和 fundamental 函数</span>
+    <span class="hljs-comment">// memoizer 函数返回一个管理 memo 存储和在需要时调用 fundamental 函数的 shell 函数</span>
+    <span class="hljs-comment">// memoizer 函数传递这个 shell 函数和该函数的参数给 fundamental 函数</span>
+    <span class="hljs-keyword">var</span> memoizer = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(memo, formula)</span> {</span>
+        <span class="hljs-keyword">var</span> recur = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(n)</span> {</span>
+            <span class="hljs-keyword">var</span> res = memo[n];
+            <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> res !== <span class="hljs-string">'number'</span>) {
+                res = formula(recur, n);
+                memo[n] = res;
+            }
+            <span class="hljs-keyword">return</span> res;
+        };
+        <span class="hljs-keyword">return</span> recur;
+    };
+
+    <span class="hljs-comment">// 定义 fibonacci</span>
+    <span class="hljs-keyword">var</span> fibonacci = memoizer([<span class="hljs-number">0</span>,<span class="hljs-number">1</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(recur, n)</span> {</span>
+        <span class="hljs-keyword">return</span> recur(n-<span class="hljs-number">1</span>) + recur(n-<span class="hljs-number">2</span>);
+    });
+
+    <span class="hljs-comment">// 定义 阶乘</span>
+    <span class="hljs-keyword">var</span> factorial = memoizer([<span class="hljs-number">1</span>,<span class="hljs-number">1</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(recur, n)</span> {</span>
+        <span class="hljs-keyword">return</span> n*recur(n-<span class="hljs-number">1</span>);
+    });
+
+
+<span class="hljs-number">067.</span>套用函数
+<span class="hljs-comment">// 套用：将函数与传递给它的参数相结合产生一个新的函数</span>
+<span class="hljs-comment">// 函数式编程中，函数本身也是一个值，该特性允许用有趣的方法操作函数</span>
+
+<span class="hljs-comment">// 一个有趣的栗子</span>
+    <span class="hljs-keyword">var</span> add = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(n)</span> {</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(m)</span> {</span>
+            <span class="hljs-keyword">return</span> n+m;
+        }
+    }
+    alert( add(<span class="hljs-number">2</span>)(<span class="hljs-number">3</span>) );  <span class="hljs-comment">// 5</span>
+
+<span class="hljs-comment">// 给JS扩展一个 curry 方法 实现函数的套用应用</span>
+    <span class="hljs-built_in">Function</span>.prototype.method = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name, func)</span> {</span>
+        <span class="hljs-keyword">if</span>(!<span class="hljs-keyword">this</span>.prototype[name]) {
+            <span class="hljs-keyword">this</span>.prototype[name] = func;
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+        }
+    };
+    <span class="hljs-built_in">Function</span>.method(<span class="hljs-string">'curry'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> slice = <span class="hljs-built_in">Array</span>.prototype.slice;
+        <span class="hljs-keyword">var</span> args = slice.apply(<span class="hljs-built_in">arguments</span>), that = <span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> that.apply(<span class="hljs-literal">null</span>, args.concat(slice.apply(<span class="hljs-built_in">arguments</span>)));
+        };
+    });
+
+    <span class="hljs-comment">// 通过创建一个保存原始函数和被套用函数的参数的闭包来工作</span>
+    <span class="hljs-comment">// 该方法返回另一个函数，该函数被调用时会返回调用原是函数的结果</span>
+    <span class="hljs-comment">// 并传递调用 curry 时的参数加上当前调用的参数的所有参数</span>
+    <span class="hljs-comment">// curry 使用concat方法链接两个参数数组</span>
+    <span class="hljs-comment">// 但由于 arguments数组 并非一个真正的数组，所有没有concat方法</span>
+    <span class="hljs-comment">// 就必须在两个 arguments 数组上都应用 slice方法 才能产生出拥有concat的常规数组</span>
+
+    <span class="hljs-comment">// 通过 curry方法调用 add函数 返回一个新的函数add1</span>
+    <span class="hljs-comment">// 这个新函数保存了调用 add函数 时传递的值，调用add1时，将新旧函数的参数进行相加</span>
+    <span class="hljs-keyword">var</span> add = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> i, sum = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">for</span>(i=<span class="hljs-number">0</span>; i&lt;<span class="hljs-built_in">arguments</span>.length; i+=<span class="hljs-number">1</span>) {
+            sum += <span class="hljs-built_in">arguments</span>[i];
+        }
+        <span class="hljs-keyword">return</span> sum;
+    };
+    <span class="hljs-keyword">var</span> add1 = add.curry(<span class="hljs-number">2</span>);
+    alert(add1(<span class="hljs-number">3</span>));  <span class="hljs-comment">// 7</span>
+
+
+<span class="hljs-comment">// 2016-11-24</span>
+<span class="hljs-number">068.</span>推荐使用链式语法
+<span class="hljs-comment">// JS中很多方法没有返回值，比如一些设置、修改对象某个状态的方法</span>
+<span class="hljs-comment">// 如果让这些方法返回 this 而不是 undefined 就要启用联级功能</span>
+<span class="hljs-comment">// 即链式语法：使得单独一条语句可以连续调用一个对象的很多方法</span>
+<span class="hljs-comment">// 每一个扩展方法都返回参数对象，所以调用返回的结果可以为下一次调用所用</span>
+
+<span class="hljs-comment">// 为 String 扩展了3个方法： </span>
+    <span class="hljs-built_in">Function</span>.prototype.method = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name, func)</span> {</span>
+        <span class="hljs-keyword">if</span>(!<span class="hljs-keyword">this</span>.prototype[name]) {
+            <span class="hljs-keyword">this</span>.prototype[name] = func;
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+        }
+    };
+    <span class="hljs-built_in">String</span>.method(<span class="hljs-string">'trim'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.replace(<span class="hljs-regexp">/^\s+|\s+$/g</span>, <span class="hljs-string">''</span>);
+    });
+    <span class="hljs-built_in">String</span>.method(<span class="hljs-string">'writeln'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        document.writeln(<span class="hljs-keyword">this</span>);
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    });
+    <span class="hljs-built_in">String</span>.method(<span class="hljs-string">'alert'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        window.alert(<span class="hljs-keyword">this</span>);
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    });
+    <span class="hljs-keyword">var</span> str = <span class="hljs-string">' jisuowei.com '</span>;
+    str.trim().writeln().alert();  <span class="hljs-comment">// 'jisuowei.com'</span>
+
+
+<span class="hljs-number">069.</span>使用模块化规避缺陷
+<span class="hljs-comment">// 使用函数和闭包可以构建模块：一个提供接口却隐藏状态与实现的函数或对象</span>
+<span class="hljs-comment">// 通过构建模块，可以完全摒弃使用全局变量，规避 JS 语言缺陷</span>
+
+<span class="hljs-comment">// 为 String 扩展 deentityify 方法：寻找字符串中HTML字符实体并替换为对应字符</span>
+    <span class="hljs-comment">// 在一个对象中保存字符实体的名字及对应的字符是有意义的</span>
+    <span class="hljs-comment">// 放入全局变量中存在潜在危害</span>
+    <span class="hljs-comment">// 放入函数内部会带来运行损耗</span>
+    <span class="hljs-comment">// 理想的方式是放入一个闭包，还可能提供扩展方法</span>
+    <span class="hljs-built_in">String</span>.method(<span class="hljs-string">'deentityify'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> entity = {
+            quot: <span class="hljs-string">'"'</span>,
+            lt: <span class="hljs-string">'&lt;'</span>,
+            gt: <span class="hljs-string">'&gt;'</span>
+        };
+        <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.replace(<span class="hljs-regexp">/&amp;([^&amp;;]+);/g</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(a,b)</span> {</span>
+                <span class="hljs-keyword">var</span> r = entity[b];
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">typeof</span> r === <span class="hljs-string">'string'</span> ? r : a;
+            });
+        };
+    }());
+
+    <span class="hljs-comment">// 为 String类型扩展了一个 deentityify 方法，如果在字符实体表 entity 中找到</span>
+    <span class="hljs-comment">// 就将该字符实体替换为映射表中的值</span>
+
+<span class="hljs-comment">// 一般开发形式：</span>
+    <span class="hljs-comment">// 一个定义了私有变量和函数的函数，利用闭包创建可以访问到私有变量和函数的特权函数</span>
+    <span class="hljs-comment">// 最后返回这个特权函数，或把它们保存到可访问的地方</span>
+
+<span class="hljs-comment">// 使用模块可以避免全局变量的滥用，从而保护信息的安全性，实现优秀的设计实践</span>
+<span class="hljs-comment">// 使用这种模式也可以实现应用程序的封装，或构建其它实例对象</span>
+
+<span class="hljs-comment">// 模块通常结合实例模式使用，JS 的实例就是用对象字面量表示法创建的</span>
+<span class="hljs-comment">// 对象的属性值可以是数值或者函数，并且属性值在该对象的生命周期中不会发生变化</span>
+<span class="hljs-comment">// 模块通常作为工具为程序其它部分提供功能支持。可以构建比较安全的对象</span>
+
+<span class="hljs-comment">// 构造产生序列号的对象</span>
+    <span class="hljs-keyword">var</span> serial_maker = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> prefix = <span class="hljs-string">''</span>;
+        <span class="hljs-keyword">var</span> seq = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">return</span> {
+            set_prefix : <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(p)</span> {</span>
+                prefix = <span class="hljs-built_in">String</span>(p);
+            },
+            set_seq : <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(s)</span> {</span>
+                seq = s;
+            },
+            gensym : <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                <span class="hljs-keyword">var</span> res = prefix + seq;
+                seq += <span class="hljs-number">1</span>;
+                <span class="hljs-keyword">return</span> res;
+            }
+        };
+    };
+    <span class="hljs-keyword">var</span> seqer = serial_maker();
+    seqer.set_prefix(<span class="hljs-string">'Q'</span>);
+    seqer.set_seq(<span class="hljs-number">1000</span>);
+    <span class="hljs-keyword">var</span> unique = seqer.gensym();  <span class="hljs-comment">// 'Q1000'</span>
+    <span class="hljs-keyword">var</span> unique = seqer.gensym();  <span class="hljs-comment">// 'Q1001'</span>
+
+    <span class="hljs-comment">// seqer包含的方法没有用到 this 或 that，因此没有办法“损害”seger</span>
+    <span class="hljs-comment">// 除非调用对应的方法，否则无法改变 prefix 或 seq 的值</span>
+    <span class="hljs-comment">// 由于seqer对象是可变的，所以它的方法可能会被替换掉，但替换后的方法依然不能访问私有成员</span>
+    <span class="hljs-comment">// seqer就是一组函数的集合，被授予特权，拥有使用、修改私有状态的能力</span>
+    <span class="hljs-comment">// 如果把 seqer.gensym 作为一个值传递给第三方函数，就能产生唯一字符串，却不能通过它来改变p或s的值</span>
+
+
+<span class="hljs-comment">// 2016-11-25</span>
+<span class="hljs-number">070.</span>惰性实例化
+<span class="hljs-comment">// 手段：避免在页面中 JS 初始化执行的时候，就实例化类</span>
+<span class="hljs-comment">// 目的：将一些类推迟到需要使用的时候实例化，可以避免一定的内存浪费、性能消耗</span>
+    <span class="hljs-keyword">var</span> myNamespace = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> Configure = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">var</span> privateName = <span class="hljs-string">'jisuowei.com'</span>;
+            <span class="hljs-keyword">var</span> privateReturnName = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                <span class="hljs-keyword">return</span> privateName;
+            }
+            <span class="hljs-keyword">var</span> privateSetName = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name)</span> {</span>
+                privateName = name;
+            }
+            <span class="hljs-comment">// 返回单例对象</span>
+            <span class="hljs-keyword">return</span> {
+                setName : <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name)</span> {</span>
+                    privateName(name);
+                },
+                getName : <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                    <span class="hljs-keyword">return</span> privateReturnName();
+                }
+            }
+        }
+        <span class="hljs-comment">// 存储 configure 实例</span>
+        <span class="hljs-keyword">var</span> instance;
+        <span class="hljs-keyword">return</span> {
+            getInstance : <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                <span class="hljs-keyword">if</span>(!instance) {
+                    instance = Configure();
+                }
+                <span class="hljs-keyword">return</span> instance;
+            }
+        }
+    }();
+    <span class="hljs-comment">// 使用方法上需要 getInstance 这个函数作为中间量</span>
+    myNamespace.getInstance().getName();
+
+    <span class="hljs-comment">// 缺点是需要中间量来调用内部的 Configure 函数所返回的对象的方法</span>
+    <span class="hljs-comment">// 当然也可以使用变量类存储 myNamespace.getInstance() 返回的实例对象</span>
+
+    <span class="hljs-comment">// 优化</span>
+    <span class="hljs-keyword">var</span> myNamespace2 = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> Configure = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">var</span> privateName = <span class="hljs-string">'jisuowei.com'</span>;
+            <span class="hljs-keyword">var</span> privateReturnName = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                <span class="hljs-keyword">return</span> privateName;
+            }
+            <span class="hljs-keyword">var</span> privateSetName = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name)</span> {</span>
+                privateName = name;
+            }
+            <span class="hljs-comment">// 返回菜单对象</span>
+            <span class="hljs-keyword">return</span> {
+                setName : <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name)</span> {</span>
+                    privateSetName(name);
+                },
+                getName : <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name)</span> {</span>
+                    <span class="hljs-keyword">return</span> privateReturnName();
+                }
+            }
+        }
+        <span class="hljs-comment">// 存储 configure 实例</span>
+        <span class="hljs-keyword">var</span> instance;
+        <span class="hljs-keyword">return</span> {
+            init : <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                <span class="hljs-comment">// 如果不存在实例</span>
+                <span class="hljs-keyword">if</span>(!instance) {
+                    instance = Configure();
+                }
+                <span class="hljs-comment">// 创建 Configure 单例</span>
+                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> key <span class="hljs-keyword">in</span> instance) {
+                    <span class="hljs-keyword">if</span>(instance.hasOwnProperty(key)) {
+                        <span class="hljs-keyword">this</span>[key] = instance[key];
+                    }
+                }
+                <span class="hljs-keyword">this</span>.init = <span class="hljs-literal">null</span>;
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+            }
+        }
+    }();
+    <span class="hljs-comment">// 使用方式</span>
+    myNamespace2.init();
+    myNamespace2.getName();
+
+    <span class="hljs-comment">// 修改了自执行函数返回的对象的代码，在获取 Configure 函数返回的对象时</span>
+    <span class="hljs-comment">// 将该对象的方法赋给 myNamespace2 ，如此就改变了调用方式</span>
+
+
+<span class="hljs-comment">// 2016-11-27</span>
+<span class="hljs-number">071.</span>推荐分支函数
+<span class="hljs-comment">// 分支函数 解决的是 浏览器兼容性的 重复判断</span>
+<span class="hljs-comment">// 一般是用 if 逻辑来进行 特性检测 或 能力检测，根据不同的实现来实现功能上的兼容</span>
+<span class="hljs-comment">// 但每执行一次代码可能都需要进行一次兼容检测是不必要的</span>
+<span class="hljs-comment">// 在初始化执行的时候就检测浏览器的兼容性</span>
+
+<span class="hljs-comment">// 一个 XMLHttpRequest 栗子</span>
+    <span class="hljs-keyword">var</span> XHR = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> standard = {
+            createXHR : <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> XMLHttpRequest();
+            }
+        }
+        <span class="hljs-keyword">var</span> newActionXObject = {
+            createXHR : <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> newActionXObject(<span class="hljs-string">'Msxml2.XMLHTTP'</span>);
+            }
+        }
+        <span class="hljs-keyword">var</span> oldActionXObject = {
+            createXHR : <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> oldActionXObject(<span class="hljs-string">'Microsoft.XMLHTTP'</span>);
+            }
+        }
+        <span class="hljs-keyword">if</span>( standard.createXHR() ) {
+            <span class="hljs-keyword">return</span> standard;
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">try</span> {
+                newActionXObject.createXHR();
+                <span class="hljs-keyword">return</span> newActionXObject;
+            } <span class="hljs-keyword">catch</span>(o) {
+                oldActionXObject.createXHR();
+                <span class="hljs-keyword">return</span> oldActionXObject;
+            }
+        }
+    }();
+
+<span class="hljs-comment">// 原理：</span>
+    <span class="hljs-comment">// 声明鸡哥不同名称的对象，为这些对象声明一个名称相同的方法（关键）</span>
+    <span class="hljs-comment">// 这些不同的对象却有相同的方法，根据不同的浏览器设计各自的实现</span>
+    <span class="hljs-comment">// 接着开始进行一次浏览器检测，并由检测结果来决定返回哪一个对象</span>
+    <span class="hljs-comment">// 如此不论返回的是哪一个对象，最后名称相同的方法都作为“对外一致的接口”</span>
+
+
+<span class="hljs-number">072.</span>惰性载入函数
+<span class="hljs-comment">// 解决的主要问题也是兼容性，原理上类似分支函数</span>
+
+    <span class="hljs-keyword">var</span> addEvent = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(el, type, handle)</span> {</span>
+        addEvent = el.addEventListener ? <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(el, type, handle)</span> {</span>
+            el.addEventListener(type, handle, <span class="hljs-literal">false</span>);
+        } : <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(el, type, handle)</span> {</span>
+            el.attachEvent(<span class="hljs-string">'on'</span> + type, handle);
+        };
+        <span class="hljs-comment">// 在第一次执行 addEvent 函数时，修改了 addEvent 函数之后必须执行一次</span>
+        addEvent(el, type, handle);
+    }
+
+<span class="hljs-comment">// 从代码上看，惰性载入函数也是在函数内部改变自身的一种方式</span>
+<span class="hljs-comment">// 在重复执行时就不会再进行兼容方面的检测了</span>
+
+<span class="hljs-comment">// 惰性载入表示函数执行的分支仅会发生一次，即第一次调用的时候</span>
+<span class="hljs-comment">// 在第一次调用的过程中，该函数会被覆盖为另一个按合适方式执行的函数</span>
+<span class="hljs-comment">// 这样 任何 对原函数的调用都不用再经过执行的分支了</span>
+    <span class="hljs-comment">// 要执行的适当代码只有在实际调用时才执行</span>
+    <span class="hljs-comment">// 尽管第一次调用会因第二个函数的调用而稍慢，但因避免了多重条件，后续会很快</span>
+
+<span class="hljs-comment">// 浏览器差异导致 JS 中包含大量的 if 语句来引导执行正确的代码</span>
+
+<span class="hljs-comment">// 下面的惰性载入函数的 createXHR() 中，if 语句的每个分支都会为 createXHR() 变量赋值</span>
+    <span class="hljs-comment">// 有效覆盖了原有的函数，最后一步调用新赋函数</span>
+    <span class="hljs-comment">// 下次调用时，就直接调用被分配的函数，不再执行 if 语句</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createXHR</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">if</span>( <span class="hljs-keyword">typeof</span> XMLHttpRequest != <span class="hljs-string">'undefined'</span>) {
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> XMLHttpRequest();
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>( <span class="hljs-keyword">typeof</span> ActiveXObject != <span class="hljs-string">'undefined'</span>) {
+            <span class="hljs-keyword">if</span>( <span class="hljs-keyword">typeof</span> <span class="hljs-built_in">arguments</span>.callee.activeXString != <span class="hljs-string">'string'</span>) {
+                <span class="hljs-keyword">var</span> versions = [<span class="hljs-string">'MSXML2.XMLHttp'</span>,<span class="hljs-string">'MSXML2.XMLHttp.3.0'</span>,<span class="hljs-string">'MSXML2.XMLHttp.6.0'</span>];
+                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>, len = versions.length; i&lt;len; i++) {
+                    <span class="hljs-keyword">try</span> {
+                        <span class="hljs-keyword">var</span> xhr = <span class="hljs-keyword">new</span> ActiveXObject(versions[i]);
+                        <span class="hljs-built_in">arguments</span>.callee.activeXString = versions[i];
+                        <span class="hljs-keyword">return</span> xhr;
+                    } <span class="hljs-keyword">catch</span>(ex) {
+                        <span class="hljs-comment">// skip</span>
+                    }
+                }
+            }
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ActiveXObject(<span class="hljs-built_in">arguments</span>.callee.activeXString);
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'No XHR object available.'</span>);
+        }
+    }
+
+<span class="hljs-comment">// 每一次调用 createXHR() 都要检测浏览器，减少 if 语句使其不必每次都执行</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createXHR</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> XMLHttpRequest != <span class="hljs-string">'undefined'</span>) {
+            createXHR = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> XMLHttpRequest();
+            };
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>( <span class="hljs-keyword">typeof</span> ActiveXObject != <span class="hljs-string">'undefined'</span>) {
+            createXHR = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                <span class="hljs-keyword">if</span>( <span class="hljs-keyword">typeof</span> <span class="hljs-built_in">arguments</span>.callee.activeXString != <span class="hljs-string">'string'</span>) {
+                    <span class="hljs-keyword">var</span> versions = [<span class="hljs-string">'MSXML2.XMLHttp'</span>,<span class="hljs-string">'MSXML2.XMLHttp.3.0'</span>,<span class="hljs-string">'MSXML2.XMLHttp.6.0'</span>];
+                    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; len = versions.length; i&lt;len; i++) {
+                        <span class="hljs-keyword">try</span>{
+                            <span class="hljs-keyword">var</span> xhr = <span class="hljs-keyword">new</span> ActiveXObject(versions[i]);
+                            <span class="hljs-built_in">arguments</span>.callee.activeXString = versions[i];
+                            <span class="hljs-keyword">return</span> xhr;
+                        } <span class="hljs-keyword">catch</span>(ex) {
+                            <span class="hljs-comment">// skip</span>
+                        }
+                    }
+                }
+                <span class="hljs-keyword">return</span> newActionXObject(<span class="hljs-built_in">arguments</span>.callee.activeXString);
+            };
+        } <span class="hljs-keyword">else</span> {
+            createXHR = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'No XHR object available.'</span>);
+            };
+        }
+        <span class="hljs-keyword">return</span> createXHR();
+    }
+
+
+<span class="hljs-number">073.</span>函数绑定有价值
+<span class="hljs-comment">// 函数绑定就是为了纠正函数执行上下文，特别是当函数带有 this 时</span>
+<span class="hljs-comment">// 容易使函数执行上下文发生跟预期不同的改变</span>
+    <span class="hljs-comment">// 函数绑定需要创建一个函数，可以在特定环境中指定参数调用另一个函数</span>
+    <span class="hljs-comment">// 一个简单的 bind() 函数接收一个函数和一个环境，返回一个在给定环境中调用给定函数的函数</span>
+        <span class="hljs-comment">// 并将所有参数原封不同的传递过去</span>
+    <span class="hljs-comment">// 被绑定的函数与普通函数开销更大，需要更多的内存，也因多重调用稍慢，必要时再使用</span>
+
+<span class="hljs-comment">// 第一个特征常常和回调函数及事件处理函数一起使用</span>
+    <span class="hljs-keyword">var</span> handle = {
+        message : <span class="hljs-string">'Event handled'</span>,
+        handleClick : <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(event)</span> {</span>
+            alert(<span class="hljs-keyword">this</span>.message);
+        }
+    };
+    <span class="hljs-keyword">var</span> btn = document.getElementById(<span class="hljs-string">'btn'</span>);
+    EventUtil.addHandler(btn, <span class="hljs-string">'click'</span>, handler.handleClick);  <span class="hljs-comment">// undefined</span>
+
+    <span class="hljs-comment">// 没有保存 handler.handleClick() 上下文环境，this对象最后指向了 DOM 按钮,而非handler</span>
+
+<span class="hljs-comment">// 使用闭包修正</span>
+    <span class="hljs-keyword">var</span> handler = {
+        message : <span class="hljs-string">'Event handled'</span>,
+        handleClick : <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(event)</span> {</span>
+            alert(<span class="hljs-keyword">this</span>.message);
+        }
+    };
+    <span class="hljs-keyword">var</span> btn = document.getElementById(<span class="hljs-string">'btn'</span>);
+    EventUtil.addHandler(btn, <span class="hljs-string">'click'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(event)</span> {</span>
+        handler.handleClick(event);
+    });
+
+    <span class="hljs-comment">// 只是特定解决方案，创建多个闭包会难于理解和调试</span>
+    <span class="hljs-comment">// 因此，很多 JS 库实现了一个可以将函数绑定到指定环境的函数 bind()</span>
+
+<span class="hljs-comment">// bind() 函数提供一个可选的执行上下文传递给函数</span>
+    <span class="hljs-comment">// 并在函数内部返回一个函数，以纠正在函数调用上出现的执行上下文发生的变化</span>
+    <span class="hljs-comment">// 最容易出现的错误就是回调函数和事件处理程序一起使用</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">bind</span><span class="hljs-params">(fn, context)</span> {</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> fn.apply(content, <span class="hljs-built_in">arguments</span>);
+        };
+    }
+
+    <span class="hljs-comment">// 在 bind() 中创建一个闭包，使用 apply 调用传入的函数，并为 apply 传递 context 对象和参数</span>
+    <span class="hljs-comment">// 这里使用的 arguments 对象是内部函数而非 bind 的</span>
+    <span class="hljs-comment">// 调用返回函数时，会在给定的环境中执行传入的函数并给出所有参数</span>
+    <span class="hljs-keyword">var</span> handler = {
+        message : <span class="hljs-string">'Event handled'</span>,
+        handleClick : <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(event)</span> {</span>
+            alert(<span class="hljs-keyword">this</span>.message);
+        }
+    };
+    <span class="hljs-keyword">var</span> btn = document.getElementById(<span class="hljs-string">'btn'</span>);
+    EventUtil.addHandler(btn, <span class="hljs-string">'click'</span>, bind(handler.handlerClick, handler));
+
+
+<span class="hljs-number">074.</span>使用高阶函数
+<span class="hljs-comment">// 高阶函数：对函数进一步抽象，是函数式编程众多风格中的一项显著特征经</span>
+    <span class="hljs-comment">// 接受函数作为输入</span>
+    <span class="hljs-comment">// 输出一个函数</span>
+
+<span class="hljs-comment">// 在函数式语言中，函数不仅是一种特殊的对象，还是一种类型，因此是可以被传递的值</span>
+    <span class="hljs-comment">// sort()还能够支持一个可选的参数， 形式如 sort(fn)</span>
+    document.write( [<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">1</span>,<span class="hljs-number">4</span>].sort() );  <span class="hljs-comment">// '1,2,3,4'</span>
+
+    <span class="hljs-comment">// 数组排序时会执行 function(x,y) { return x-y; }</span>
+    <span class="hljs-comment">// 大于返回1 等于返回0 小于返回-1</span>
+
+<span class="hljs-comment">// 除了函数作为参数使用，还有 函数返回值 作为 函数 的情况</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">wrap</span><span class="hljs-params">(tag)</span> {</span>
+        <span class="hljs-keyword">var</span> stag = <span class="hljs-string">'&lt;'</span> + tag + <span class="hljs-string">'&gt;'</span>;
+        <span class="hljs-keyword">var</span> etag = <span class="hljs-string">'&lt;/'</span> + tag.replace(<span class="hljs-regexp">/s.*/</span>, <span class="hljs-string">''</span>) + <span class="hljs-string">'&gt;'</span>;
+        <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(x)</span> {</span>
+            <span class="hljs-keyword">return</span> stag + x + etag;
+        }
+    }
+    <span class="hljs-keyword">var</span> B = wrap(<span class="hljs-string">'B'</span>);
+    document.write(B(<span class="hljs-string">'粗'</span>));
+    document.write(<span class="hljs-string">'&lt;br&gt;'</span>);
+    document.write(wrap(<span class="hljs-string">'B'</span>)(<span class="hljs-string">'粗'</span>));
+
+<span class="hljs-comment">// map(array, func) 函数即为一种高阶函数，很多函数式编程语言中均有此函数</span>
+    <span class="hljs-comment">// 表达式已经表明，将 func函数 作用于 array 中每一个元素，最终返回一个新的 array</span>
+    <span class="hljs-comment">// map 对 array 和 func 的实现是没有任何预先的假设的，因此称“高阶”</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">map</span><span class="hljs-params">(array, func)</span> {</span>
+        <span class="hljs-keyword">var</span> res = [];
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; len=array.length; i&lt;len; i++) {
+            res.push(func(array[i]));
+        }
+        <span class="hljs-keyword">return</span> res;
+    }
+
+    <span class="hljs-keyword">var</span> mapped = map([<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">5</span>,<span class="hljs-number">7</span>,<span class="hljs-number">8</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(n)</span> {</span>
+        <span class="hljs-keyword">return</span> n = n + <span class="hljs-number">1</span>;
+    });
+    alert(mapped);  <span class="hljs-comment">// 2,4,6,8,9</span>
+
+
+<span class="hljs-number">075.</span>函数柯里化
+<span class="hljs-comment">// 把接受多个参数的函数变成接受单个参数的函数，并返回一个能接受原函数参数的新函数</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">adder</span><span class="hljs-params">(num)</span> {</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(x)</span> {</span>
+            <span class="hljs-keyword">return</span> num + x;
+        }
+    }
+    <span class="hljs-keyword">var</span> add5 = adder(<span class="hljs-number">5</span>);
+    <span class="hljs-keyword">var</span> add6 = adder(<span class="hljs-number">6</span>);
+    add5(<span class="hljs-number">1</span>);  <span class="hljs-comment">// 6</span>
+    add6(<span class="hljs-number">1</span>);  <span class="hljs-comment">// 7</span>
+
+<span class="hljs-comment">// 主要功能：提供了强大的动态函数创建方法，柯里化（currying）在 DOM 的回调中非常有用</span>
+    <span class="hljs-comment">// 通过调用另一个函数为它传入 要柯里化的函数 和必要的参数得到</span>
+    <span class="hljs-comment">// 利用已有函数创建一个动态的函数，动态函数内部还是通过已有函数来发生作用</span>
+    <span class="hljs-comment">// 只是传入更多的参数来简化函数的参数方面的调用</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">curry</span><span class="hljs-params">(fn)</span> {</span>
+        <span class="hljs-keyword">var</span> args = [].slice.call(<span class="hljs-built_in">arguments</span>, <span class="hljs-number">1</span>);
+        <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> fn.apply(<span class="hljs-literal">null</span>, args.concat( [].slice.call(<span class="hljs-built_in">arguments</span>, <span class="hljs-number">0</span>) ));
+        }
+    }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">add</span><span class="hljs-params">(num1, num2)</span> {</span>
+        <span class="hljs-keyword">return</span> num1 + num2;
+    }
+    <span class="hljs-keyword">var</span> newAdd = curry(add, <span class="hljs-number">5</span>);
+    newAdd(<span class="hljs-number">6</span>);  <span class="hljs-comment">// 11</span>
+
+    <span class="hljs-comment">// 在curry函数内部，私有变量 args 用来存储在调用 curry 时传递的参数</span>
+    <span class="hljs-comment">// 再跟后面动态创建函数调用时的参数合并执行，就得到一样的效果</span>
+
+<span class="hljs-comment">// 基本方法：和函数绑定是一样的，使用一个闭包返回一个函数</span>
+    <span class="hljs-comment">// 区别在于函数被调用时，返回函数还需要设置一些传入的参数</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">bind</span><span class="hljs-params">(fn, context)</span> {</span>
+        <span class="hljs-keyword">var</span> args = <span class="hljs-built_in">Array</span>.prototype.slice.call(<span class="hljs-built_in">arguments</span>, <span class="hljs-number">2</span>);
+        <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">var</span> innerArgs = <span class="hljs-built_in">Array</span>.prototype.slice.call(<span class="hljs-built_in">arguments</span>);
+            <span class="hljs-keyword">var</span> finalArgs = args.concat(innerArgs);
+            <span class="hljs-keyword">return</span> fn.apply(context,finalArgs);
+        };
+    }
+
+    <span class="hljs-comment">// 创建柯里化函数的通用方式</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">curry</span><span class="hljs-params">(fn)</span> {</span>
+        <span class="hljs-keyword">var</span> args = <span class="hljs-built_in">Array</span>.prototype.slice.call(<span class="hljs-built_in">arguments</span>, <span class="hljs-number">1</span>);
+        <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">var</span> innerArgs = <span class="hljs-built_in">Array</span>.prototype.slice.call(<span class="hljs-built_in">arguments</span>);
+            <span class="hljs-keyword">var</span> finalArgs = args.concat(innerArgs);
+            <span class="hljs-keyword">return</span> fn.apply(<span class="hljs-literal">null</span>, finalArgs);
+        };
+    }
+
+    <span class="hljs-comment">// 将返回的函数的参数进行排序，获取参一后的所有参数，在 arg对象上调用slice并传入1</span>
+    <span class="hljs-comment">// 表示被返回的数组的第一个元素应该是参二</span>
+
+
+<span class="hljs-number">076.</span>重视函数节流
+<span class="hljs-comment">// DOM 操作需要跟多内存和CPU时间，过多的DOM操作可能会导致浏览器变慢甚至崩溃</span>
+<span class="hljs-comment">// 节流的设计思想就是让某些代码可以在间断的情况下连续重复执行</span>
+<span class="hljs-comment">// 使用定时器实现</span>
+
+<span class="hljs-comment">// 第一次调用函数时创建一个定时器，在指定的时间间隔后执行代码</span>
+<span class="hljs-comment">// 第二次调用时，清除前一次的定时器并设置另一个</span>
+    <span class="hljs-keyword">var</span> processor = {
+        timeoutId: <span class="hljs-literal">null</span>,
+        <span class="hljs-comment">// 实际进行处理的方法</span>
+        performProcessing : <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-comment">// 实际执行的方法</span>
+        },
+        <span class="hljs-comment">// 初始处理调用的方法</span>
+        process : <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            clearTimeout(<span class="hljs-keyword">this</span>.timeId);
+            <span class="hljs-keyword">var</span> that = <span class="hljs-keyword">this</span>;
+            <span class="hljs-keyword">this</span>.timeoutId = setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                that.performProcessing();
+            }, <span class="hljs-number">100</span>);
+        }
+    };
+    <span class="hljs-comment">// 尝试开始执行</span>
+    Processor.process();
+
+    <span class="hljs-comment">// 简化</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">throttle</span><span class="hljs-params">(method, context)</span> {</span>
+        clearTimeout(method, tId);
+        method.tId = setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            method.call(context);
+        },<span class="hljs-number">100</span>);
+    }
+
+<span class="hljs-comment">// 一些代码无间断的执行严重影响性能：resize、mousemove</span>
+<span class="hljs-comment">// 特别是减轻涉及 Ajax 调用给服务器造成的极大负担</span>
+    oTrigger.onmouseover = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> {</span>
+        oContainer.autoTimeoutId &amp;&amp; clearTimeout(oContainer.autoTimeoutId);
+        e = e || window.event;
+        <span class="hljs-keyword">var</span> target = e.target || e.srcElement;
+        <span class="hljs-keyword">if</span>((<span class="hljs-regexp">/li$/i</span>).test(target.nodeName)) {
+            oContainer.timeId = setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                addTweenForContainer(oContainer, oTrigger, target);
+            }, <span class="hljs-number">300</span>);
+        }
+    }
+
+
+<span class="hljs-number">077.</span>推荐作用域安全的构造函数
+<span class="hljs-comment">// 构造函数：一个使用 new 运算符的函数</span>
+<span class="hljs-comment">// 使用 new 调用时，构造函数的内部用到的 this 对象会指向创建的实例</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Person</span><span class="hljs-params">(name, age, job)</span> {</span>
+        <span class="hljs-keyword">this</span>.name = name;
+        <span class="hljs-keyword">this</span>.age = age;
+        <span class="hljs-keyword">this</span>.job = job;
+    }
+    <span class="hljs-keyword">var</span> person = <span class="hljs-keyword">new</span> Person(<span class="hljs-string">'jisuowei'</span>, <span class="hljs-number">25</span>, <span class="hljs-string">'front-end'</span>);
+
+    <span class="hljs-comment">// 如果没有使用 new 就调用，该this对象是在运行时绑定的，所以会绑定到全局 window 上</span>
+    <span class="hljs-comment">// 这将导致错误属性意外增加到全局作用域上</span>
+
+<span class="hljs-comment">// 解决方案：创建一个作用域安全的构造函数</span>
+    <span class="hljs-comment">// 首先确认this对象是否为正确的类型实例，不是则创建新的实例并返回</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Person</span><span class="hljs-params">(name, age, job)</span> {</span>
+        <span class="hljs-comment">// 检测this对象是否是Person的实例</span>
+        <span class="hljs-keyword">if</span>(<span class="hljs-keyword">this</span> <span class="hljs-keyword">instanceof</span> Person) {
+            <span class="hljs-keyword">this</span>.name = name;
+            <span class="hljs-keyword">this</span>.age = age;
+            <span class="hljs-keyword">this</span>.job = job;
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Person(name, age, job);
+        }
+    }
+
+    <span class="hljs-comment">// 如果使用的构造函数获取继承且不使用原型链，那么这个继承可能就被破坏</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Polygon</span><span class="hljs-params">(sides)</span> {</span>
+        <span class="hljs-keyword">if</span>(<span class="hljs-keyword">this</span> <span class="hljs-keyword">instanceof</span> Polygon) {
+            <span class="hljs-keyword">this</span>.sides = sides;
+            <span class="hljs-keyword">this</span>.getArea = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+            }
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Polygon(sides);
+        }
+    }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Rectangle</span><span class="hljs-params">(width, height)</span> {</span>
+        Polygon.call(<span class="hljs-keyword">this</span>, <span class="hljs-number">2</span>);
+        <span class="hljs-keyword">this</span>.width = width;
+        <span class="hljs-keyword">this</span>.height = height;
+        <span class="hljs-keyword">this</span>.getArea = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.width * <span class="hljs-keyword">this</span>.height;
+        };
+    }
+    <span class="hljs-keyword">var</span> rect = <span class="hljs-keyword">new</span> Rectangle(<span class="hljs-number">5</span>, <span class="hljs-number">10</span>);
+    alert(rect.sides);  <span class="hljs-comment">// undefined</span>
+
+
+    <span class="hljs-comment">// Rectangle构造函数的作用域是不安全的</span>
+    <span class="hljs-comment">// 在新创建一个Rectangle实例后，这个实例通过Polygon.call继承了sides属性</span>
+    <span class="hljs-comment">// 但由于Polygon构造函数的作用域是安全的，this对象并非是Polygon的实例</span>
+    <span class="hljs-comment">// 因此会创建并返回一个新的Polygon对象</span>
+    <span class="hljs-comment">// 由于Rectangle构造函数中的this对象并没有得到增长，同时Polygon.call返回的值没有被用到</span>
+    <span class="hljs-comment">// 所以Rectangle实例中不会有sides属性</span>
+
+    <span class="hljs-comment">// 构造函数配合使用原型链可以解决这个问题</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Polygon</span><span class="hljs-params">(sides)</span> {</span>
+        <span class="hljs-keyword">if</span>(<span class="hljs-keyword">this</span> <span class="hljs-keyword">instanceof</span> Polygon) {
+            <span class="hljs-keyword">this</span>.sides = sides;
+            <span class="hljs-keyword">this</span>.getArea = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+            }
+        } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Polygon(sides);
+    }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Rectangle</span><span class="hljs-params">(width, height)</span> {</span>
+        Polygon.call(<span class="hljs-keyword">this</span>, <span class="hljs-number">2</span>);
+        <span class="hljs-keyword">this</span>.width = width;
+        <span class="hljs-keyword">this</span>.height = height;
+        <span class="hljs-keyword">this</span>.getArea = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.width * <span class="hljs-keyword">this</span>.height;
+        };
+    }
+    <span class="hljs-comment">//使用原型链</span>
+    Rectangle.prototype = <span class="hljs-keyword">new</span> Polygon();
+    <span class="hljs-keyword">var</span> rect = <span class="hljs-keyword">new</span> Rectangle(<span class="hljs-number">5</span>, <span class="hljs-number">10</span>);
+    alert(rect.sides);  <span class="hljs-comment">// 2</span>
+
+
+<span class="hljs-number">078.</span>正确理解执行上下文和作用域链
+<span class="hljs-comment">// 执行上下文（execution context）是 ECMAScript中 用来描述 JS 代码执行的抽象概念</span>
+<span class="hljs-comment">// 所有 JS  代码都是在某个执行上下文中运行的</span>
+
+<span class="hljs-comment">// 在当前执行上下文中调用 function 会进入一个新的执行上下文</span>
+<span class="hljs-comment">// 该 function 调用结束会返回到原来的执行上下文中</span>
+<span class="hljs-comment">// 如 function 调用过程中抛出异常，并没有将其捕获，有可能从多个执行上下文中退出</span>
+
+<span class="hljs-comment">// 在 function 调用过程中，也可能调用其他的 function</span>
+<span class="hljs-comment">// 从而进入新的执行上下文，由此形成一个执行上下文栈</span>
+
+<span class="hljs-comment">// 每个执行上下文都与一个作用域链（scope chain）关联起来</span>
+<span class="hljs-comment">// 该作用域链用来在 function 执行时求出标识符（identifier）的值</span>
+<span class="hljs-comment">// 该链中包含多个对象，在对标识符进行求值的过程中，会从链首的对象开始</span>
+<span class="hljs-comment">// 然后依次查找后面的对象，直到在某个对象中找到与标识符名称相同的属性</span>
+<span class="hljs-comment">// 在每个对象中进行属性查找时，会使用该对象的 prototype 链</span>
+<span class="hljs-comment">// 在一个执行上下文中，与其关联的作用域链只会被 with 语句和 catch 子句影响</span>
+
+<span class="hljs-comment">// 在进入一个新的执行上下文时，会按顺序执行下面的操作</span>
+    <span class="hljs-comment">// 1.创建激活（activation）对象激活对象是在进入新的执行上下文时创建出来的</span>
+        <span class="hljs-comment">// 并且与新的执行上下文关联起来</span>
+        <span class="hljs-comment">// 在初始化构造函数时，该对象包含一个名为 arguments 的属性</span>
+        <span class="hljs-comment">// 激活对象在变量初始化时也会被用到</span>
+        <span class="hljs-comment">// JS 代码不能直接访问该对象，但可以访问该对象的成员 如 arguments</span>
+    <span class="hljs-comment">// 2.创建作用域链接下来的操作是创建作用域链</span>
+        <span class="hljs-comment">// 每个 function 都有一个内部属性[[scope]]，它的值是一个包含多个对象的链</span>
+        <span class="hljs-comment">// 该属性的具体值与 function 的创建方式和在代码中的位置有很大关系</span>
+        <span class="hljs-comment">// 见“function对象的创建方式”</span>
+        <span class="hljs-comment">// 此时的主要操作是将上一步创建的激活对象添加到 function 的[[scope]]属性对应的链的前面</span>
+    <span class="hljs-comment">// 3.变量初始化这一步对 function 中需要使用的变量进行初始化</span>
+        <span class="hljs-comment">// 初始化时使用的对象是创建激活对象过程中所创建的激活对象，不过此时称做变量对象</span>
+        <span class="hljs-comment">// 会被初始化的变量包括 function 调用时的实际参数、内部 function 和局部变量</span>
+        <span class="hljs-comment">// 在这一步中，对于局部变量，只是在变量对象中创建了同名的属性</span>
+        <span class="hljs-comment">// 其属性值为 undefined，只有在 function 执行过程中才会被真正赋值</span>
+        <span class="hljs-comment">// 全局 JS 代码是在全局执行上下文中运行的，该上下文的作用域链只包含一个全局对象</span>
+
+    <span class="hljs-comment">// 函数总是在自己的上下文环境中运行，如读/写局部变量、函数参数，以及运行内部逻辑结构等</span>
+    <span class="hljs-comment">// 在创建上下文环境的过程中，JS 会遵循一定的运行规则，并按照代码顺序完成一系列操作</span>
+    <span class="hljs-comment">// 这个操作过程如下：</span>
+        <span class="hljs-comment">// 1.根据调用时传递的参数创建调用对象</span>
+        <span class="hljs-comment">// 2.创建参数对象，存储参数变量</span>
+        <span class="hljs-comment">// 3.创建对象属性，存储函数定义的局部变量</span>
+        <span class="hljs-comment">// 4.把调用对象放在作用域链的头部，以便检索</span>
+        <span class="hljs-comment">// 5.执行函数结构体内语句</span>
+        <span class="hljs-comment">// 6.返回函数返回值</span>
+
+    <span class="hljs-comment">// 针对上面的操作过程进行详细描述</span>
+        <span class="hljs-comment">// 首先，在函数上下文环境中创建一个调用对象</span>
+        <span class="hljs-comment">// 调用对象与上下文环境是两个不同的概念，也是另一种运行机制</span>
+        <span class="hljs-comment">// 对象可以定义和访问自己的属性或方法，不过这里的对象不是完整意义上的对象</span>
+        <span class="hljs-comment">// 它没有原型并且不能够被引用，与 Arguments 对象的 arguments[] 数组不是真正意义上的数组一样</span>
+
+        <span class="hljs-comment">// 调用对象会根据传递的参数创建自己的 Arguments 对象</span>
+        <span class="hljs-comment">// 这是一个结构类似数组的对象，该对象内部存储着调用函数时所传递的参数</span>
+        <span class="hljs-comment">// 接着，创建名为 arguments 的属性，该属性引用刚创建的 Arguments 对象</span>
+
+        <span class="hljs-comment">// 然后，为上下文环境分配作用域，作用域由对象列表或对象链组成</span>
+        <span class="hljs-comment">// 每个函数对象都有一个内部属性（scope），这个属性值也是由对象列表或对象链组成的</span>
+        <span class="hljs-comment">// scope 属性值构成了函数调用上下文环境的作用域</span>
+        <span class="hljs-comment">// 同时，调用对象被添加到作用域链的头部，即该对象列表的顶部（作用域链的前端）</span>
+
+        <span class="hljs-comment">// 实际上，这个头部是针对该函数的作用域链而言的</span>
+        <span class="hljs-comment">// 把调用对象添加到作用域的头部就是把调用对象排在函数作用域链的最上面</span>
+
+        <span class="hljs-comment">// 例如，在下面这个示例中，当调用函数 e() 时，将创建函数 e() 的调用对象和函数 e() 的作用域</span>
+        <span class="hljs-comment">// 但在调用函数 e() 之前，会先调用函数 g()，并且生成调用函数g()的对象</span>
+        <span class="hljs-comment">// 而调用函数 e() 的对象会在函数 e() 的作用域范围内处于头部位置，即排在最前面</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">()</span>{</span>
+            <span class="hljs-keyword">return</span> e();
+            <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">e</span><span class="hljs-params">()</span>{</span>
+                <span class="hljs-keyword">return</span> g();
+                <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">g</span><span class="hljs-params">()</span>{</span>
+                    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;
+                }
+            }
+        }
+        alert(f());  <span class="hljs-comment">// 1</span>
+
+        <span class="hljs-comment">// 接着，正式执行函数体内代码</span>
+        <span class="hljs-comment">// 此时 JS 会对函数体内创建的变量执行变量实例化操作（即转换为调用对象的属性）</span>
+
+    <span class="hljs-comment">// 具体说明</span>
+        <span class="hljs-comment">// 将函数的形参也创建为调用对象的命名属性</span>
+        <span class="hljs-comment">// 如果调用函数时传递的参数与形参一致，则将相应参数的值赋给这些命名属性</span>
+        <span class="hljs-comment">// 否则会将命名属性赋值为 undefined</span>
+
+        <span class="hljs-comment">// 对于内部定义函数（注意其与嵌套函数的区分，两者语义不完全重合）</span>
+        <span class="hljs-comment">// 会以其声明时所用名称为调用对象创建同名属性</span>
+        <span class="hljs-comment">// 对应的函数则被创建为函数对象，并将其赋值给该属性</span>
+
+        <span class="hljs-comment">// 将在函数内部声明的所有局部变量创建为调用对象的命名属性</span>
+        <span class="hljs-comment">// 注意，在执行函数体内的代码并计算相应的赋值表达式之前不会对局部变量进行真正的实例化</span>
+
+        <span class="hljs-comment">// 由于 arguments 属性与函数局部变量对应的命名属性都属于同一个调用对象</span>
+        <span class="hljs-comment">// 因此可以将 arguments 作为函数的局部变量来看待</span>
+
+        <span class="hljs-comment">// 最后，创建 this 对象并对其进行赋值</span>
+        <span class="hljs-comment">// 如果赋值为一个对象，则 this 将指向该对象引用。如果赋值为 null，则 this 指向全局对象</span>
+
+        <span class="hljs-comment">// 创建全局上下文环境的过程与上面的描述稍微不同</span>
+        <span class="hljs-comment">// 因为全局上下文环境没有参数，所以不需要通过定义调用对象来引用这些参数</span>
+        <span class="hljs-comment">// 全局上下文环境会有一个作用域，即全局作用域</span>
+        <span class="hljs-comment">// 它的作用域链实际上只由一个对象组成，即全局对象 window</span>
+        <span class="hljs-comment">// 全局上下文环境也会有变量实例化的过程</span>
+        <span class="hljs-comment">// 它的内部函数就是涉及大部分 JS 代码的、常规的顶级函数声明</span>
+        <span class="hljs-comment">// 全局上下文环境也会使用 this 对象来引用全局对象</span>
+
+        <span class="hljs-comment">// JS 作用域可以细分为词法作用域和动态作用域</span>
+        <span class="hljs-comment">// 词法作用域又称为定义作用域，这是从静态角度来说的</span>
+        <span class="hljs-comment">// 在函数没有被调用之前，根据函数结构的嵌套关系来确定函数的作用域</span>
+        <span class="hljs-comment">// 因此词法作用域取决于源代码，通常编译器可以进行静态分析来确定每个标识符实际的引用</span>
+
+        <span class="hljs-comment">// 动态作用域也称为执行作用域，这是从动态角度来说的</span>
+        <span class="hljs-comment">// 当函数被调用之后，其作用域会因为调用而发生变化，此时作用域链也会随之调整</span>
+
+        <span class="hljs-comment">// 定义作用域就是用来说明函数在定义时存在的嵌套关系</span>
+        <span class="hljs-comment">// 当函数被执行时，作用域可能会发生变化</span>
+        <span class="hljs-comment">// JS 函数运行在它们被定义的作用域中，而不是它们被执行的作用域中</span>
+
+        <span class="hljs-comment">// 在 JS 中，function对象的创建方式有3种</span>
+            <span class="hljs-comment">// function声明、function表达式和使用Function构造器</span>
+            <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">a</span><span class="hljs-params">()</span> {</span>}; <span class="hljs-keyword">var</span> a = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>}; <span class="hljs-keyword">var</span> a = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Function</span>()
+        
+        <span class="hljs-comment">// 通过这3种方法创建出来的function对象的scope属性的值有所不同</span>
+        <span class="hljs-comment">// 从而影响function执行过程中的作用域链</span>
+        <span class="hljs-comment">// 具体说明如下</span>
+            <span class="hljs-comment">// 使用 function语句 声明的是在进入执行上下文时的变量初始化过程中创建的</span>
+                <span class="hljs-comment">// 该对象的 scope 属性的值是它被创建时的执行上下文对应的作用域链</span>
+            <span class="hljs-comment">// 使用 function表达式 声明的是在该表达式被执行的时候创建的</span>
+                <span class="hljs-comment">// 该对象的scope属性的值与使用function声明创建的对象一样</span>
+            <span class="hljs-comment">// 使用 Function构造器 声明的通常有两种方式</span>
+                <span class="hljs-comment">// 常用格式是 var funcName=newFunction(p1,p2,...,pn,body)</span>
+                <span class="hljs-comment">// 其中 p1,p2,...,pn 表示的是该 function 的形式参数，body 是 functio 的内容</span>
+                <span class="hljs-comment">// 使用该方式的 function 对象是在构造器被调用的时候创建的</span>
+                <span class="hljs-comment">// 该对象的 scope 属性的值总是一个只包含全局对象的作用域链</span>
+
+        <span class="hljs-comment">// function 对象的 length 属性可以用来获取声明 function 时指定的形式参数的个数</span>
+        <span class="hljs-comment">// 而 function 对象被调用时的实际参数是通过 arguments 来获取的</span>
+
+</code></pre>

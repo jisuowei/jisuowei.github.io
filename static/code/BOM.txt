@@ -1,0 +1,186 @@
+﻿<pre><code class="js hljs javascript">
+<span class="hljs-comment">/*
+
+    Browser Object Model
+
+    2016-08-26
+    ~
+    2016-08-31 Noted by Chisw
+
+*/</span>
+
+
+<span class="hljs-number">001.</span>Window
+<span class="hljs-number">002.</span>History
+<span class="hljs-number">003.</span>Location
+<span class="hljs-number">004.</span>Navigator
+<span class="hljs-number">005.</span>Screen
+<span class="hljs-number">006.</span>Window Features
+
+
+<span class="hljs-comment">// 2016-08-26</span>
+<span class="hljs-number">001.</span>Window
+<span class="hljs-comment">// 如果文档包含框架（frame 或 iframe 标签），浏览器会为HTML文档创建一个window对象并为每个框架创建一个额外的window对象</span>
+<span class="hljs-comment">// Window 对象是全局对象，所有的表达式都在当前的环境中计算</span>
+<span class="hljs-comment">// 要引用当前窗口根本不需要特殊的语法，可以把那个窗口的属性作为全局变量来使用</span>
+<span class="hljs-comment">// 例如，可以只写 document，而不必写 window.document</span>
+<span class="hljs-comment">// 同样，可以把当前窗口对象的方法当作函数来使用，如只写 alert()，而不必写 Window.alert()</span>
+
+<span class="hljs-comment">// Window 对象集合</span>
+    frames[]                    <span class="hljs-comment">// 该集合是 Window 对象的数组，数组中引用的框架可能还包括框架，它们自己也具有frames[]</span>
+    frames.length               <span class="hljs-comment">// 存放数组 frames[] 中含有的元素个数</span>
+
+<span class="hljs-comment">// 属性</span>
+    <span class="hljs-built_in">window</span>.name                  <span class="hljs-comment">// 读写 新窗口名称</span>
+    <span class="hljs-built_in">window</span>.length                <span class="hljs-comment">// 读写 窗口中的框架数量</span>
+    <span class="hljs-built_in">window</span>.status                <span class="hljs-comment">// 读写 状态栏文本</span>
+    <span class="hljs-built_in">window</span>.defaultStatus         <span class="hljs-comment">// 读写 状态栏默认文本</span>
+        <span class="hljs-comment">// 不少浏览器已经关闭了脚本化它们的状态栏的功能 这是一项安全措施 防止隐藏了超链接真正目的的钓鱼攻击</span>
+    <span class="hljs-built_in">window</span>.parent                <span class="hljs-comment">// 返回 父窗口</span>
+    <span class="hljs-built_in">window</span>.closed                <span class="hljs-comment">// 返回 窗口是否关闭 bool</span>
+    <span class="hljs-built_in">window</span>.opener                <span class="hljs-comment">// 返回 对创建该窗口的 Window 对象的引用</span>
+        <span class="hljs-comment">//只有表示顶层窗口的 Window 对象的 operner 属性才有效</span>
+
+    <span class="hljs-built_in">window</span>.outerwidth            <span class="hljs-comment">// 窗口的外部宽度</span>
+    <span class="hljs-built_in">window</span>.outerheight       <span class="hljs-comment">// 窗口的外部高度</span>
+    <span class="hljs-built_in">window</span>.innerwidth            <span class="hljs-comment">// 文档显示区宽度(不包括菜单栏、工具栏以及滚动条)</span>
+    <span class="hljs-built_in">window</span>.innerheight       <span class="hljs-comment">// 文档显示区宽度(不包括菜单栏、工具栏以及滚动条)</span>
+        <span class="hljs-comment">// IE: outer 没有替代方案</span>
+        <span class="hljs-comment">// document.documentElement.clientWidth|clientHeight</span>
+        <span class="hljs-comment">// document.body.clientWidth|clientHeight</span>
+    <span class="hljs-built_in">window</span>.pageXOffset       <span class="hljs-comment">// 读写 当前页面相对于窗口显示区左上角的 X 位置</span>
+    <span class="hljs-built_in">window</span>.pageYOffset       <span class="hljs-comment">// 读写 当前页面相对于窗口显示区左上角的 Y 位置</span>
+
+    <span class="hljs-comment">// Safari Opera IE</span>
+    <span class="hljs-built_in">window</span>.screenTop             <span class="hljs-comment">// 窗口的左上角在屏幕上的的 Y 坐标</span>
+    <span class="hljs-built_in">window</span>.screenLeft            <span class="hljs-comment">// 窗口的左上角在屏幕上的的 X 坐标</span>
+    <span class="hljs-comment">// Safari Firefox</span>
+    <span class="hljs-built_in">window</span>.screenX
+    <span class="hljs-built_in">window</span>.screenY
+
+    <span class="hljs-built_in">window</span>.window                <span class="hljs-comment">// 等价于 window.self</span>
+    <span class="hljs-built_in">window</span>.self                  <span class="hljs-comment">// 返回对窗口自身的只读引用 等价于 Window 属性</span>
+    <span class="hljs-built_in">window</span>.top               <span class="hljs-comment">// 返回最顶层的先辈窗口</span>
+        <span class="hljs-comment">// if (window.top!=window.self) { window.top.location="default.html" }</span>
+
+    <span class="hljs-built_in">window</span>.history           <span class="hljs-comment">// 对 History 对象的只读引用</span>
+    <span class="hljs-built_in">window</span>.location              <span class="hljs-comment">// 对 Location 对象的只读引用 等同 window.location.href</span>
+    <span class="hljs-built_in">window</span>.navigator             <span class="hljs-comment">// 对 Navigator 对象的只读引用</span>
+    <span class="hljs-built_in">window</span>.screen                <span class="hljs-comment">// 对 Screen 对象的只读引用</span>
+    <span class="hljs-built_in">window</span>.document              <span class="hljs-comment">// 对 Document 对象的只读引用</span>
+
+<span class="hljs-comment">// 方法</span>
+    <span class="hljs-built_in">window</span>.alert()   
+    <span class="hljs-built_in">window</span>.confirm()             <span class="hljs-comment">// 确认框 返回布尔值</span>
+    <span class="hljs-built_in">window</span>.prompt(text,defaultText)      <span class="hljs-comment">// 提示框 取消返回null 确定返回字段值</span>
+
+    <span class="hljs-built_in">window</span>.focus()           <span class="hljs-comment">// 得到焦点</span>
+    <span class="hljs-built_in">window</span>.blur()                <span class="hljs-comment">// 把键盘焦点从指定顶层浏览器窗口移走</span>
+    <span class="hljs-built_in">window</span>.print()           <span class="hljs-comment">// 调用打印机打印当前页面</span>
+    <span class="hljs-built_in">window</span>.close()           <span class="hljs-comment">// self.close() 或 close()  只有通过代码打开的窗口才能关闭</span>
+    <span class="hljs-built_in">window</span>.open(URL,name,features,replace)
+        <span class="hljs-comment">// URL   可选</span>
+        <span class="hljs-comment">// name      可选 声明了新窗口的名称</span>
+        <span class="hljs-comment">// feature   可选 浏览器的特征</span>
+            <span class="hljs-comment">// 参 Window Features</span>
+        <span class="hljs-comment">// replace   可选布尔值 是否替换历史中的当前条目</span>
+
+    <span class="hljs-built_in">window</span>.moveBy(x,y)               <span class="hljs-comment">// 相对的 移动指定的像素</span>
+    <span class="hljs-built_in">window</span>.moveTo(x,y)               <span class="hljs-comment">// 移动到 指定位置</span>
+    <span class="hljs-built_in">window</span>.resizeBy(w,h)                 <span class="hljs-comment">// 相对调整窗口大小</span>
+    <span class="hljs-built_in">window</span>.resizeTo(w,h)                 <span class="hljs-comment">// 调整到指定大小</span>
+    <span class="hljs-built_in">window</span>.scrollBy(x,y)                 <span class="hljs-comment">// 相对移动 滚动条 像素</span>
+    <span class="hljs-built_in">window</span>.scrollTo(x,y)                 <span class="hljs-comment">// 滚动条 移动 指定像素</span>
+    <span class="hljs-comment">// window.createPopup()              // 只有IE支持</span>
+
+    <span class="hljs-built_in">window</span>.setInterval(func,time)
+    <span class="hljs-built_in">window</span>.setTimeout(func,time)
+    <span class="hljs-built_in">window</span>.clearInterval()           <span class="hljs-comment">// 将函数保存到变量以参数形式传入</span>
+    <span class="hljs-built_in">window</span>.clearTimeout()
+
+
+<span class="hljs-number">002.</span>History
+<span class="hljs-comment">// 属性&amp;方法</span>
+    history.length              <span class="hljs-comment">// 返回 浏览器历史列表中的 URL 数量</span>
+
+    history.back()              <span class="hljs-comment">// go(-1)</span>
+    history.forward()           <span class="hljs-comment">// go(1)</span>
+    history.go(n)
+
+
+<span class="hljs-number">003.</span>Location
+<span class="hljs-comment">// 属性&amp;方法</span>
+    location.href               <span class="hljs-comment">// 读写 http://example.com:1234/test/test.htm#part2 | window.location</span>
+    location.protocol           <span class="hljs-comment">// 读写 http:</span>
+    location.host               <span class="hljs-comment">// 读写 example.com:1234</span>
+    location.hostname           <span class="hljs-comment">// 读写 example.com</span>
+    location.port               <span class="hljs-comment">// 读写 1234</span>
+    location.pathname           <span class="hljs-comment">// 读写 /test/test.htm</span>
+    location.hash               <span class="hljs-comment">// 读写 #part2</span>
+    location.search             <span class="hljs-comment">// 读写 ?key=name (?及以后)</span>
+
+    location.assign(url)        <span class="hljs-comment">// 加载一个新的文档</span>
+    location.reload(force)      <span class="hljs-comment">// 刷新；true 会绕过缓存从服务器上重新下载该文档</span>
+    location.replace(url)       <span class="hljs-comment">// 新文档取代当前，不会在History生成新记录，新URL将覆盖History中的当前记录</span>
+
+
+<span class="hljs-number">004.</span>Navigator
+<span class="hljs-comment">// Navigator 对象集合</span>
+    plugins[]                   <span class="hljs-comment">// 浏览器已经安装的插件</span>
+
+<span class="hljs-comment">// 属性&amp;方法</span>
+    navigator.userAgent         <span class="hljs-comment">// 返回 浏览器用于 HTTP 请求的用户代理头的值</span>
+    navigator.appName           <span class="hljs-comment">// 返回 浏览器名称 "Netscape" 或 "Microsoft Internet Explorer"</span>
+    navigator.appCodeName       <span class="hljs-comment">// 返回 浏览器的代码名 兼容起见 都是 "Mozilla"</span>
+    navigator.appVersion        <span class="hljs-comment">// 返回 浏览器版本</span>
+    navigator.appMinorVersion   <span class="hljs-comment">// 返回 浏览器的次要版本</span>
+
+    navigator.browserLanguage   <span class="hljs-comment">// 返回 浏览器当前语言</span>
+    navigator.userLanguage      <span class="hljs-comment">// 返回 操作系统的自然语言设置</span>
+    navigator.systemLanguage    <span class="hljs-comment">// 返回 操作系统使用的默认语言</span>
+
+    navigator.cpuClass          <span class="hljs-comment">// 返回 浏览器系统的 CPU 等级</span>
+    navigator.platform          <span class="hljs-comment">// 返回 浏览器系统平台</span>
+    navigator.onLine            <span class="hljs-comment">// 是否脱机</span>
+    navigator.cookieEnabled     <span class="hljs-comment">// 是否启用 cookie</span>
+
+    navigator.javaEnabled()     <span class="hljs-comment">// 是否启用 Java</span>
+    navigator.taintEnabled()    <span class="hljs-comment">// 是否启用 数据污点 (data tainting)</span>
+
+
+<span class="hljs-number">005.</span>Screen
+<span class="hljs-comment">// 属性&amp;方法</span>
+    screen.width                <span class="hljs-comment">// 返回 显示屏幕 宽度</span>
+    screen.height               <span class="hljs-comment">// 返回 显示屏幕 高度</span>
+    screen.availWidth           <span class="hljs-comment">// 返回 显示屏幕 宽度 (除 Windows 任务栏之外)</span>
+    screen.availHeight          <span class="hljs-comment">// 返回 显示屏幕 高度 (除 Windows 任务栏之外)</span>
+
+    screen.bufferDepth          <span class="hljs-comment">// 读写 调色板的比特深度</span>
+    screen.colorDepth           <span class="hljs-comment">// 返回 目标设备或缓冲器上的调色板的比特深度</span>
+    screen.pixelDepth           <span class="hljs-comment">// 返回 显示屏幕的颜色分辨率（比特每像素）</span>
+
+    screen.deviceXDPI           <span class="hljs-comment">// 返回 显示屏幕 每英寸 水平 点数</span>
+    screen.deviceYDPI           <span class="hljs-comment">// 返回 显示屏幕 每英寸 垂直 点数</span>
+    screen.logicalXDPI          <span class="hljs-comment">// 返回 显示屏幕 每英寸 水平 常规点数</span>
+    screen.logicalYDPI          <span class="hljs-comment">// 返回 显示屏幕 每英寸 垂直 常规点数</span>
+
+    screen.updateInterval       <span class="hljs-comment">// 读写 屏幕的刷新率</span>
+    screen.fontSmoothingEnabled <span class="hljs-comment">// 是否在显示控制面板中启用了字体平滑</span>
+
+<span class="hljs-comment">// 2016-08-31</span>
+<span class="hljs-number">006.</span>Window Features
+    channelmode     <span class="hljs-comment">// yes|no|1|0  是否使用剧院模式显示窗口默认为 no</span>
+    directories     <span class="hljs-comment">// yes|no|1|0  是否添加目录按钮默认为 yes</span>
+    fullscreen      <span class="hljs-comment">// yes|no|1|0  是否使用全屏模式显示浏览器默认是 no处于全屏模式的窗口必须同时处于剧院模式</span>
+    height          <span class="hljs-comment">// pixels  窗口文档显示区的高度以像素计</span>
+    left            <span class="hljs-comment">// pixels  窗口的 x 坐标以像素计</span>
+    location        <span class="hljs-comment">// yes|no|1|0  是否显示地址字段默认是 yes</span>
+    menubar         <span class="hljs-comment">// yes|no|1|0  是否显示菜单栏默认是 yes</span>
+    resizable       <span class="hljs-comment">// yes|no|1|0  窗口是否可调节尺寸默认是 yes</span>
+    scrollbars      <span class="hljs-comment">// yes|no|1|0  是否显示滚动条默认是 yes</span>
+    status          <span class="hljs-comment">// yes|no|1|0  是否添加状态栏默认是 yes</span>
+    titlebar        <span class="hljs-comment">// yes|no|1|0  是否显示标题栏默认是 yes</span>
+    toolbar         <span class="hljs-comment">// yes|no|1|0  是否显示浏览器的工具栏默认是 yes</span>
+    top             <span class="hljs-comment">// pixels  窗口的 y 坐标</span>
+    width           <span class="hljs-comment">// pixels  窗口的文档显示区的宽度以像素计</span>
+</code></pre>

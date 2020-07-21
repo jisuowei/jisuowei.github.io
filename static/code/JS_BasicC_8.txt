@@ -1,0 +1,1273 @@
+<pre><code class="js hljs javascript">
+<span class="hljs-comment">/*
+
+    JavaScript 基础教程 第8版
+
+    2016-03-14
+    ~
+    2016-03-26 Noted by Chisw
+
+    2016-09-09 Modified
+
+*/</span>
+
+
+<span class="hljs-number">019.</span>多级选择
+<span class="hljs-number">020.</span>处理错误 <span class="hljs-keyword">try</span> <span class="hljs-keyword">throw</span> <span class="hljs-keyword">catch</span>
+<span class="hljs-number">021.</span>循环（loop）
+<span class="hljs-number">022.</span>对象探测（object detection）  <span class="hljs-comment">// if( document.getElementById ) {..}</span>
+<span class="hljs-number">023.</span>古老的翻转器（rollover）
+<span class="hljs-number">024.</span><span class="hljs-built_in">document</span>对象若干属性对象
+<span class="hljs-number">025.</span>循环广告条
+<span class="hljs-number">026.</span>链接版 循环广告条
+<span class="hljs-number">027.</span>循环幻灯片
+<span class="hljs-number">028.</span>随机整数
+<span class="hljs-number">029.</span>页面防盗用 但会导致页面无法返回上一个页面
+<span class="hljs-number">030.</span>分配iframe页面
+<span class="hljs-number">031.</span>开启一个新窗口
+<span class="hljs-number">032.</span>选择并跳转页面（无需修改函数，只需设置 option 的 value）
+<span class="hljs-number">033.</span>日期联级表单
+<span class="hljs-number">034.</span>表单验证-必填项
+<span class="hljs-number">035.</span>正则表达式 - 以 / 开头和结尾  分号（;）是属于js
+<span class="hljs-number">036.</span>邮箱验证 &amp; 文件名验证
+<span class="hljs-number">037.</span>字符串提取 -- 字符串格式化
+<span class="hljs-number">038.</span>JS的内置对象<span class="hljs-built_in">RegExp</span>
+<span class="hljs-number">039.</span>事件
+<span class="hljs-number">040.</span><span class="hljs-built_in">window</span>.onload 覆盖问题
+<span class="hljs-number">041.</span>右键禁用
+<span class="hljs-number">042.</span>onmousemove 浏览器兼容
+<span class="hljs-number">043.</span>key 浏览器兼容
+<span class="hljs-number">044.</span>Cookie
+<span class="hljs-number">045.</span>substring(to,<span class="hljs-keyword">from</span>)
+<span class="hljs-number">046.</span>DOM
+<span class="hljs-number">047.</span>对象字面值--JS的面向对象
+<span class="hljs-number">048.</span>日期对象
+<span class="hljs-number">049.</span>AJAX
+<span class="hljs-number">050.</span>AJAX 预览链接  获取光标位置
+<span class="hljs-number">051.</span>表单自动补全
+<span class="hljs-number">052.</span>jQuery
+<span class="hljs-number">053.</span>日历控件
+
+
+<span class="hljs-comment">// 2016-03-15</span>
+<span class="hljs-number">001.</span>Javascript 不允许写服务器上的文件
+    Javascript 不能关闭不是由它自己打开的窗口
+    Javascript 不能从来自另一个服务器的已经打开的网页中读取信息
+
+
+<span class="hljs-number">002.</span>Javascript是一种面向对象的语言 object-oriented
+
+
+<span class="hljs-number">003.</span>点号语法 dot syntax
+
+
+<span class="hljs-number">004.</span>等号可以读作“设置为”
+
+
+<span class="hljs-number">005.</span>操作符（operator）是用来操作变量的符号
+
+
+<span class="hljs-number">006.</span>WYSIWYG（What you see is what you get,所见即所得）
+
+
+<span class="hljs-number">007.</span>使页面自动地跳转到另一个页面称为重定向 redirection
+
+
+<span class="hljs-number">008.</span>内部脚本（internal scriptV）直接写在页面上，外部脚本（external script）是包含js的单独文件
+
+
+<span class="hljs-number">009.</span><span class="hljs-keyword">var</span>让js创建一个变量（也就是在内存中为这个新对象留出一些空间）
+    <span class="hljs-keyword">var</span>定义变量的作用域（scope）
+
+
+<span class="hljs-number">010.</span><span class="hljs-keyword">this</span>使脚本能够根据使用这个关键字的上下文将值传递给函数
+    <span class="hljs-keyword">this</span>是一个链接对象
+
+
+<span class="hljs-number">011.</span>无干扰脚本编程（unobtrusive scripting）将代码与HTML分开，使二者更加灵活
+
+
+<span class="hljs-number">012.</span>DHTML DynamicHTML,动态HTML，一种过时的脚本技术，主要特征是改变某些元素的style
+
+
+<span class="hljs-number">013.</span>从技术上说，Javascript是ECMAScript语言标准的实现
+    Adobe的ActionScript是该标准的另一种实现
+
+
+<span class="hljs-number">014.</span>display something when some browser dont support JS 支持的则会跳过  <span class="hljs-comment">// &lt;noscript&gt;</span>
+
+
+<span class="hljs-number">017.</span>set variable based on condition
+    <span class="hljs-keyword">var</span> newVariable = (condition) ? trueValue : falseValue;
+
+
+<span class="hljs-number">018.</span><span class="hljs-keyword">return</span> the input content
+    prompt(<span class="hljs-string">"Questions"</span>,<span class="hljs-string">"default"</span>);
+
+
+<span class="hljs-comment">// 2016-03-16</span>
+<span class="hljs-number">019.</span>多级选择
+    <span class="hljs-comment">// &lt;input type="button" id="firstBtn" /&gt;</span>
+    <span class="hljs-built_in">window</span>.onload = initAll;
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">initAll</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'firstBtn'</span>).onclick = saySth;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">saySth</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">switch</span> (<span class="hljs-keyword">this</span>.id) {
+            <span class="hljs-keyword">case</span> <span class="hljs-string">'firstBtn'</span>:
+                alert(<span class="hljs-string">"This is firstBtn"</span>);
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-comment">// case ..</span>
+            <span class="hljs-keyword">default</span>:
+        }
+    }
+
+
+<span class="hljs-number">020.</span>处理错误  <span class="hljs-comment">// try throw catch</span>
+    <span class="hljs-built_in">window</span>.onload = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> ans = prompt(<span class="hljs-string">"Enter a number"</span>,<span class="hljs-string">""</span>);
+        <span class="hljs-keyword">try</span> {
+            <span class="hljs-keyword">if</span>( !ans || <span class="hljs-built_in">isNaN</span>(ans) || ans &lt; <span class="hljs-number">0</span>) {
+                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Not a valid number'</span>);
+            }
+            <span class="hljs-comment">// 抛出错误后，try块中的其余代码都被跳过</span>
+            alert(<span class="hljs-string">"The square root of "</span> + ans + <span class="hljs-string">" is "</span> + <span class="hljs-built_in">Math</span>.sqrt(ans));
+        }
+        <span class="hljs-keyword">catch</span> ( errMsg ) {
+            alert(errMsg.message);
+        }
+    }
+
+
+<span class="hljs-number">021.</span>循环（loop）
+    以指定的次数重复一个操作计数器（counter）
+
+
+<span class="hljs-number">022.</span>对象探测（object detection）
+    <span class="hljs-keyword">if</span>( <span class="hljs-built_in">document</span>.getElementById ) {..}
+
+
+<span class="hljs-number">023.</span>古老的翻转器（rollover）
+    <span class="hljs-comment">/*
+        &lt;a onmouseover="document.images['img'].src='img.jpg'"&gt;
+        &lt;img id="img" src="imgs.jpg" /&gt;&lt;/a&gt;
+    */</span>
+
+
+<span class="hljs-number">024.</span><span class="hljs-built_in">document</span>对象若干属性对象
+    <span class="hljs-built_in">document</span>.images[index]
+    <span class="hljs-built_in">document</span>.links.length
+    <span class="hljs-built_in">document</span>.location.href  <span class="hljs-comment">// 当前窗口页面</span>
+    <span class="hljs-built_in">document</span>.body.innerHTML
+    <span class="hljs-built_in">document</span>.forms[i].onsubmit
+    <span class="hljs-built_in">document</span>.all
+
+    <span class="hljs-built_in">document</span>.write()
+
+    <span class="hljs-built_in">document</span>.createTextNode(str)
+    <span class="hljs-built_in">document</span>.createElement(TagName)
+
+    <span class="hljs-built_in">document</span>.getElementById()
+    <span class="hljs-built_in">document</span>.getElementsByTagName()  <span class="hljs-comment">// 得到一个数组</span>
+
+    <span class="hljs-built_in">document</span>.object.style.display
+
+
+<span class="hljs-number">025.</span>循环广告条
+    <span class="hljs-comment">// &lt;img src="demo/img/1.jpg" id="bannerImg" alt="BannerImg" width="100" /&gt;</span>
+    <span class="hljs-built_in">window</span>.onload = rotate;  <span class="hljs-comment">// 加载完成时调用</span>
+
+    <span class="hljs-keyword">var</span> imgIndex = <span class="hljs-number">0</span>;  <span class="hljs-comment">// 设置显示图片索引</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">rotate</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> aImgs = [<span class="hljs-string">"demo/img/1.jpg"</span>,<span class="hljs-string">"demo/img/2.jpg"</span>];  <span class="hljs-comment">// 定义图片资源数组</span>
+        imgIndex++;  <span class="hljs-comment">// 下一张</span>
+        <span class="hljs-keyword">if</span>( imgIndex == aImgs.length ) {  <span class="hljs-comment">// 判断是否到最后一张</span>
+            imgIndex = <span class="hljs-number">0</span>;  <span class="hljs-comment">// 回到第一张</span>
+        }
+        
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'bannerImg'</span>).src = aImgs[imgIndex];  <span class="hljs-comment">// 生效</span>
+        
+        setTimeout( rotate, <span class="hljs-number">3</span>*<span class="hljs-number">1000</span> );  <span class="hljs-comment">// 计时器执行切换</span>
+    }
+
+
+<span class="hljs-comment">// 2016-03-17</span>
+<span class="hljs-number">026.</span>链接版 循环广告条
+    <span class="hljs-built_in">window</span>.onload = initBannerLink;
+
+    <span class="hljs-keyword">var</span> imgIndex = <span class="hljs-number">0</span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">initBannerLink</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-comment">// 判断是否被 a 标签包围</span>
+        <span class="hljs-keyword">if</span>( <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"bannerImg"</span>).parentNode.tagName ==<span class="hljs-string">"A"</span>) {
+            <span class="hljs-comment">// 链接点击调用</span>
+            <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"bannerImg"</span>).parentNode.onclick = newLocation;
+            <span class="hljs-comment">//</span>
+            rotate();
+        }
+    }
+    <span class="hljs-comment">// 链接分配</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">newLocation</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> adURL = [<span class="hljs-string">'nerino.com'</span>,<span class="hljs-string">'sun.com'</span>];
+        <span class="hljs-built_in">document</span>.location.href = <span class="hljs-string">"http://www."</span> + adURL[imgIndex];  <span class="hljs-comment">// 改变当前窗口路径</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;  <span class="hljs-comment">// 告诉浏览器不再加载 href，因为所有的工作都已经使用js完成了</span>
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">rotate</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> aImgs = [<span class="hljs-string">"demo/img/1.jpg"</span>,<span class="hljs-string">"demo/img/2.jpg"</span>];
+        imgIndex++;
+        <span class="hljs-keyword">if</span>( imgIndex == aImgs.length ) {
+            imgIndex = <span class="hljs-number">0</span>;
+        }
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"bannerImg"</span>).src = aImgs[imgIndex];
+        setTimeout( rotate, <span class="hljs-number">3</span>*<span class="hljs-number">1000</span> );
+    }
+
+
+<span class="hljs-number">027.</span>循环幻灯片
+    <span class="hljs-comment">/*
+        &lt;img src="demo/img/1.jpg" id="myPicture" width="200" height="200" alt="slideShow" /&gt;&lt;br/&gt;
+        &lt;a href="" id="prev"&gt;Prev&lt;/a&gt; &lt;a href="" id="next"&gt;Next&lt;/a&gt;
+    */</span>
+    <span class="hljs-built_in">window</span>.onload = initLinks;
+
+    <span class="hljs-keyword">var</span> myPix = [<span class="hljs-string">'demo/img/1.jpg'</span>,<span class="hljs-string">'demo/img/2.jpg'</span>];
+    <span class="hljs-keyword">var</span> thisPic = <span class="hljs-number">0</span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">initLinks</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'prev'</span>).onclick = processPrev;
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'next'</span>).onclick = processNext;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">processPrev</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">if</span>( thisPic == <span class="hljs-number">0</span> ) {
+            thisPic = myPix.length;
+        }
+        thisPic--;
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'myPicture'</span>).src = myPix[thisPic];
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">processNext</span>(<span class="hljs-params"></span>) </span>{
+        thisPic++;
+        <span class="hljs-keyword">if</span>( thisPic == myPix.length ) {
+            thisPic = <span class="hljs-number">0</span>;
+        }
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'myPicture'</span>).src = myPix[thisPic];
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    }
+
+
+<span class="hljs-number">028.</span>随机整数
+    <span class="hljs-built_in">Math</span>.floor( <span class="hljs-built_in">Math</span>.random()*<span class="hljs-number">100</span> ) + <span class="hljs-number">1</span>
+
+
+<span class="hljs-number">029.</span>页面防盗用 但会导致页面无法返回上一个页面
+    <span class="hljs-keyword">if</span>( top.location != self.location ) {
+        top.location.replace( self.location );
+    }
+
+
+<span class="hljs-number">030.</span>分配iframe页面
+    <span class="hljs-built_in">window</span>.onload = initLinks() {
+        <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;<span class="hljs-built_in">document</span>.links.length; i++) {
+            <span class="hljs-built_in">document</span>.links[i].onclick = setContent;
+        }
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setContent</span>(<span class="hljs-params"></span>) </span>{
+            <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'iframe'</span>).contentWindow.location.href = <span class="hljs-keyword">this</span>.href;
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+        }
+    }
+
+
+<span class="hljs-number">031.</span>开启一个新窗口
+    <span class="hljs-built_in">window</span>.open(<span class="hljs-string">"url"</span>,<span class="hljs-string">"winName"</span>,<span class="hljs-string">"resizable=no,toolbar=yes,scrollbars=yes,width=200,height=200"</span>);
+
+
+<span class="hljs-number">032.</span>选择并跳转页面（无需修改函数，只需设置 option 的 value）
+    <span class="hljs-comment">/*
+        &lt;select id="newLocation"&gt;
+            &lt;option selected&gt;Select a topic&lt;/option&gt;
+            &lt;option value="a.html"&gt;Jisuowei&lt;/option&gt;
+            &lt;option value="b.html"&gt;MI&lt;/option&gt;
+        &lt;/select&gt;
+        &lt;noscript&gt;&lt;input type="submit" /&gt;&lt;/noscript&gt;
+    */</span>
+    <span class="hljs-built_in">window</span>.onload = initForm;
+    <span class="hljs-built_in">window</span>.onunload = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{}  <span class="hljs-comment">// 匿名函数处理 back 不调用onload事件</span>
+        <span class="hljs-comment">// ↑ 替换方法  window.onpageshow = initForm  (Safari无效)</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">initForm</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-comment">// 显示第一个 option</span>
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'newLocation'</span>).selectedIndex = <span class="hljs-number">0</span>;
+        <span class="hljs-comment">// 触发事件 调用函数</span>
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'newLocation'</span>).onchange = jumpPage;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">jumpPage</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-comment">// 获取 select 对象</span>
+        <span class="hljs-keyword">var</span> newLoc = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'newLocation'</span>);
+        <span class="hljs-comment">// 取选中值</span>
+        <span class="hljs-keyword">var</span> newPage = newLoc.options[newLoc.selectedIndex].value;  <span class="hljs-comment">//oSelect.options[index].value;</span>
+        <span class="hljs-comment">// 判空(因为第一个option没有值)</span>
+        <span class="hljs-keyword">if</span>(newPage != <span class="hljs-string">""</span>) {
+            <span class="hljs-built_in">window</span>.location = newPage;
+        }
+    }
+
+
+<span class="hljs-number">033.</span>日期联级表单
+    <span class="hljs-comment">/*
+        &lt;select id="months"&gt;
+            &lt;option value=""&gt;月&lt;/option&gt;
+            &lt;option value="0"&gt;1月&lt;/option&gt;&lt;option value="1"&gt;2月&lt;/option&gt;&lt;option value="2"&gt;3月&lt;/option&gt;
+            &lt;option value="3"&gt;4月&lt;/option&gt;&lt;option value="4"&gt;5月&lt;/option&gt;&lt;option value="5"&gt;6月&lt;/option&gt;
+            &lt;option value="6"&gt;7月&lt;/option&gt;&lt;option value="7"&gt;8月&lt;/option&gt;&lt;option value="8"&gt;9月&lt;/option&gt;
+            &lt;option value="9"&gt;10月&lt;/option&gt;&lt;option value="10"&gt;11月&lt;/option&gt;&lt;option value="11"&gt;12月&lt;/option&gt;
+        &lt;/select&gt;
+
+        &lt;select id="days"&gt;
+            &lt;option&gt;日&lt;/option&gt;
+        &lt;/select&gt;
+    */</span>
+    <span class="hljs-built_in">window</span>.onload = initForm;
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">initForm</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-comment">// 显示第一个</span>
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'months'</span>).selectedIndex = <span class="hljs-number">0</span>;
+        <span class="hljs-comment">// 触发事件 调用函数</span>
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'months'</span>).onchange = popularDays;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">popularDays</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> monthDays = [<span class="hljs-number">31</span>,<span class="hljs-number">28</span>,<span class="hljs-number">31</span>,<span class="hljs-number">30</span>,<span class="hljs-number">31</span>,<span class="hljs-number">30</span>,<span class="hljs-number">31</span>,<span class="hljs-number">31</span>,<span class="hljs-number">30</span>,<span class="hljs-number">31</span>,<span class="hljs-number">30</span>,<span class="hljs-number">31</span>];  <span class="hljs-comment">//非闰年可用数组</span>
+        <span class="hljs-comment">//获取当前选中的月份value(string)</span>
+        <span class="hljs-keyword">var</span> monthStr = <span class="hljs-keyword">this</span>.options[<span class="hljs-keyword">this</span>.selectedIndex].value;
+        <span class="hljs-keyword">if</span>( monthStr !=<span class="hljs-string">""</span> ) {
+            <span class="hljs-comment">//非第一个option后 获取选中月份的 数值</span>
+            <span class="hljs-keyword">var</span> theMonth = <span class="hljs-built_in">parseInt</span>(monthStr);
+            <span class="hljs-comment">//option清零</span>
+            <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'days'</span>).options.length = <span class="hljs-number">0</span>;
+            <span class="hljs-comment">//动态添加天数</span>
+            <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;monthDays[theMonth]; i++) {
+                <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'days'</span>).options[i] = <span class="hljs-keyword">new</span> Option(i + <span class="hljs-number">1</span> + <span class="hljs-string">"日"</span>);
+            }
+        }
+    }
+
+
+<span class="hljs-comment">// 2016-03-19</span>
+<span class="hljs-number">034.</span>表单验证-必填项
+    <span class="hljs-comment">/*
+        input.invalid {
+            background: #ff9;
+            border: 2px inset red;
+        }
+
+        &lt;form action="#"&gt;
+        Your name:&lt;input type="text" id="userName" class="reqd" /&gt;&lt;br/&gt;
+        Choose a password:&lt;input type="password" id="passwd1" class="reqd" /&gt;&lt;br/&gt;
+        Verify a password:&lt;input type="password" id="passwd2" class="reqd" /&gt;&lt;br/&gt;
+        &lt;input type="submit" value="提交" /&gt; &lt;input type="reset" value="清空" /&gt;
+        &lt;/form&gt;
+    */</span>
+    <span class="hljs-built_in">window</span>.onload = initForms;
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">initForms</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt; <span class="hljs-built_in">document</span>.forms.length; i++) {  <span class="hljs-comment">// 遍历页面所有 from</span>
+            <span class="hljs-comment">// 全都添加事件处理程序validForm  返回false则不提交</span>
+            <span class="hljs-built_in">document</span>.forms[i].onsubmit = validForm;
+        }
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">validForm</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-comment">// 设置验证可以提交表单  allGood -&gt; 全部就绪</span>
+        <span class="hljs-keyword">var</span> allGood = <span class="hljs-literal">true</span>;
+        <span class="hljs-comment">// 获取所有标签</span>
+        <span class="hljs-keyword">var</span> allTags = <span class="hljs-built_in">document</span>.getElementsByTagName(<span class="hljs-string">"*"</span>);
+        <span class="hljs-comment">// 遍历标签 验证是否存在 false(不通过) 的标签</span>
+        <span class="hljs-keyword">for</span> ( <span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; allTags.length; i++ ) {
+            <span class="hljs-keyword">if</span>( !validTag(allTags[i]) ) {  <span class="hljs-comment">// 标签验证方法</span>
+                allGood = <span class="hljs-literal">false</span>;
+            }
+        }
+        <span class="hljs-keyword">return</span> allGood;  <span class="hljs-comment">// 更新是否可以提交表单</span>
+
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">validTag</span>(<span class="hljs-params">thisTag</span>) </span>{  <span class="hljs-comment">// 接收要验证的标签</span>
+            <span class="hljs-keyword">var</span> outClass = <span class="hljs-string">""</span>;
+            <span class="hljs-comment">// 将所有 class 用"空格"切割并保存到数组 allClasses</span>
+            <span class="hljs-keyword">var</span> allClasses = thisTag.className.split(<span class="hljs-string">" "</span>);
+
+            <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> j = <span class="hljs-number">0</span>; j&lt;allClasses.length; j++ ) {
+                outClass += validBasedOnClass(allClasses[j]) + <span class="hljs-string">" "</span>;
+            }
+            <span class="hljs-comment">// 完成验证 更新class</span>
+            thisTag.className = outClass;
+            <span class="hljs-comment">// 检测是否 class 包含 invalid</span>
+            <span class="hljs-keyword">if</span>( outClass.indexOf(<span class="hljs-string">"invalid"</span>) &gt; <span class="hljs-number">-1</span> ) {
+                thisTag.focus();  <span class="hljs-comment">// 有则选中</span>
+                <span class="hljs-keyword">if</span>(thisTag.nodeName == <span class="hljs-string">"INPUT"</span> ) {
+                    thisTag.select();  <span class="hljs-comment">// 并将这个 input 的 value 全部选中</span>
+                }
+                <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+            }
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;  <span class="hljs-comment">// 无上述if的话 则返回true</span>
+
+            <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">validBasedOnClass</span>(<span class="hljs-params">thisClass</span>) </span>{  <span class="hljs-comment">// 验证是否 valid</span>
+                <span class="hljs-comment">// 初始化要返回的 class 为空</span>
+                <span class="hljs-keyword">var</span> classBack = <span class="hljs-string">""</span>;
+                <span class="hljs-keyword">switch</span>( thisClass ) {
+                    <span class="hljs-keyword">case</span> <span class="hljs-string">""</span>:
+                    <span class="hljs-keyword">case</span> <span class="hljs-string">"invalid"</span>:
+                        <span class="hljs-keyword">break</span>;
+                    <span class="hljs-keyword">case</span> <span class="hljs-string">"reqd"</span>:
+                        <span class="hljs-keyword">if</span>( allGood &amp;&amp; thisTag.value == <span class="hljs-string">""</span>) {  <span class="hljs-comment">// 全部就绪 &amp;&amp; 值为空 则</span>
+                            classBack = <span class="hljs-string">"invalid "</span>;  <span class="hljs-comment">// 注意这里末尾有一个空格!!!!</span>
+                        }
+                        classBack += thisClass;
+                        <span class="hljs-keyword">break</span>;
+                    <span class="hljs-keyword">default</span>: 
+                        classBack += thisClass;
+                }
+                <span class="hljs-keyword">return</span> classBack;
+            }
+        }
+    }
+
+
+<span class="hljs-number">035.</span>正则表达式 - 以 / 开头和结尾  分号（;）是属于js
+
+    \         <span class="hljs-comment">// 转义</span>
+    ^        <span class="hljs-comment">// 以开头</span>
+    $         <span class="hljs-comment">// 以结尾</span>
+    ()        <span class="hljs-comment">// 组(整体)</span>
+    x|y     <span class="hljs-comment">// x或y</span>
+    [abc]    <span class="hljs-comment">// 取其一</span>
+    [a-e]    <span class="hljs-comment">// 取其一</span>
+    [^abc]     <span class="hljs-comment">// 字符补集 都不匹配的</span>
+    @         <span class="hljs-comment">// @本身</span>
+    \$         <span class="hljs-comment">// $本身</span>
+
+<span class="hljs-comment">// 字符</span>
+    .         <span class="hljs-comment">// !换行符</span>
+    \b         <span class="hljs-comment">// 单词边界</span>
+    \B         <span class="hljs-comment">// !单词边界</span>
+    \d         <span class="hljs-comment">// [0-9]</span>
+    \D         <span class="hljs-comment">// ![0-9]</span>
+    \f         <span class="hljs-comment">// 换页符</span>
+    \n         <span class="hljs-comment">// 换行符</span>
+    \r         <span class="hljs-comment">// 回车符</span>
+    \t         <span class="hljs-comment">// 制表符</span>
+    \v         <span class="hljs-comment">// 垂直制表符</span>
+    \s         <span class="hljs-comment">// 空白符 [ \f\n\r\t\v]</span>
+    \S         <span class="hljs-comment">// !空白符</span>
+    \w        <span class="hljs-comment">// [a-z|A-Z|0-9|_]</span>
+    \W         <span class="hljs-comment">// ![a-z|A-Z|0-9|_]</span>
+    [\b]     <span class="hljs-comment">// 退格符</span>
+
+<span class="hljs-comment">// 频率</span>
+    ?        <span class="hljs-comment">// 0|1</span>
+    +        <span class="hljs-comment">// 1|1+</span>
+    *         <span class="hljs-comment">// 0|1+</span>
+    {n}     <span class="hljs-comment">// n</span>
+    {n,}     <span class="hljs-comment">// n+</span>
+    {n,m}    <span class="hljs-comment">// n-m</span>
+
+<span class="hljs-comment">// 特殊</span>
+    \xnn     <span class="hljs-comment">// 十六进制数字nn定义的ASCII字符</span>
+    \onn     <span class="hljs-comment">// 八  进制数字nn定义的ASCII字符</span>
+    \cX     <span class="hljs-comment">// 控制字符 X</span>
+
+<span class="hljs-comment">// 修饰符</span>
+    g         <span class="hljs-comment">// 全局</span>
+    i         <span class="hljs-comment">// 忽略大小写</span>
+
+
+<span class="hljs-number">036.</span>邮箱验证 &amp; 文件名验证
+    <span class="hljs-comment">/*
+        &lt;input id="email" type="text" /&gt;
+        &lt;input type="button" value="Check" onclick="checkMail()" /&gt;
+    */</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">checkMail</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> re = <span class="hljs-regexp">/^\w+([\.-]?\w+)*@\w+([\.-]?w+)*(\.\w{2,3})+$/</span>;
+        <span class="hljs-comment">// var re = /^(file|http):\/\/\S+\/\S+\.(gif|jpg|png)$/i;</span>
+        <span class="hljs-keyword">var</span> res = re.test( <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'email'</span>).value );  <span class="hljs-comment">// bool</span>
+    }
+
+<span class="hljs-number">037.</span>字符串提取-字符串格式化
+    <span class="hljs-keyword">var</span> re = <span class="hljs-regexp">/\s*\n\s*/</span>;
+    <span class="hljs-keyword">var</span> aNameList = sNameList.split(re);
+
+    <span class="hljs-keyword">var</span> re = <span class="hljs-regexp">/^(\S)(\S+)\s(\S)(\S+)$/</span>;
+    <span class="hljs-keyword">if</span>( nameList[k] ) {
+        re.exec(nameList[k]);
+        newNames[k] = <span class="hljs-built_in">RegExp</span>.$<span class="hljs-number">1.</span>toUpperCase() + ..;
+    }
+
+
+<span class="hljs-number">038.</span>JS的内置对象<span class="hljs-built_in">RegExp</span>
+    JS有一个内置的<span class="hljs-built_in">RegExp</span>对象，每当脚本执行时，会自动的设置（更新）这个对象
+    其并不是一个包含正则表达式操作结果的变量，而是包含正则表达式所描述的模式
+    脚本可以通过对象的属性和方法访问文本模式的各个部分
+    <span class="hljs-comment">//属性</span>
+        $<span class="hljs-number">1</span>(~$<span class="hljs-number">9</span>)     圆括号包围的子字符串匹配
+        $_             input
+        $*             multiline
+        $&amp;             lastMatch
+        $+             lastParen
+    <span class="hljs-comment">//    $`             leftContext</span>
+    <span class="hljs-comment">//    $'            rightContext</span>
+        <span class="hljs-keyword">constructor</span>    原型函数
+        global        全局搜索
+        ignoreCase    不区分大小写
+        input         如果没有传递的字符串，这就是要搜索的字符串
+        lastIndex     继续匹配到起始位置
+        lastMatch     最后一个匹配的字符串
+        lastParen     最后的圆括号包围的子字符串匹配
+        leftContext 最近一个匹配字符串左边的子字符串
+        multiline     是否跨多行搜索
+        prototype     允许在所有对象中添加属性
+        rightContext 最近一个匹配字符串右边的子字符串
+        source         表达式本身
+
+    //RegExp对象的方法
+        compile(pattern,[,"g"|"i"|"gi"])    对表达式进行编译
+        exec(string)     搜索匹配
+        test(string)     测试匹配
+        toSource()         返回一个代表对象的字面值
+        toString()         返回一个代表指定对象的字符串
+        valueOf()         返回指定对象的原始值
+
+    //字符串发方法
+        match(re)                 匹配
+        replace(re,repString)     替换
+        search(re)                 搜索
+        split(re)                 分隔
+
+
+039.事件是指用户在访问页面时执行的操作
+    window.onload
+    window.onunload     // 离开页面
+    window.onresize
+    window.onmove
+    window.onabort         // 取消图片加载
+    window.onerror         // 一般设置为 window.onerror = null
+    window.onfocus
+    window.onblur
+
+    onmousedown
+    onmouseup
+
+    onmousemove
+
+    onmouseover
+    onmouseout
+
+    onclick
+    ondbclick
+
+    onsubmit
+    onreset
+    onchange
+    onselect
+    onclick
+    onblur
+    onfocus
+
+    onkeydown
+    onkeyup
+    onkeypress
+
+
+040.window.onload 覆盖问题
+    window.onload = function(){ alert(<span class="hljs-string">"1"</span>)};
+    <span class="hljs-built_in">window</span>.onload = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{ alert(<span class="hljs-string">"2"</span>)};
+
+    addOnload(initOne);
+    addOnload(initTwo);
+    addOnload(initThree);
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">addOnload</span>(<span class="hljs-params"> newFunction </span>) </span>{
+        <span class="hljs-comment">// 将已经设置了的 window.onload 保存 如果没有设置也无碍</span>
+        <span class="hljs-keyword">var</span> oldOnload = <span class="hljs-built_in">window</span>.onload;
+        <span class="hljs-comment">// 对象探测 是否有 window.onload 存在</span>
+        <span class="hljs-keyword">if</span>( <span class="hljs-keyword">typeof</span> oldOnload == <span class="hljs-string">"function"</span> ) {
+            <span class="hljs-built_in">window</span>.onload = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+                <span class="hljs-keyword">if</span>(oldOnload) {  <span class="hljs-comment">// 如果设置了 window.onload 就执行</span>
+                    oldOnload();
+                }
+                newFunction();  <span class="hljs-comment">// 执行完 window.onload 就执行传递进来的函数</span>
+            }
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-comment">// 不存在已设置的 window.onload 就执行传递进来的函数</span>
+            <span class="hljs-built_in">window</span>.onload = newFunction;
+        }
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">initOne</span>(<span class="hljs-params"></span>)</span>{ alert(<span class="hljs-string">"1"</span>)};
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">initTwo</span>(<span class="hljs-params"></span>)</span>{ alert(<span class="hljs-string">"2"</span>)};
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">initThree</span>(<span class="hljs-params"></span>)</span>{ alert(<span class="hljs-string">"3"</span>)};
+
+
+<span class="hljs-number">041.</span>右键禁用
+    <span class="hljs-comment">/*
+        1    IE单击左键
+            所有MAC浏览器 Ctrl + 左键
+        2     IE单击右键
+        3     FF(Win)单击右键
+            所有MAC浏览器单击右键
+    */</span>
+    <span class="hljs-comment">// browser check</span>
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> <span class="hljs-built_in">document</span>.oncontextmenu == <span class="hljs-string">"object"</span>) {
+        <span class="hljs-keyword">if</span>( <span class="hljs-built_in">document</span>.all ) {
+            <span class="hljs-built_in">document</span>.onmousedown = captureMousedown;  <span class="hljs-comment">// IE</span>
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-built_in">document</span>.oncontextmenu = captureMousedown;  <span class="hljs-comment">// Safari</span>
+        }
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-built_in">window</span>.oncontextmenu = captureMousedown;  <span class="hljs-comment">// FF</span>
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">captureMousedown</span>(<span class="hljs-params"> evt </span>) </span>{
+        <span class="hljs-comment">// 获取鼠标键值编码</span>
+        <span class="hljs-keyword">if</span>(evt) {
+            <span class="hljs-keyword">var</span> mouseClick = evt.which;
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">var</span> mouseClick = <span class="hljs-built_in">window</span>.event.button;
+        }
+
+        <span class="hljs-keyword">if</span>( mouseClick==<span class="hljs-number">1</span> || mouseClick==<span class="hljs-number">2</span> || mouseClick==<span class="hljs-number">3</span> ) {
+            alert(<span class="hljs-string">"Menu Disabled"</span>);
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;  <span class="hljs-comment">// 阻止显示菜单</span>
+        }
+    }
+
+
+<span class="hljs-number">042.</span>onmousemove 浏览器兼容
+    <span class="hljs-built_in">document</span>.onmousemove = moveHandler;
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">moveHandler</span>(<span class="hljs-params">evt</span>)</span>{
+        <span class="hljs-keyword">if</span>(!evt) {
+            evt = <span class="hljs-built_in">window</span>.event;
+        }
+        functionName(evt.clientX, evt.clientY);
+    }
+
+
+<span class="hljs-number">043.</span>key 浏览器兼容
+    <span class="hljs-built_in">document</span>.onkeydown = keyHit;
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">keyHit</span>(<span class="hljs-params">evt</span>) </span>{
+        <span class="hljs-keyword">if</span>(evt){
+            <span class="hljs-keyword">var</span> thisKey = evt.which;
+            alert(thisKey);
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">var</span> thisKey = <span class="hljs-built_in">window</span>.event.keyCode;
+            alert(thisKey);
+        }
+    }
+
+
+<span class="hljs-comment">// 2016-03-20</span>
+<span class="hljs-number">044.</span>Cookie
+    Cookie 技术的背后是识别它只能识别使用的计算机，而不是识别使用这台计算机的人
+    cookie是一个具有特定格式的字符串：
+    <span class="hljs-comment">// cookieName = cookieValue; expires = expirationDateGMT; path = URLPath; domain = siteDomain;</span>
+    split(<span class="hljs-string">"; "</span>) 创建一个包含所有cookie的数组，然后脚本就能够引用这个数组中的每个值
+
+    <span class="hljs-comment">/*
+        &lt;form id="cookieForm" action="#"&gt;
+            Enter your name:&lt;input type="text" id="nameField" /&gt;
+        &lt;/form&gt;
+    */</span>
+    <span class="hljs-comment">// 写入</span>
+    <span class="hljs-built_in">window</span>.onload = nameFieldInit;
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">nameFieldInit</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> userName = <span class="hljs-string">""</span>;  <span class="hljs-comment">// 变量初始化</span>
+        <span class="hljs-keyword">if</span>(<span class="hljs-built_in">document</span>.cookie != <span class="hljs-string">""</span>) {  <span class="hljs-comment">// 是否为空</span>
+            userName = <span class="hljs-built_in">document</span>.cookie.split(<span class="hljs-string">"="</span>)[<span class="hljs-number">1</span>];  <span class="hljs-comment">//分割成数组</span>
+        }
+            <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'nameField'</span>).value = userName;
+            <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'nameField'</span>).onblur = setCookie;
+            <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'cookieForm'</span>).onsubmit = setCookie;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setCookie</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> expireDate = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>();  <span class="hljs-comment">// 当前日期</span>
+        expireDate.setMonth( expireDate.getMonth() + <span class="hljs-number">6</span>);  <span class="hljs-comment">// 延长6个月</span>
+
+        <span class="hljs-keyword">var</span> userName = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'nameField'</span>).value;  <span class="hljs-comment">// 获取到输入的值</span>
+        <span class="hljs-built_in">document</span>.cookie = <span class="hljs-string">"userName="</span> + userName +<span class="hljs-string">";expires="</span> + expireDate.toGMTString();  <span class="hljs-comment">//写入cookie</span>
+
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'nameField'</span>).blur();
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;  <span class="hljs-comment">// 防止提交表单</span>
+    }
+
+    <span class="hljs-comment">// 读取</span>
+    <span class="hljs-built_in">window</span>.onload = nameFieldInit;
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">nameFieldInit</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">if</span>(<span class="hljs-built_in">document</span>.cookie != <span class="hljs-string">""</span>) {
+            <span class="hljs-comment">// 将cookie数据用"="分割成数组后取到[1]值并输出到 input 中</span>
+            <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"nameField"</span>).innerHTML = <span class="hljs-string">"Hello, "</span> + <span class="hljs-built_in">document</span>.cookie.split(<span class="hljs-string">"="</span>)[<span class="hljs-number">1</span>];
+        }
+    }
+
+    <span class="hljs-comment">// 显示</span>
+    <span class="hljs-built_in">window</span>.onload = showCookies;
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">showCookies</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> outMsg = <span class="hljs-string">""</span>;
+
+        <span class="hljs-keyword">if</span>(<span class="hljs-built_in">document</span>.cookie == <span class="hljs-string">""</span>) {
+            outMsg = <span class="hljs-string">"There are no cookies here."</span>;
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">var</span> thisCookie = <span class="hljs-built_in">document</span>.cookie.split(<span class="hljs-string">"; "</span>);
+
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;thisCookie.length; i++) {
+                outMsg += <span class="hljs-string">"Cookie name is '"</span> + thisCookie[i].split(<span class="hljs-string">"="</span>)[<span class="hljs-number">0</span>];
+                outMsg += <span class="hljs-string">"', and the value is '"</span> + thisCookie[i].split(<span class="hljs-string">"="</span>)[<span class="hljs-number">1</span>] + <span class="hljs-string">"'&lt;br&gt;"</span>;
+            }
+        }
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"cookieData"</span>).innerHTML = outMsg;
+    }
+
+    <span class="hljs-comment">// 删除</span>
+    <span class="hljs-built_in">window</span>.onload = cookieDelete;
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">cookieDelete</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> cookieCt = <span class="hljs-number">0</span>;
+
+        <span class="hljs-keyword">if</span>(<span class="hljs-built_in">document</span>.cookie != <span class="hljs-string">""</span> &amp;&amp; confirm(<span class="hljs-string">"Do you want to delete the cookies?"</span>)) {
+            <span class="hljs-keyword">var</span> thisCookie = <span class="hljs-built_in">document</span>.cookie.split(<span class="hljs-string">"; "</span>);
+            cookieCt = thisCookie.length;  <span class="hljs-comment">// 获取cookie数量</span>
+
+            <span class="hljs-keyword">var</span> expireDate = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>();
+            expireDate.setDate(expireDate.getDate()<span class="hljs-number">-1</span>);  <span class="hljs-comment">// 更新有效期 注销cookie</span>
+
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;cookieCt; i++) {
+                <span class="hljs-keyword">var</span> cookieName = thisCookie[i].split(<span class="hljs-string">"="</span>)[<span class="hljs-number">0</span>];  <span class="hljs-comment">// 遍历数组中所有 cookie 名</span>
+                <span class="hljs-built_in">document</span>.cookie = cookieName + <span class="hljs-string">"=;expires="</span> + expireDate.toGMTString();  <span class="hljs-comment">// 有效期写回</span>
+            }
+        }
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'cookieData'</span>).innerHTML = <span class="hljs-string">"Number of cookies deleted: "</span> + cookieCt;
+    }
+
+
+<span class="hljs-number">045.</span>substring(to,<span class="hljs-keyword">from</span>) 取子串    <span class="hljs-keyword">from</span>省略则从末尾开始
+<span class="hljs-comment">// 可以看作是"from"和"to"取各自指针的位置之间的字符</span>
+
+    <span class="hljs-keyword">var</span> str = <span class="hljs-string">"Jisuowei"</span>;
+
+            .J.i.s.u.o.w.e.i.
+    =&gt;        ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ 
+            <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span>
+
+    str.substring(<span class="hljs-number">0</span>,<span class="hljs-number">0</span>);  -&gt;  <span class="hljs-string">""</span>
+    str.substring(<span class="hljs-number">0</span>,<span class="hljs-number">8</span>);  -&gt;  <span class="hljs-string">"Jisuowei"</span>
+    str.substring(<span class="hljs-number">3</span>,<span class="hljs-number">8</span>);  -&gt;  <span class="hljs-string">"uowei"</span>
+    str.substring(<span class="hljs-number">8</span>,<span class="hljs-number">8</span>);  -&gt;  <span class="hljs-string">""</span>
+    str.substring(<span class="hljs-number">8</span>,<span class="hljs-number">6</span>);  -&gt;  <span class="hljs-string">"ei"</span>
+    str.substring(<span class="hljs-number">6</span>,<span class="hljs-number">8</span>);  -&gt;  <span class="hljs-string">"ei"</span>
+
+    其实也就意味着 <span class="hljs-keyword">from</span> 和 to 的位置对调后取到的字符串是一样的
+
+
+<span class="hljs-number">046.</span>DOM
+    节点操作         node manipulation
+    文档对象模型     Document <span class="hljs-built_in">Object</span> Model
+    组合式语言         snap-together language
+    元素节点         element node
+    文本节点         text node
+
+    <span class="hljs-comment">// 添加节点</span>
+    <span class="hljs-keyword">var</span> str = <span class="hljs-string">"Jisuowei"</span>;
+    <span class="hljs-comment">// 创建文本节点</span>
+    <span class="hljs-keyword">var</span> newText = <span class="hljs-built_in">document</span>.createTextNode(str);
+    <span class="hljs-comment">// 创建元素节点</span>
+    <span class="hljs-keyword">var</span> newGraf = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">"p"</span>);
+    <span class="hljs-comment">// 追加</span>
+    newGraf.appendChild(newText);
+    <span class="hljs-built_in">document</span>.getElementsByTagName(<span class="hljs-string">'body'</span>)[<span class="hljs-number">0</span>].appendChild(newGraf);
+
+    <span class="hljs-comment">// 删除节点</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">delNode</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> allGrafs = <span class="hljs-built_in">document</span>.getElementsByTagName(<span class="hljs-string">'p'</span>);
+        <span class="hljs-keyword">if</span>(allGrafs.length&gt;<span class="hljs-number">1</span>) {
+            <span class="hljs-keyword">var</span> lastGraf = allGrafs.item(allGrafs.length<span class="hljs-number">-1</span>);
+            <span class="hljs-keyword">var</span> docBody = <span class="hljs-built_in">document</span>.getElementsByTagName(<span class="hljs-string">"body"</span>)[<span class="hljs-number">0</span>];
+            docBody.removeChild(lastGraf);  <span class="hljs-comment">// 删除</span>
+        } <span class="hljs-keyword">else</span> {
+            alert(<span class="hljs-string">"Nothing removed!"</span>);
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    }
+
+    <span class="hljs-comment">// 插入节点</span>
+    nodeChgArea.insertBefore(newNode, oldNode);
+
+    <span class="hljs-comment">// 替换节点</span>
+    nodeChgArea.replaceChild(newNode, oldNode);
+
+
+<span class="hljs-number">047.</span>对象字面值-JS的面向对象
+    <span class="hljs-comment">// 标准过程式</span>
+        <span class="hljs-keyword">var</span> myCat = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Object</span>;
+        myCat.name = <span class="hljs-string">"Pixel"</span>;
+        myCat.breed = <span class="hljs-string">"Tuxedo"</span>;
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">allAboutMyCat</span>(<span class="hljs-params"></span>) </span>{..}
+
+    <span class="hljs-comment">// 对象字面值式</span>
+        <span class="hljs-keyword">var</span> myCat = {
+            name:<span class="hljs-string">"Pixel"</span>,
+            breed:<span class="hljs-string">"Tuxedo"</span>,
+            allAboutMyCat: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{..}
+        };
+
+    这两种格式都可以用点号表示引用
+    但在采用对象字面值格式时，函数变成了 myCat.allAboutMyCat() 而不是 allAboutMyCat()
+
+    对象字面值注意事项：
+        使用 <span class="hljs-string">":"</span> 而不是 <span class="hljs-string">"="</span> 设置属性
+        行以 <span class="hljs-string">","</span> 而不是 <span class="hljs-string">";"</span> 结尾
+        在对象中的最后一个语句不需要 <span class="hljs-string">","</span>
+
+    对象字面值优势：
+        因为每个对象都包含在一个父对象中，所以不会覆盖别人的代码
+        对象字面值的一个子集被称为 JavaScript <span class="hljs-built_in">Object</span> Notation，是AJAX最常用的数据格式
+        面向对象编程是大势所趋
+
+
+<span class="hljs-number">048.</span>日期对象
+    协调世界时间     Coordinated Universal Time (UTC)
+    格林威治时间     Greenwich Mean Time (GMT)
+
+    JS中 小时、周、月是从<span class="hljs-number">0</span>开始编号的 但日是从<span class="hljs-number">1</span>开始
+
+    <span class="hljs-comment">// Date对象</span>
+    <span class="hljs-keyword">var</span> now = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>();
+    now.getYear() + <span class="hljs-number">1900</span>
+    now.getFullYear()     <span class="hljs-comment">// 年</span>
+    now.getMonth()         <span class="hljs-comment">// 月 0-11</span>
+    now.getDate()          <span class="hljs-comment">// 日 1-31</span>
+    now.getDay()         <span class="hljs-comment">// 周 0-6</span>
+    now.getHours()         <span class="hljs-comment">// 时 0-23</span>
+    now.getMinutes()     <span class="hljs-comment">// 分 0-59</span>
+    now.getSeconds()     <span class="hljs-comment">// 秒 0-59</span>
+    now.getMilliseconds()     <span class="hljs-comment">// 自上一秒的毫秒数</span>
+    now.getTime()         <span class="hljs-comment">// 1970.1.1至今的毫秒数</span>
+    now.getUTC*()
+
+    now.getTimezoneOffset() <span class="hljs-comment">// 本地时间和GMT相差的分钟数 0-1439</span>
+
+    parse(timeStr)         <span class="hljs-comment">// 返回所给时间字符串自1970.1.1以来的毫秒数</span>
+
+    setDate()             <span class="hljs-comment">// 1-31的天</span>
+    setFullYear()        <span class="hljs-comment">// 四位数年份</span>
+    setHours()
+    setMilliseconds()
+    setMinutes()
+    setMonth()
+    setSeconds()
+    setTime()
+    setYear()             <span class="hljs-comment">// 两位数</span>
+    setUTC*()
+
+    toGMTString()         <span class="hljs-comment">// 字符串的GMT  day dd mm yyyy hh:mm:ss</span>
+    toUTCString()
+
+    toLocaleString()     <span class="hljs-comment">// 字符串的本地时间</span>
+
+    <span class="hljs-comment">// 生成日期</span>
+    <span class="hljs-built_in">window</span>.onload = initDate;
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">initDate</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> aWeek = [<span class="hljs-string">'Sunday'</span>,<span class="hljs-string">'Monday'</span>,<span class="hljs-string">'Tuesday'</span>,<span class="hljs-string">'Wednesday'</span>,<span class="hljs-string">'Thursday'</span>,<span class="hljs-string">'Friday'</span>,<span class="hljs-string">'Saturday'</span>];
+        <span class="hljs-keyword">var</span> aMonth = [<span class="hljs-string">'January'</span>,<span class="hljs-string">'February'</span>,<span class="hljs-string">'March'</span>,<span class="hljs-string">'April'</span>,<span class="hljs-string">'May'</span>,<span class="hljs-string">'June'</span>,<span class="hljs-string">'July'</span>,<span class="hljs-string">'August'</span>,<span class="hljs-string">'September'</span>,<span class="hljs-string">'October'</span>,<span class="hljs-string">'November'</span>,<span class="hljs-string">'December'</span>];
+
+        <span class="hljs-keyword">var</span> now = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>();
+        <span class="hljs-keyword">var</span> dtStr = aWeek[now.getDay()] + <span class="hljs-string">", "</span> + aMonth[now.getMonth()] + <span class="hljs-string">" "</span> + now.getDate();
+        <span class="hljs-built_in">document</span>.write(dtStr);
+    }
+
+
+<span class="hljs-comment">// 2016-03-21</span>
+<span class="hljs-number">049.</span>AJAX
+    <span class="hljs-comment">// 2005年2月 Jesse James Garrett(Adaptive Path的创始人之一 一家界面设计公司)提出了AJAX</span>
+    Asynchronous Javascript and XML
+        使用HTML和CSS控制页面结构和表现
+        使用DOM显示和操纵页面
+        使用XMLHttpRequest对象在客户机和服务器之间传输数据
+        使用XML作为在客户机和服务器之间传输数据的格式
+        最后使用JS动态的显示所有内容并提供交互功能
+
+    Ajax应用程序在用户和服务器之间建立一个中介Ajax引擎 （Ajax engine，也称为网页的JavaScript
+    部分）向用户提供界面（当然要借助于HTML和CSS） 如果用户的操作并不要求向服务器发出请求（例
+    如，显示已经存储在本地的数据） ，那么Ajax引擎会进行响应这使浏览器能够对许多用户操作立刻作
+    出反应，使网页的反应像桌面程序那样迅速如果用户操作需要服务器调用， Ajax引擎就异步地执行它，
+    因此用户不需要等待服务器的响应用户可以继续与应用程序进行交互，当请求的数据到达时，引擎会
+    更新页面这里的重点是，用户的操作不会由于等待服务器而暂停 
+
+    <span class="hljs-comment">/*
+        &lt;p&gt; 
+            &lt;a id="makeTextRequest" href="gAddress.txt"&gt;Request a text file&lt;/a&gt;&lt;br&gt;
+            &lt;a id="makeXMLRequest" href="us-states.xml"&gt;Request an XML file&lt;/a&gt;
+        &lt;/p&gt;&lt;br/&gt;
+        &lt;div id="updateArea"&gt; &lt;/div&gt;
+
+
+        A plain text file.
+
+
+        &lt;?xml version="1.0"?&gt;  
+        &lt;choices xml:lang="EN"&gt; 
+          &lt;item&gt;&lt;label&gt;Alabama&lt;/label&gt;&lt;value&gt;AL&lt;/value&gt;&lt;/item&gt; 
+          &lt;item&gt;&lt;label&gt;California&lt;/label&gt;&lt;value&gt;CA&lt;/value&gt;&lt;/item&gt; 
+          &lt;item&gt;&lt;label&gt;Colorado&lt;/label&gt;&lt;value&gt;CO&lt;/value&gt;&lt;/item&gt; 
+        &lt;/choices&gt; 
+    */</span>
+    <span class="hljs-built_in">window</span>.onload = initAll;
+    <span class="hljs-comment">// 全局化 XMLHttpRequest 对象</span>
+    <span class="hljs-keyword">var</span> xhr = <span class="hljs-literal">false</span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">initAll</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"makeTextRequest"</span>).onclick = getNewFile;
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"makeXMLRequest"</span>).onclick = getNewFile;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getNewFile</span>(<span class="hljs-params"></span>) </span>{
+        makeRequest(<span class="hljs-keyword">this</span>.href);
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">makeRequest</span>(<span class="hljs-params">url</span>) </span>{
+        <span class="hljs-comment">// 浏览器兼容！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！</span>
+        <span class="hljs-keyword">if</span>(<span class="hljs-built_in">window</span>.XMLHttpRequest) {  <span class="hljs-comment">// 现代浏览器</span>
+            xhr = <span class="hljs-keyword">new</span> XMLHttpRequest();
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">if</span>(<span class="hljs-built_in">window</span>.ActiveXObject) {  <span class="hljs-comment">// MS IE</span>
+                <span class="hljs-keyword">try</span>{
+                    xhr = <span class="hljs-keyword">new</span> ActiveXObject(<span class="hljs-string">"Miscrosoft.XMLHTTP"</span>);
+                }
+                <span class="hljs-keyword">catch</span> (e) {}  <span class="hljs-comment">// 不支持就不支持了吧</span>
+            }
+        }
+
+        <span class="hljs-keyword">if</span>(xhr) {
+            <span class="hljs-comment">// XMLHttpRequest创建成功  关键更改处！！！！！！！！！！！！！！！！！！！！</span>
+            xhr.onreadystatechange = showContents;  <span class="hljs-comment">// 每当xhr.readystate变化时触发</span>
+            xhr.open(<span class="hljs-string">"GET"</span>, url, <span class="hljs-literal">true</span>);  <span class="hljs-comment">// "GET"方式异步请求传递的 url</span>
+            xhr.send(<span class="hljs-literal">null</span>);  <span class="hljs-comment">// 发送创建的请求  "POST"方式需要传递参数</span>
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-comment">// XMLHttpRequest创建失败</span>
+            <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"updateArea"</span>).innerHTML = 
+            <span class="hljs-string">"Sorry,but I couldn't create an XMLHttpRequest"</span>;
+        }
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">showContents</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-comment">// 0 未初始化 对象不包含数据</span>
+        <span class="hljs-comment">// 1 正在加载 对象当前正在加载它的数据</span>
+        <span class="hljs-comment">// 2 已经加载 对象已经完成了数据加载</span>
+        <span class="hljs-comment">// 3 交互式的 即使没有加载成功 用户也可能与对象进行交互</span>
+        <span class="hljs-comment">// 4 对象初始化完成</span>
+        <span class="hljs-keyword">if</span> (xhr.readyState == <span class="hljs-number">4</span>) {
+            <span class="hljs-keyword">if</span> (xhr.status == <span class="hljs-number">200</span>) {  <span class="hljs-comment">// 状态码 200 一切正常  404文件不存在</span>
+                <span class="hljs-comment">// xhr.responseXML 得到一个返回的数据</span>
+                <span class="hljs-keyword">if</span> (xhr.responseXML &amp;&amp; xhr.responseXML.childNodes.length &gt; <span class="hljs-number">0</span>) { 
+                <span class="hljs-keyword">var</span> outMsg = getText(xhr.responseXML.getElementsByTagName (<span class="hljs-string">"choices"</span>)[<span class="hljs-number">0</span>]); 
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-keyword">var</span> outMsg = xhr.responseText; 
+            }
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-comment">// 失败</span>
+            <span class="hljs-keyword">var</span> outMsg = <span class="hljs-string">"There was a problem with the request "</span> + xhr.status; 
+        }
+
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"updateArea"</span>).innerHTML = outMsg;  <span class="hljs-comment">// 输出</span>
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getText</span>(<span class="hljs-params">inVal</span>) </span>{  <span class="hljs-comment">// 检查所有传入的参数是否包含textContent属性</span>
+        <span class="hljs-comment">// 返回 textContent 或者 text</span>
+        <span class="hljs-keyword">if</span> (inVal.textContent) {
+            <span class="hljs-keyword">return</span> inVal.textContent;
+        }
+        <span class="hljs-keyword">return</span> inVal.text;
+        }
+    }
+
+    <span class="hljs-comment">// 迫使服务器提供最新数据</span>
+    xhr.setRequestHeader(<span class="hljs-string">"If-Modified-Since"</span>, <span class="hljs-string">"Wed, 15 Jan 1995 01:00:00 GMT"</span>); 
+    xhr.setRequestHeader(<span class="hljs-string">"Cache-Control"</span>,<span class="hljs-string">"no-cache"</span>); 
+    xhr.setRequestHeader(<span class="hljs-string">"Cache-Control"</span>,<span class="hljs-string">"must-revalidate"</span>); 
+    xhr.setRequestHeader(<span class="hljs-string">"Cache-Control"</span>,<span class="hljs-string">"no-store"</span>); 
+    xhr.setRequestHeader(<span class="hljs-string">"Pragma"</span>,<span class="hljs-string">"no-cache"</span>); 
+    xhr.setRequestHeader(<span class="hljs-string">"Expires"</span>,<span class="hljs-string">"0"</span>); 
+
+    <span class="hljs-comment">// 覆盖MIME 迫使调用返回 XML 数据</span>
+    xhr.overrideMimeType(<span class="hljs-string">"text/xml"</span>); 
+
+
+<span class="hljs-number">050.</span>AJAX预览链接  获取光标位置
+    <span class="hljs-comment">/*
+        &lt;ul&gt; 
+            &lt;li&gt;&lt;a href="2000.html"&gt;August column&lt;/a&gt;&lt;/li&gt; 
+            &lt;li&gt;&lt;a href="2000.html"&gt;September column&lt;/a&gt;&lt;/li&gt; 
+            &lt;li&gt;&lt;a href="2000.html"&gt;October column&lt;/a&gt;&lt;/li&gt; 
+            &lt;li&gt;&lt;a href="2000.html"&gt;November column&lt;/a&gt;&lt;/li&gt; 
+        &lt;/ul&gt; 
+        &lt;div id="previewWin"&gt; &lt;/div&gt;
+
+        #previewWin { 
+            background-color: #FF9; 
+            width: 400px; 
+            height: 100px; 
+            font: .8em arial, helvetica, sans-serif; 
+            padding: 5px; 
+            position: absolute; 
+            visibility: hidden; 
+            top: 10px; 
+            left: 10px; 
+            border: 1px #CC0 solid; 
+            clip: auto; 
+            overflow: hidden; 
+        } 
+         
+        #previewWin h1, #previewWin h2 { 
+            font-size: 1.0em; 
+        } 
+    */</span>
+    <span class="hljs-built_in">window</span>.onload = initAll; 
+    <span class="hljs-keyword">var</span> xhr = <span class="hljs-literal">false</span>; 
+    <span class="hljs-keyword">var</span> xPos, yPos; 
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">initAll</span>(<span class="hljs-params"></span>) </span>{ 
+        <span class="hljs-keyword">var</span> allLinks = <span class="hljs-built_in">document</span>.getElementsByTagName(<span class="hljs-string">"a"</span>); 
+
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt; allLinks.length; i++) { 
+            allLinks[i].onmouseover = getPreview; 
+        }
+    } 
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getPreview</span>(<span class="hljs-params">evt</span>) </span>{ 
+        <span class="hljs-keyword">if</span> (evt) { 
+            <span class="hljs-keyword">var</span> url = evt.target; 
+        } <span class="hljs-keyword">else</span> { 
+            evt = <span class="hljs-built_in">window</span>.event; 
+            <span class="hljs-keyword">var</span> url = evt.srcElement; 
+        } 
+        <span class="hljs-comment">// 光标位置</span>
+        xPos = <span class="hljs-built_in">parseInt</span>(evt.clientX); 
+        yPos = <span class="hljs-built_in">parseInt</span>(evt.clientY); 
+
+        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">window</span>.XMLHttpRequest) { 
+            xhr = <span class="hljs-keyword">new</span> XMLHttpRequest(); 
+        } <span class="hljs-keyword">else</span> { 
+            <span class="hljs-keyword">if</span> (<span class="hljs-built_in">window</span>.ActiveXObject) { 
+                <span class="hljs-keyword">try</span> { 
+                    xhr = <span class="hljs-keyword">new</span> ActiveXObject(<span class="hljs-string">"Microsoft.XMLHTTP"</span>); 
+                } 
+                <span class="hljs-keyword">catch</span> (e) { } 
+            } 
+        }
+
+        <span class="hljs-keyword">if</span> (xhr) { 
+            xhr.onreadystatechange = showContents; 
+            xhr.open(<span class="hljs-string">"GET"</span>, url, <span class="hljs-literal">true</span>); 
+            xhr.send(<span class="hljs-literal">null</span>); 
+        } <span class="hljs-keyword">else</span> { 
+            alert(<span class="hljs-string">"Sorry, but I couldn't create an XMLHttpRequest"</span>); 
+        } 
+    } 
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">hidePreview</span>(<span class="hljs-params"></span>) </span>{ 
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"previewWin"</span>).style.visibility = <span class="hljs-string">"hidden"</span>; 
+    } 
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">showContents</span>(<span class="hljs-params"></span>) </span>{ 
+        <span class="hljs-keyword">var</span> prevWin = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"previewWin"</span>); 
+
+        <span class="hljs-keyword">if</span> (xhr.readyState == <span class="hljs-number">4</span>) { 
+            <span class="hljs-keyword">if</span> (xhr.status == <span class="hljs-number">200</span>) { 
+                prevWin.innerHTML = xhr.responseText; 
+            } <span class="hljs-keyword">else</span> { 
+                prevWin.innerHTML = <span class="hljs-string">"There was a problem with the request "</span> + xhr.status; 
+            } 
+            prevWin.style.top = yPos+<span class="hljs-number">2</span> + <span class="hljs-string">"px"</span>; 
+            prevWin.style.left = xPos+<span class="hljs-number">2</span> + <span class="hljs-string">"px"</span>; 
+            prevWin.style.visibility = <span class="hljs-string">"visible"</span>; 
+            prevWin.onmouseout = hidePreview; 
+        } 
+    } 
+
+
+<span class="hljs-number">51.</span>表单自动补全
+    <span class="hljs-comment">/*
+        &lt;form action="#"&gt; 
+            Please enter your state:&lt;br&gt; 
+            &lt;input type="text" id="searchField" autocomplete="off"&gt;&lt;br&gt; 
+            &lt;div id="popups"&gt; &lt;/div&gt; 
+        &lt;/form&gt;
+
+        .suggestions { 
+            background-color: #FFF; 
+            padding: 2px 6px; 
+            border: 1px solid #000; 
+        } 
+         
+
+        .suggestions:hover { 
+            background-color: #69F; 
+        } 
+         
+        #popups { 
+            position: absolute; 
+        } 
+         
+        #searchField.error { 
+            background-color: red; 
+        } 
+
+
+        &lt;?xml version="1.0"?&gt;  
+        &lt;choices xml:lang="EN"&gt; 
+          &lt;item&gt;&lt;label&gt;Alabama&lt;/label&gt;&lt;value&gt;AL&lt;/value&gt;&lt;/item&gt; 
+          &lt;item&gt;&lt;label&gt;Alaska&lt;/label&gt;&lt;value&gt;AK&lt;/value&gt;&lt;/item&gt; 
+          &lt;item&gt;&lt;label&gt;Arizona&lt;/label&gt;&lt;value&gt;AZ&lt;/value&gt;&lt;/item&gt; 
+          &lt;item&gt;&lt;label&gt;Arkansas&lt;/label&gt;&lt;value&gt;AR&lt;/value&gt;&lt;/item&gt; 
+        &lt;/choices&gt; 
+    */</span>
+    <span class="hljs-built_in">window</span>.onload = initAll;  
+    <span class="hljs-keyword">var</span> xhr = <span class="hljs-literal">false</span>; 
+    <span class="hljs-keyword">var</span> statesArray = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(); 
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">initAll</span>(<span class="hljs-params"></span>) </span>{ 
+        <span class="hljs-comment">// 输入框键盘事件</span>
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"searchField"</span>).onkeyup = searchSuggest; 
+
+        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">window</span>.XMLHttpRequest) { 
+            xhr = <span class="hljs-keyword">new</span> XMLHttpRequest(); 
+        } <span class="hljs-keyword">else</span> { 
+        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">window</span>.ActiveXObject) { 
+            <span class="hljs-keyword">try</span> { 
+            xhr = <span class="hljs-keyword">new</span> ActiveXObject(<span class="hljs-string">"Microsoft.XMLHTTP"</span>); 
+        } 
+            <span class="hljs-keyword">catch</span> (e) { } 
+            } 
+        } 
+
+        <span class="hljs-keyword">if</span> (xhr) { 
+            xhr.onreadystatechange = setStatesArray; 
+            xhr.open(<span class="hljs-string">"GET"</span>, <span class="hljs-string">"us-states.xml"</span>,<span class="hljs-literal">true</span>); 
+            xhr.send(<span class="hljs-literal">null</span>); 
+        } <span class="hljs-keyword">else</span> { 
+            alert(<span class="hljs-string">"Sorry, but I couldn't create an XMLHttpRequest"</span>); 
+        } 
+    } 
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setStatesArray</span>(<span class="hljs-params"></span>) </span>{ 
+        <span class="hljs-keyword">if</span> (xhr.readyState == <span class="hljs-number">4</span>) { 
+            <span class="hljs-keyword">if</span> (xhr.status == <span class="hljs-number">200</span>) { 
+                <span class="hljs-keyword">if</span> (xhr.responseXML) { 
+                    <span class="hljs-comment">// XML保存到数组</span>
+                    <span class="hljs-keyword">var</span> allStates = xhr.responseXML.getElementsByTagName(<span class="hljs-string">"item"</span>); 
+                    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;allStates.length; i++) { 
+                        statesArray[i] = allStates[i].getElementsByTagName(<span class="hljs-string">"label"</span>)[<span class="hljs-number">0</span>].firstChild; 
+                    } 
+                } 
+            } <span class="hljs-keyword">else</span> { 
+                alert(<span class="hljs-string">"There was a problem with the request "</span> + xhr.status); 
+            } 
+        } 
+    } 
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">searchSuggest</span>(<span class="hljs-params"></span>) </span>{ 
+        <span class="hljs-keyword">var</span> str = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"searchField"</span>).value; 
+        <span class="hljs-comment">// 输入框 css 置空</span>
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"searchField"</span>).className = <span class="hljs-string">""</span>; 
+        <span class="hljs-keyword">if</span> (str != <span class="hljs-string">""</span>) { 
+            <span class="hljs-comment">// 提示框置空</span>
+            <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"popups"</span>).innerHTML = <span class="hljs-string">""</span>; 
+
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;statesArray.length;i++) { 
+                <span class="hljs-keyword">var</span> thisState = statesArray[i].nodeValue; 
+                <span class="hljs-comment">// 大小写匹配</span>
+                <span class="hljs-keyword">if</span> (thisState.toLowerCase().indexOf(str.toLowerCase())== <span class="hljs-number">0</span>) { 
+                    <span class="hljs-comment">// 创建</span>
+                    <span class="hljs-keyword">var</span> tempDiv = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">"div"</span>); 
+                    tempDiv.innerHTML = thisState; 
+                    tempDiv.onclick = makeChoice; 
+                    tempDiv.className = <span class="hljs-string">"suggestions"</span>; 
+                    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"popups"</span>).appendChild(tempDiv); 
+                } 
+            } 
+            <span class="hljs-keyword">var</span> foundCt = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"popups"</span>).childNodes.length;  <span class="hljs-comment">// 匹配数</span>
+            <span class="hljs-keyword">if</span> (foundCt == <span class="hljs-number">0</span>) {  
+                <span class="hljs-comment">// 未匹配到</span>
+                <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"searchField"</span>).className =<span class="hljs-string">"error"</span>; 
+            } 
+            <span class="hljs-keyword">if</span> (foundCt == <span class="hljs-number">1</span>) { 
+                <span class="hljs-comment">// 找到一个自动填充</span>
+                <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"searchField"</span>).value = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"popups"</span>).firstChild.innerHTML; 
+                <span class="hljs-comment">// 隐藏提示框</span>
+                <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"popups"</span>).innerHTML = <span class="hljs-string">""</span>; 
+            } 
+        } 
+    } 
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">makeChoice</span>(<span class="hljs-params">evt</span>) </span>{ 
+        <span class="hljs-comment">// 兼容</span>
+        <span class="hljs-keyword">if</span> (evt) { 
+            <span class="hljs-keyword">var</span> thisDiv = evt.target; 
+        } <span class="hljs-keyword">else</span> { 
+            <span class="hljs-keyword">var</span> thisDiv = <span class="hljs-built_in">window</span>.event.srcElement; 
+        } 
+        <span class="hljs-comment">// 点击到的值填充到输入框</span>
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"searchField"</span>).value = thisDiv.innerHTML; 
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"popups"</span>).innerHTML = <span class="hljs-string">""</span>; 
+    } 
+
+
+<span class="hljs-comment">// 2016-03-24</span>
+<span class="hljs-number">052.</span>jQuery
+    $(doucment)ready(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{});  <span class="hljs-built_in">window</span>.onload=<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{};
+
+    CDN Content Delivery Network 内容发布网络
+
+    $(<span class="hljs-string">"a"</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        $(<span class="hljs-string">"#colorMe"</span>).attr(<span class="hljs-string">"class"</span>,$(<span class="hljs-keyword">this</span>).attr(<span class="hljs-string">"id"</span>));
+        event.preventDefault();
+    });
+
+    <span class="hljs-comment">// jQuery表单自动补全</span>
+    <span class="hljs-comment">// &lt;script language="javascript" src="http://apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"&gt;&lt;/script&gt;</span>
+    $(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-keyword">var</span> stateStr = <span class="hljs-string">"Alabama*Alaska*Arizona*"</span>;
+
+        $(<span class="hljs-string">"#searchField"</span>).autocomplete({
+            source: stateStr.split(<span class="hljs-string">"*"</span>)
+        });
+    });
+
+
+<span class="hljs-comment">// 2016-03-26</span>
+<span class="hljs-number">053.</span>日历控件
+    <span class="hljs-comment">/*
+        &lt;div id="datepicker"&gt;&lt;/div&gt;
+        &lt;script language="javascript" src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"&gt;&lt;/script&gt;
+        &lt;script language="javascript" src="http://apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"&gt;&lt;/script&gt;
+    */</span>
+    $(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        $(<span class="hljs-string">"#datepicker"</span>).datepicker({
+            dateFormat: <span class="hljs-string">'DD, MM dd, yy'</span>,
+            onSelect: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">selectedDate</span>) </span>{
+                $(<span class="hljs-string">"#datepicked"</span>).empty().append(selectedDate);
+            }
+        });
+    });
+
+</code></pre>

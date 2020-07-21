@@ -96,7 +96,7 @@ window.onload = function () {
 		if (sLocation !== 'blog') {
 			window.location = '../' + sLocation;
 		} else {
-			window.open('../blog');
+			// window.open('../blog');
 		}
 	});
 

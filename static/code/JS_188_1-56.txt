@@ -1,0 +1,859 @@
+<pre><code class="js hljs javascript">
+<span class="hljs-comment">/*
+
+    JavaScript 编写高质量代码：改善JavaScript程序的188个建议 【成林】
+
+    2016-10-19
+    ~
+    2016-11-11 Noted by Chisw
+
+*/</span>
+
+
+<span class="hljs-number">001.</span>Unicode
+<span class="hljs-number">002.</span>词，句，段
+<span class="hljs-number">003.</span>全局变量污染
+<span class="hljs-number">004.</span>数据类型特殊性
+<span class="hljs-number">005.</span>分号自动插入
+<span class="hljs-number">006.</span>特殊值
+<span class="hljs-number">007.</span>保留字
+<span class="hljs-number">008.</span>运算符
+<span class="hljs-number">009.</span>hasOwnProperty
+<span class="hljs-number">010.</span>非空对象特性
+<span class="hljs-number">011.</span>伪数组
+<span class="hljs-number">012.</span>避免使用<span class="hljs-keyword">with</span>
+<span class="hljs-number">013.</span>优化表达式
+<span class="hljs-number">014.</span><span class="hljs-built_in">eval</span>滥用
+<span class="hljs-number">015.</span>避免使用<span class="hljs-keyword">continue</span>
+<span class="hljs-number">016.</span><span class="hljs-keyword">switch</span>贯穿
+<span class="hljs-number">017.</span>块标志
+<span class="hljs-number">018.</span><span class="hljs-function"><span class="hljs-keyword">function</span>语句和表达式
+019.不要使用类型构造器
+020.不要使用<span class="hljs-title">new</span>
+021.提高循环性能的策略
+022.少用函数迭代
+023.<span class="hljs-title">if</span>与<span class="hljs-title">switch</span> 提高条件性能的策略
+024.优化<span class="hljs-title">if</span>逻辑
+025.恰当选用<span class="hljs-title">if</span>和<span class="hljs-title">switch</span>
+026.<span class="hljs-title">if</span>嵌套的思维陷阱
+027.<span class="hljs-title">if</span>隐藏的<span class="hljs-title">bug</span>
+028.查表法提高检测性能
+029.准确使用循环体
+030.递归模式
+031.使用迭代
+032.使用制表
+033.循环优化
+034.字符串的非值操作
+035.获取字节长度
+036.警惕字符串链接操作
+037.推荐使用 <span class="hljs-title">replace</span>
+038.正则 工作机制
+039.正则 回溯
+040.正则 分组
+041.正则 引用
+042.正则 静态值
+043.正则 增强 <span class="hljs-title">exec</span>
+044.正则 原子组
+046.正则 提高效率
+047.正则 场景避免
+048.正则 慎用修剪字符串
+049.数组 对象 同源特性
+050.数组 类型检测
+051.数组 长度的有限性和无限性
+052.数组 删除使用 <span class="hljs-title">splice</span>
+053.数组 维度
+054.数组 排序增强
+055.数组 下标 不要拘泥于数字
+056.函数 <span class="hljs-title">arguments</span>对象 模拟重载
+
+
+// 2016-10-19
+001.<span class="hljs-title">Unicode</span>
+    // <span class="hljs-title">ECMA</span> 规定 <span class="hljs-title">JS</span> 基于 <span class="hljs-title">Unicode</span> 开发，内核完全采用 <span class="hljs-title">UCS</span> 字符集编写
+    // 因此每个字符都使用两个字节来表示
+    // 所以可以使用中文来命名变量或函数
+    // 但在 <span class="hljs-title">v1</span> <span class="hljs-title">v2</span> 中，<span class="hljs-title">Unicode</span> 字符只被允许出现在“注释”或引号包含的“字符串直接量”中
+    // 建议只使用基本字符集编码
+
+
+002.词，句，段
+// <span class="hljs-title">JS</span> 语法包含了合法的 <span class="hljs-title">JS</span> 代码的所有规则和特征，它主要分为:
+    // 词法：包括字符编码、名词规则、特殊词规则等
+        // 词法侧重语言的底层实现（如语言编码问题等），以及基本规则的定义（如标识符、关键字、注释等）
+        // 它们都不是最小的语义单位，却是构成语义单位的组成要素
+        // 例如，规范字符编码集合、命名规则、标识符、关键字、注释规则、特殊字符用法等
+
+    // 句法：定义了语言的逻辑和结构，包括词句段的语法特性；段体现逻辑的结构，句表达可执行的命令，词演绎逻辑的精髓
+        // 段落使用完整的结构封装独立的逻辑
+        // 段落结构包含的内容可以是一条或多条语句，可以在段落起始标记（</span>{）前面添加修饰词
+            <span class="hljs-comment">// 如域谓词（with、catch）逻辑谓词（if、while、for、switch等）函数谓词（function fn(arg)）</span>
+        <span class="hljs-comment">// 语句是由多个词构成的完整逻辑</span>
+        <span class="hljs-comment">// 语句一般至少包含一个词或段落，也可以什么都不包含。仅一个分号进行标识，称为空语句，常用做占位符</span>
+
+
+<span class="hljs-number">003.</span>全局变量污染
+<span class="hljs-comment">// 定义全局变量的3种方式</span>
+    <span class="hljs-comment">// 在任何俄函数外面直接执行 var 语句</span>
+    <span class="hljs-keyword">var</span> link = <span class="hljs-string">'jisuowei.com'</span>;
+
+    <span class="hljs-comment">// 直接给 Web 浏览器的全局对象 window 添加属性</span>
+    <span class="hljs-built_in">window</span>.name = <span class="hljs-string">'chisw'</span>;
+
+    <span class="hljs-comment">// 直接使用未声明的变量，称为隐式全局变量</span>
+    girl = <span class="hljs-string">'chiue'</span>;
+
+<span class="hljs-comment">// 如何避免</span>
+    <span class="hljs-comment">// 在应用程序中创建唯一的全局变量，并定义该变量为当前应用的容器</span>
+    <span class="hljs-keyword">var</span> My = {};
+    My.name = {<span class="hljs-string">'firstName'</span>:<span class="hljs-string">'Suowei'</span>,<span class="hljs-string">'lastName'</span>:<span class="hljs-string">'Ji'</span>};
+
+    <span class="hljs-comment">// 使用闭包</span>
+
+<span class="hljs-comment">// 作用域</span>
+    <span class="hljs-comment">// 大多数采用 C 语言的语法都拥有块级作用域，定义的参数和变量在块中可见，JS 不支持块级作用域</span>
+    <span class="hljs-comment">// JS 支持函数作用域，定义在函数中的参数和变量在只在函数内部可见</span>
+    <span class="hljs-comment">// 所以最好在 函数体 的顶部声明所有可能要用到的变量</span>
+
+
+<span class="hljs-number">004.</span>数据类型特殊性
+<span class="hljs-comment">// 浮点溢出</span>
+    <span class="hljs-comment">// 二进制的浮点数不能正确的处理十进制的小数</span>
+    alert( <span class="hljs-number">0.1</span>+<span class="hljs-number">0.2</span> );  <span class="hljs-comment">// 0.30000000000000004</span>
+
+    <span class="hljs-comment">// 这是遵循二进制浮点数算术标准（IEEE 754）导致的 解决办法：</span>
+    alert( (<span class="hljs-number">1</span>+<span class="hljs-number">2</span>)/<span class="hljs-number">10</span> );
+
+<span class="hljs-comment">// 慎用类型自动转换</span>
+
+<span class="hljs-comment">// 类型检测</span>
+    <span class="hljs-comment">// typeof 会返回6种类型字符串：number string boolean object function undefined</span>
+
+    <span class="hljs-comment">// 检测 null 值时，返回的不是“null”而是“object”，解决方法：</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">type</span>(<span class="hljs-params">o</span>) </span>{ <span class="hljs-keyword">return</span> ( o===<span class="hljs-literal">null</span>) ? <span class="hljs-string">'null'</span> : (<span class="hljs-keyword">typeof</span> o) };
+
+    <span class="hljs-comment">// typeof 不能够检测复杂数据类型：正则表达式、日期对象、数学对象，解决方法：</span>
+    obj.constructor;  <span class="hljs-comment">// undefined 和 null 无法使用（可以先转成布尔值）</span>
+    (<span class="hljs-number">10</span>).constructor; <span class="hljs-comment">// 数值也需要加括号转对象才能使用</span>
+
+    <span class="hljs-comment">// 自定义对象只能通过 constructor 和 instanceof</span>
+
+<span class="hljs-comment">// 安全完整的检测方法</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">typeOf</span>(<span class="hljs-params">o</span>) </span>{
+        <span class="hljs-keyword">var</span> _toString = <span class="hljs-built_in">Object</span>.prototype.toString;
+        <span class="hljs-keyword">var</span> _type = {
+            <span class="hljs-string">'undefined'</span>:<span class="hljs-string">'undefined'</span>,
+            <span class="hljs-string">'number'</span>:<span class="hljs-string">'number'</span>,
+            <span class="hljs-string">'boolean'</span>:<span class="hljs-string">'boolean'</span>,
+            <span class="hljs-string">'string'</span>:<span class="hljs-string">'string'</span>,
+            <span class="hljs-string">'[object Function]'</span>:<span class="hljs-string">'function'</span>,
+            <span class="hljs-string">'[object RegExp]'</span>:<span class="hljs-string">'regexp'</span>,
+            <span class="hljs-string">'[object Array]'</span>:<span class="hljs-string">'array'</span>,
+            <span class="hljs-string">'[object Date]'</span>:<span class="hljs-string">'date'</span>,
+            <span class="hljs-string">'[object Error]'</span>:<span class="hljs-string">'error'</span>
+        }
+        <span class="hljs-keyword">return</span> _type[<span class="hljs-keyword">typeof</span> o] || _type[_toString.call(o)] || (o ? <span class="hljs-string">'object'</span> : <span class="hljs-string">'null'</span>);
+    }
+
+    <span class="hljs-keyword">var</span> a = <span class="hljs-built_in">Math</span>.abs;
+    typeOf(a);  <span class="hljs-comment">// 'function'</span>
+
+<span class="hljs-comment">// parseInt 误用</span>
+    <span class="hljs-comment">// 转换时会先检查 0 处字符是否为数字，如否将返回 NaN 并停止深入分析</span>
+    <span class="hljs-comment">// 浮点数中的点号对于 parseInt 来说属于非法字符</span>
+    <span class="hljs-built_in">parseInt</span>(<span class="hljs-string">'123abc'</span>);  <span class="hljs-comment">// 123</span>
+    <span class="hljs-built_in">parseInt</span>(<span class="hljs-string">'1.73'</span>);  <span class="hljs-comment">// 1</span>
+    <span class="hljs-built_in">parseInt</span>(<span class="hljs-string">'.123'</span>);  <span class="hljs-comment">// NaN</span>
+
+    <span class="hljs-comment">// 0  开头数字字符串作为  八进制 数字转为数值，再以十进制数字返回</span>
+    <span class="hljs-built_in">parseInt</span>(<span class="hljs-string">'010'</span>);  <span class="hljs-comment">// 8</span>
+    <span class="hljs-built_in">parseInt</span>(<span class="hljs-string">'08'</span>);  <span class="hljs-comment">// 错误，因为八进制没有“8”</span>
+
+    <span class="hljs-comment">// 0x 开头数字字符串作为十六进制 数字转为数值，再以十进制数字返回</span>
+    <span class="hljs-built_in">parseInt</span>(<span class="hljs-string">'0x10'</span>);  <span class="hljs-comment">// 16</span>
+
+    <span class="hljs-comment">// 基于进制参数转换</span>
+    <span class="hljs-built_in">parseInt</span>(<span class="hljs-string">'123abc'</span>,<span class="hljs-number">16</span>);  <span class="hljs-comment">// 1194864</span>
+
+
+<span class="hljs-number">005.</span>分号自动插入
+    <span class="hljs-comment">// 当 return 语句要返回一个值，这个值的表达式的开始部分必须和 return 在同一行</span>
+        <span class="hljs-comment">// JS 会在 return 后面自动插入一个分号，结果将返回 undefined</span>
+        <span class="hljs-keyword">return</span>
+        {
+            status:<span class="hljs-literal">true</span>
+        };
+
+        <span class="hljs-comment">// 正确写法</span>
+        <span class="hljs-keyword">return</span> {
+            status:<span class="hljs-literal">true</span>
+        };
+
+    <span class="hljs-comment">// 所以当需要分行显示时，应确保一行内不能形成完整的逻辑语义，从而避免自动插入</span>
+
+
+<span class="hljs-number">006.</span>特殊值
+<span class="hljs-comment">// NaN 和 Infinity</span>
+    <span class="hljs-comment">// NaN 是 IEEE 754 定义的一个特殊值，不表示一个数字，但仍返回 true：</span>
+
+        <span class="hljs-keyword">typeof</span> <span class="hljs-literal">NaN</span> === <span class="hljs-string">'number'</span>;  <span class="hljs-comment">// true</span>
+
+        <span class="hljs-comment">// 区别方法</span>
+        <span class="hljs-built_in">isNaN</span>(<span class="hljs-literal">NaN</span>)  <span class="hljs-comment">// true</span>
+        <span class="hljs-built_in">isNaN</span>(<span class="hljs-number">0</span>)  <span class="hljs-comment">// false</span>
+        <span class="hljs-built_in">isNaN</span>(<span class="hljs-string">'oops'</span>)  <span class="hljs-comment">// true</span>
+        <span class="hljs-built_in">isNaN</span>(<span class="hljs-string">'0'</span>)  <span class="hljs-comment">// false</span>
+
+    <span class="hljs-comment">// 当浮点数超过能表示的范围时就要用 Infinity 表示</span>
+
+        <span class="hljs-comment">// 最佳方法 利用 isFinite() 筛除 NaN 和 Infinity</span>
+        <span class="hljs-keyword">var</span> isNumber = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isNumber</span>(<span class="hljs-params">value</span>) </span>{
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">typeof</span> value === <span class="hljs-string">'number'</span> &amp;&amp; <span class="hljs-built_in">isFinite</span>(value);
+        }
+
+<span class="hljs-comment">// Null 和 Undefined</span>
+    <span class="hljs-comment">// 二者各自只有一个值，即“null”和“undefined”</span>
+    <span class="hljs-comment">// 二者都可以作为字面量在代码中直接使用</span>
+
+    <span class="hljs-comment">// null 与对象引用有关，表示空，或不存在的对象引用</span>
+
+    <span class="hljs-comment">// 当声明一个变量却没有赋值的时候，它的值就是 undefined，如下：</span>
+        <span class="hljs-comment">// 获取对象的属性，该对象及其 prototype 链中的对象都没有该属性时，该属性的值</span>
+        <span class="hljs-comment">// 一个函数（非new调用）没有显式通过 return 语句将返回值返回给调用者，其返回值</span>
+        <span class="hljs-comment">// 函数被调用时传入的参数个数小于函数声明的形参个数了，多余的形参的值</span>
+
+        <span class="hljs-comment">// 如果浏览器不支持 undefined 关键字，可以自定义：</span>
+        <span class="hljs-keyword">var</span> <span class="hljs-literal">undefined</span> = <span class="hljs-keyword">void</span> <span class="hljs-literal">null</span>;
+            <span class="hljs-comment">// void 在执行其后的表达式时会忽略结果值，总是返回值 undefined</span>
+
+<span class="hljs-comment">// 假值</span>
+    <span class="hljs-comment">// 0 NaN '' false null undefined</span>
+    <span class="hljs-comment">// 这些值全都等同于 false，但它们不可互换</span>
+    value = myObject[name];
+    <span class="hljs-keyword">if</span>(value == <span class="hljs-literal">null</span> ) {}
+
+
+<span class="hljs-number">007.</span>保留字
+<span class="hljs-comment">// 保留字不能用在 点语法 中；作为对象字面量的时候，必须要在引号内</span>
+    object = {<span class="hljs-string">'case'</span>:value};  <span class="hljs-comment">// 合法</span>
+    object.case = value;  <span class="hljs-comment">// 非法</span>
+
+
+<span class="hljs-number">008.</span>运算符
+<span class="hljs-comment">// == !=</span>
+    <span class="hljs-comment">// 缺乏传递性 建议选用 === !==</span>
+    a==b; b==c; a==c;
+
+<span class="hljs-comment">// ++ --</span>
+    <span class="hljs-comment">// 只能够作用于变量、数组元素、对象属性</span>
+    <span class="hljs-number">4</span>++;  <span class="hljs-comment">// 错误</span>
+
+    <span class="hljs-comment">// C 语言中，一行代码实现字符串复制：不谨慎的编程风格，缓冲区溢出错误造成安全漏洞</span>
+    <span class="hljs-keyword">for</span>( p=src, q=dest; !*p; p++, q++)*q = *p;
+
+<span class="hljs-comment">// 逗号运算符</span>
+    <span class="hljs-comment">// 逗号在 JS 中表示“连续运算”，并返回最后运算结果</span>
+    <span class="hljs-comment">// 小括号逻辑分隔符 可以强迫内部 连续运算</span>
+
+    <span class="hljs-keyword">var</span> a = <span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>; alert(a);  <span class="hljs-comment">// null: Unexpected number</span>
+
+    <span class="hljs-keyword">var</span> a = (<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>); alert(a);  <span class="hljs-comment">// 3</span>
+
+    a = <span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>; alert(a);  <span class="hljs-comment">// 1</span>
+
+    a = (<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>); alert(a);  <span class="hljs-comment">// 3</span>
+
+    alert( (a = <span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>) );  <span class="hljs-comment">// 3</span>
+
+    alert( a = (<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>) );  <span class="hljs-comment">// 3</span>
+
+<span class="hljs-comment">// 运算符副作用</span>
+    <span class="hljs-comment">// 不会对运算数本身产生影响</span>
+        <span class="hljs-comment">// 算术 比较 条件 取反 位与 等</span>
+
+    <span class="hljs-comment">// 有影响的</span>
+        <span class="hljs-comment">// 赋值 递增 递减</span>
+        <span class="hljs-keyword">var</span> a = <span class="hljs-number">1</span>;
+        a = (a++) + (++a) - (a++) - (++a);
+        alert(a);  <span class="hljs-comment">// -4</span>
+
+
+<span class="hljs-number">009.</span>hasOwnProperty
+<span class="hljs-comment">// 它是一个方法而不是操作符，因此可能会被清空</span>
+    <span class="hljs-comment">// for in 枚举</span>
+    <span class="hljs-keyword">var</span> obj={}, name;
+    obj.hasOwnProperty = <span class="hljs-literal">null</span>;
+    <span class="hljs-keyword">for</span>( name <span class="hljs-keyword">in</span> obj ) {
+        <span class="hljs-keyword">if</span>( obj.hasOwnProperty(name) ) {
+            <span class="hljs-built_in">document</span>.writelb(name+<span class="hljs-string">': '</span>+obj[name]);
+        }
+    }
+
+
+<span class="hljs-number">010.</span>非空对象特性
+<span class="hljs-comment">// JS 中从来没有真正的非空对象，因为每个对象都可以从原型链中取得成员</span>
+
+<span class="hljs-comment">// 统计一段文本中每个单词的出现次数：</span>
+    <span class="hljs-keyword">var</span> i, word;
+    <span class="hljs-keyword">var</span> text = <span class="hljs-string">"A number of W3C staff will be on hand to discuss HTML5."</span>;
+    <span class="hljs-keyword">var</span> words = text.toLowerCase().split(<span class="hljs-regexp">/[\s,.]+/</span>);  <span class="hljs-comment">// 先转小写，再用split以一个正则参数生成单词数组</span>
+    <span class="hljs-keyword">var</span> count = {};
+    <span class="hljs-keyword">for</span>( i = <span class="hljs-number">0</span>; i &lt; words.length; i += <span class="hljs-number">1</span>) {  <span class="hljs-comment">// 遍历数组中每个单词统计出现的次数</span>
+        word = words[i];
+        <span class="hljs-keyword">if</span>(count[word]) {
+            count[word] += <span class="hljs-number">1</span>;
+        } <span class="hljs-keyword">else</span> {
+            count[word] = <span class="hljs-number">1</span>;
+        }
+    }
+
+    <span class="hljs-comment">// count["on"]值为1，count["of"]值是3，count.constructor却包含着一个看上去令人不可思议的字符串</span>
+    <span class="hljs-comment">// 在主流浏览器上，count.constructor将返回字符串：function Object(){[native code]}</span>
+    <span class="hljs-comment">// 原因 count对象继承自Object.prototype，而Object.prototype包含一个名为constructor的成员对象</span>
+    <span class="hljs-comment">// count.constructor的值是一个Object</span>
+    <span class="hljs-comment">// +=运算符，就像+运算符一样，如果它的运算数不是数字时会执行字符串连接的操作而不是加法运算</span>
+    <span class="hljs-comment">// 因为count对象是一个函数，所以+=运算符将其转换成一个莫名其妙的字符串，然后再把一个数字1加在它的后面</span>
+    <span class="hljs-comment">// 采用与处理for in中问题相同的方法来避免类似的问题：</span>
+    <span class="hljs-comment">// 用hasOwnProperty方法检测成员关系，或者查找特定的类型。在当前情形下，可以编写如下过滤条件：</span>
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> count[word] === <span class="hljs-string">'number'</span>) {}
+
+
+<span class="hljs-number">011.</span>伪数组
+<span class="hljs-comment">// JS 没有真正的数组，因此typeof运算符不能辨别数组和对象</span>
+<span class="hljs-comment">// 伪数组在JavaScript中有很高的易用性，程序员不用给它设置维度，而且永远不用担心产生越界错误</span>
+<span class="hljs-comment">// 但JavaScript数组的性能相比真正的数组可能更糟糕</span>
+<span class="hljs-comment">// 判断一个值是否为数组，须使用constructor属性：</span>
+    <span class="hljs-keyword">if</span>(value &amp;&amp; <span class="hljs-keyword">typeof</span> value === <span class="hljs-string">'object'</span> &amp;&amp; value.constructor === <span class="hljs-built_in">Array</span>) {}
+
+
+<span class="hljs-number">012.</span>避免使用<span class="hljs-keyword">with</span>
+<span class="hljs-comment">// 语法：</span>
+    <span class="hljs-keyword">with</span> ( Expression )
+    Statement
+
+    <span class="hljs-comment">// with会把由Expression计算出来的对象添加到当前执行上下文的作用域链的前面</span>
+    <span class="hljs-comment">// 然后使用这个扩大的作用域链来执行语句Statement，最后恢复作用域链</span>
+    <span class="hljs-comment">// 不管其中的语句是否正常退出，作用域链都会被恢复</span>
+    <span class="hljs-comment">// 由于with会把额外的对象添加到作用域链的前面，因此使用with可能会影响性能，并造成难以发现的错误</span>
+
+
+<span class="hljs-number">013.</span>优化表达式
+<span class="hljs-comment">// 使用小括号</span>
+    (a + b &gt; c &amp;&amp; a - b &lt; c || a &gt; b &gt; c)
+
+    ((a + b &gt; c) &amp;&amp; ((a - b &lt; c) || (a &gt; b &gt; c)) )
+
+<span class="hljs-comment">// 改变顺序</span>
+    <span class="hljs-keyword">if</span>(age &gt;= <span class="hljs-number">6</span> &amp;&amp; age &lt; <span class="hljs-number">18</span> || age &gt;= <span class="hljs-number">65</span>) {}
+
+    <span class="hljs-keyword">if</span>((age &gt;= <span class="hljs-number">6</span> &amp;&amp; age &lt; <span class="hljs-number">18</span>) || age &gt;= <span class="hljs-number">65</span>) {}
+
+    <span class="hljs-keyword">if</span>(( <span class="hljs-number">6</span> &lt;= age &amp; age &lt; <span class="hljs-number">18</span>) || <span class="hljs-number">65</span> &lt;= age ) {}
+
+<span class="hljs-comment">// 避免布尔表达式叠加</span>
+    <span class="hljs-keyword">if</span> !( !isA || !isB ) {}
+
+    ( !isA || !isB ) = !( isA &amp;&amp; isB )
+    ( !isA &amp;&amp; !isB ) = !( isA || isB )
+
+<span class="hljs-comment">// if 语句分解</span>
+    <span class="hljs-keyword">var</span> a.b = <span class="hljs-keyword">new</span> c(a.d ? a.e(<span class="hljs-number">1</span>) : a.f(<span class="hljs-number">1</span>))
+
+    <span class="hljs-keyword">if</span>( a.d ) {
+        <span class="hljs-keyword">var</span> a.b = <span class="hljs-keyword">new</span> c(a.e(<span class="hljs-number">1</span>));
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">var</span> a.b = <span class="hljs-keyword">new</span> c(a.f(<span class="hljs-number">1</span>));
+    }
+
+
+<span class="hljs-number">014.</span><span class="hljs-built_in">eval</span>滥用
+<span class="hljs-comment">// 将字符串传给 JS 编译器解析执行</span>
+<span class="hljs-comment">// 使用eval形式的代码会更加难以阅读，使代码性能显著降低</span>
+<span class="hljs-comment">// 因为eval必须运行编译器，同时这种形式减弱了Web应用的安全性，因为它向被求值的文本授予了太多的权限</span>
+<span class="hljs-comment">// 使用eval与使用with语句一样降低了语言的性能</span>
+
+<span class="hljs-comment">// Function构造器是eval的另一种形式，所以也应该避免使用它</span>
+
+<span class="hljs-comment">// 在Ajax应用中，JSON是一种流行的浏览器端与服务器端之间传输数据的格式</span>
+<span class="hljs-comment">// 服务器端传过来的数据在浏览器端通过JavaScript的eval方法转换成可以直接使用的对象</span>
+<span class="hljs-comment">// 在浏览器端执行任意的JavaScript会带来潜在的安全风险，恶意的JavaScript代码可能会破坏应用</span>
+
+<span class="hljs-comment">// 这两种方法都是在Dojo中用来避免JSON劫持（JSON hijacking）的方法</span>
+    <span class="hljs-comment">// 带注释的JSON（JSON comments filtering）</span>
+    <span class="hljs-comment">// 带前缀的JSON（JSON prefixing）</span>
+
+<span class="hljs-comment">// JSON字符串进行语法检查：安全的JSON应该是不包含赋值和方法调用的</span>
+<span class="hljs-comment">// 在JSON的RFC 4627中，给出了判断JSON字符串是否安全的方法，此方法通过两个正则表达式来实现：</span>
+    <span class="hljs-keyword">var</span> my_JSON_object = !(<span class="hljs-regexp">/[^,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]/</span>.test(text.
+    replace(<span class="hljs-regexp">/"(\\.|[^"\\])*"/g</span>, <span class="hljs-string">''</span>))) &amp;&amp; <span class="hljs-built_in">eval</span>(<span class="hljs-string">'('</span> + text + <span class="hljs-string">')'</span>);
+
+
+<span class="hljs-number">015.</span>避免使用<span class="hljs-keyword">continue</span>
+<span class="hljs-comment">// 不管continue语句是否带有标签，都只能在循环结构（如while、do/while、for、for/in）体内使用</span>
+<span class="hljs-comment">// 在其他地方都会引发编译错误</span>
+<span class="hljs-comment">// 当执行continue语句时，会停止当前循环过程，开始执行下一次的循环</span>
+<span class="hljs-comment">// 但对于不同的结构体，continue语句继续执行的位置会略有不同</span>
+<span class="hljs-comment">// 在实践中，通过代码重构移除continue语句会使性能得到改善</span>
+
+
+<span class="hljs-number">016.</span><span class="hljs-keyword">switch</span>贯穿
+<span class="hljs-comment">// switch语句的由来可以追溯到FORTRAN IV的go to语句</span>
+<span class="hljs-comment">// 除非明确地中断流程，否则每次条件判断后都贯穿到下一个case条件</span>
+
+<span class="hljs-comment">// 在switch语句中，case从句只是指明了想要执行代码的起点，并没有指明终点</span>
+<span class="hljs-comment">// 如果没有向case从句中添加break语句，则会发生连续贯穿现象，忽略后面case从句，造成switch结构的逻辑混乱</span>
+<span class="hljs-comment">// 如果是在函数中使用switch语句，还可以使用return来代替break，以终止switch语句，防止逻辑贯穿</span>
+
+
+<span class="hljs-number">017.</span>块标志
+<span class="hljs-comment">// 严格遵循规范，并始终使用代码块，使其更容易被理解</span>
+
+
+<span class="hljs-number">018.</span><span class="hljs-function"><span class="hljs-keyword">function</span>语句和表达式
+// 语句：值为一个函数的 <span class="hljs-title">var</span> 语句的简写形式
+    <span class="hljs-title">function</span> <span class="hljs-title">f</span>(<span class="hljs-params"></span>) </span>{}  <span class="hljs-comment">// var f = function() {}</span>
+
+    <span class="hljs-comment">// 要学好 JS，理解“函数就是数值”是很重要的</span>
+
+    <span class="hljs-comment">// 语句在解析时会被提升：</span>
+    <span class="hljs-comment">// 不管被放置在哪里，都会被移动到定义时所在作用域的顶层</span>
+    <span class="hljs-comment">// 这放宽了函数必须先声明后使用的要求，也造成了混乱</span>
+
+    <span class="hljs-comment">// if 语句中禁止使用 function 语句：各浏览器处理不同，造成移植问题</span>
+
+    <span class="hljs-comment">// 一个语句不能以“函数表达式”开头，function 开头的是 function 语句</span>
+    <span class="hljs-comment">// 解决方法：圆括号</span>
+        (<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{}());
+
+
+<span class="hljs-number">019.</span>不要使用类型构造器
+<span class="hljs-comment">// new 运算符调用构造函数可读性差，造成困惑</span>
+<span class="hljs-comment">// JS 构造函数返回的对象将成为new运算符的运算值，this引用的对象会被覆盖</span>
+
+
+<span class="hljs-number">020.</span>不要使用<span class="hljs-keyword">new</span>
+<span class="hljs-comment">// 通过new运算符将创建一个继承于其运算数的原型的新对象，然后调用该运算数，把新创建的对象绑定给 this</span>
+<span class="hljs-comment">// 如果忘记使用new，得到一个普通的函数调用，且this被绑定到全局对象，非新创建的对象</span>
+<span class="hljs-comment">// 意味着当函数尝试去初始化新成员时，它将会“污染”全局变量，这是非常糟糕的，没有编译时和运行时的警告</span>
+<span class="hljs-comment">// 照例，结合new使用的函数应该被命名为首字母大写的形式，且首字母大写的形式应该只用来命名那些构造器函数</span>
+<span class="hljs-comment">// 此约定提供了一个视觉线索，以帮助发现那些 JS 经常忽略却需要付出代价的错误，所以最好根本不使用new运算符</span>
+
+
+<span class="hljs-number">021.</span>提高循环性能的策略
+<span class="hljs-comment">// 每次运行循环体都会产生性能开销，增加总运行时间</span>
+<span class="hljs-comment">// 因此减少循环的迭代次数可获得显著的性能提升</span>
+
+<span class="hljs-comment">// process() 函数每次循环最多被调用 8 次</span>
+    <span class="hljs-keyword">var</span> iterations = <span class="hljs-built_in">Math</span>.floor(items.length/<span class="hljs-number">8</span>), startAt = items.length%<span class="hljs-number">8</span>, i=<span class="hljs-number">0</span>;
+    <span class="hljs-keyword">do</span> {
+        <span class="hljs-keyword">switch</span>(startAt) {
+            <span class="hljs-keyword">case</span> <span class="hljs-number">0</span>:
+                process(items[i++]);
+            <span class="hljs-keyword">case</span> <span class="hljs-number">7</span>:
+                process(items[i++]);
+            <span class="hljs-keyword">case</span> <span class="hljs-number">6</span>:
+                process(items[i++]);
+            <span class="hljs-keyword">case</span> <span class="hljs-number">5</span>:
+                process(items[i++]);
+            <span class="hljs-keyword">case</span> <span class="hljs-number">4</span>:
+                process(items[i++]);
+            <span class="hljs-keyword">case</span> <span class="hljs-number">3</span>:
+                process(items[i++]);
+            <span class="hljs-keyword">case</span> <span class="hljs-number">2</span>:
+                process(items[i++]);
+            <span class="hljs-keyword">case</span> <span class="hljs-number">1</span>:
+                process(items[i++]);
+        }
+        startAt = <span class="hljs-number">0</span>;
+    } <span class="hljs-keyword">while</span> (--iterations);
+
+<span class="hljs-comment">// 将余数处理与主循环分开</span>
+    <span class="hljs-keyword">var</span> i = items.length % <span class="hljs-number">8</span>;
+    <span class="hljs-keyword">while</span>(i) {
+        process(items[i--]);
+    }
+    i = <span class="hljs-built_in">Math</span>.floor(items.length/<span class="hljs-number">8</span>);
+    <span class="hljs-keyword">while</span>(i) {
+        process(items[i--]);
+        process(items[i--]);
+        process(items[i--]);
+        process(items[i--]);
+        process(items[i--]);
+        process(items[i--]);
+        process(items[i--]);
+        process(items[i--]);
+    }
+
+<span class="hljs-comment">// 影响循环性能的两个因素：每次迭代干什么；迭代的次数；</span>
+
+<span class="hljs-comment">// 方法 1</span>
+    <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i<items.length; i++)="" {="" process(itmes[i]);="" }="" 方法="" 2="" var="" j="0;" while(="" j<items.length="" )="" process(itmes[j++]);="" 3="" k="0;" do="" process(items[k++]);="" <="" items.length="" );="" 2016-10-25="" 022.少用函数迭代="" 原生="" ecma-262v4="" 新增="" foreach()="" ff="" chrome="" safari="" 遍历一个数组所有成员，并在每个成员上执行一个函数="" items.foreach(function(value,="" index,="" array)="" process(value);="" });="" yui="" y.array.each(items,="" function(value,="" jquery="" jquery.each(items,="" dojo="" dojo.foreach(items,="" prototype="" items.each(function(value,="" index)="" 基于函数的迭代使用起来非常便利，但比基于循环的迭代要慢一些="" （8="" 倍占用时间）="" 每个数组项要关联额外的函数调用是造成速度慢的主要原因="" 因此不建议使用函数迭代="" 023.if与switch="" 提高条件性能的策略="" 大多数情况下="" switch="" 比="" if="" 运行更快，条件体数量较大时较明显="" 当条件体增加时，if性能负担增加的程度比="" 大="" 条件体="" 较少使用if，较多使用switch="" 024.优化if逻辑="" 目标：最小化找到正确分支之前所判断条件体的数量="" 方法：将最常见的条件体放在首位="" if(value<5)="" most="" thing="" else="" if(5<value="" &amp;&amp;="" value<10)="" less="" least="" 另一种方法：重写嵌套结构="" if(val="=0)" if(val<3){="" 保证表达式被计算="" c="b;" if(a&amp;&amp;b)="" {}="" 2016-11-01="" 025.恰当选用if和switch="" switch结构中的很多限制可以提高多重分支结构的执行效率，能则尽量使用switch="" 无论是使用if还是switch，应该确保下面3个目标的基本实现：="" 准确表现事物内在的、固有的逻辑关系。不能为了结构而破坏事物的逻辑关系="" 优化逻辑的执行效率。执行效率是程序设计的重要目标，不能为了省事而随意耗费资源="" 简化代码的结构层次，使代码更方便阅读="" 使用switch情况：="" 枚举表达式的值。这种枚举是可以期望的、平行逻辑关系的="" 表达式的值具有离散性，不具有线性的非连续的区间值="" 表达式的值是固定的，不是动态变化的="" 表达式的值是有限的，而不是无限的，一般情况下表达式应该比较少="" 表达式的值一般为整数、字符串等类型的数据="" 使用if情况：="" 具有复杂的逻辑关系="" 表达式的值具有线性特征，如对连续的区间值进行判断="" 表达式的值是动态的="" 测试任意类型的数据="" 026.if嵌套的思维陷阱="" 复杂的人类思维会在一定程度上增加="" 结构嵌套的复杂性="" 代码的武断性="" if(a)="" if(b)="" if(c)="" 更为简单的结构="" if(="" a="" b="" 排除法="" 使用钩子="" t="true;" if(!a)="" alert('a不成立');="" if(!b)="" alert('b不成立');="" if(!c)="" alert('c不成立');="" if(t)="" alert('所有条件都成立');="" 027.if隐藏的bug="" 运算符出错，将‘="=’写成‘=’" if(a="1)" {..}="" 大括号换行="" 误加分号="" if(1="=a);" alert(a);="" 028.查表法提高检测性能="" switch(value)="" case="" 0:="" return="" res0;="" 1:="" res1;="" default:="" resd;="" 通过数组和对象实现，快且可读性高="" ares="[res0,res1,resD];" ares[value];="" 029.准确使用循环体="" 大部分语言执行代码的时间都消耗在循环的执行，所以值得高度关注="" for="" 循环结构：初始化体，前测条件，后执行体，循环体="" 初始化体最先运行，然后当前测条件为true时运行循环体，然后才运行后执行体="" while="" 循环结构：前测条件，循环体="" 当前测条件为true时运行循环体="" 循环结构：循环体，后测条件="" 循环体至少运行一次，后测条件决定是否继续循环="" in="" 循环结构：枚举任何对象的命名属性="" 每次循环属性都被对象属性的名字（一个字符串）填充="" 直到所有对象属性都遍历完成才返回="" 返回来的属性包括对象的实例属性和对象从原型链继承的属性="" for(="" prop="" object="" 循环体="" 由于每次迭代需要搜索，所以开销更大，速度要慢，当避免使用="" 遍历一个有限的、已知的属性列表="" props="[" prop1","prop2"],"="" i="0;" (i<props.length)="" process(object[props[i]]);="" 如何选用="" 和="" 从语义性角度比较="" 常被用于有规律的重复操作中，如数组、对象、集合="" 更适用于待定条件的重复操作以及依据特定事件的循环操作="" 从思维模式角度比较="" 结构中的三部分作为基本表达式被固定在了语句内，有利于js快速预编译="" 是为复杂条件而设计的="" 将循环控制放在了循环体内，避免了结构的分隔和逻辑的跳跃="" 从达成目标的角度比较="" 循环次数可知="" 如统计全班学生的成绩="" 循环次数未知="" 如统计成绩合格学生人数="" 2016-11-02="" 030.递归模式="" 程序调用自身的编程技巧称为递归="" recursion="" 复杂算法通常比较容易使用递归实现，传统算法中的阶乘也是通过递归实现的="" function="" factorial(n)="" n="=0" 1;="" n*factorial(="" n-1="" 错误定义或缺少条件会导致函数长时间运行，致使浏览器出现假死现象="" 递归函数还会受到浏览器调用栈大小的限制，会弹出错误信息="" 出错捕获="" 火狐：internalerror="" safari&amp;chrome：rangeerror="" ie：一般性error="" try="" recurse();="" catch="" (ex)="" alert('errinfo');="" 当调用栈尺寸受限时，当定位在代码中的递归实现上，两种递归模式：="" 直接递归模式：发生错误容易定位="" recurse()="" 精巧模式：包含两个函数="" 常见栈溢出因由一个不正确的终止条件，因此检错应首先验证终止条件="" 如果终止条件正确，那么算法包含太多递归层，安全起见应改用迭代、制表或混合模式="" first()="" second();="" second()="" first();="" 031.使用迭代="" 任何可以通过递归实现的方法都可以通过迭代实现="" 一个最简单的合并排序算法：调用频繁，超过1500就可能在ff上栈溢出="" merge(left,="" right)="" result="[];" while(left.length=""> <span class="hljs-number">0</span> &amp;&amp; right.length &gt; <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">if</span>(left[<span class="hljs-number">0</span>] &lt; right[<span class="hljs-number">0</span>]) {
+                result.push(left.shift());
+            } <span class="hljs-keyword">else</span> {
+                result.push(right.shift());
+            }
+        }
+        <span class="hljs-keyword">return</span> result.concat(left).concat(right);
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">mergeSort</span>(<span class="hljs-params">items</span>) </span>{
+        <span class="hljs-keyword">if</span>(items.length == <span class="hljs-number">1</span>) {
+            <span class="hljs-keyword">return</span> items;
+        }
+        <span class="hljs-keyword">var</span> middle = <span class="hljs-built_in">Math</span>.floor(items.length/<span class="hljs-number">2</span>),
+            left = items.slice(<span class="hljs-number">0</span>, middle),
+            right = items.slice(middle);
+        <span class="hljs-keyword">return</span> merge( merge(left), merge(right));
+    }
+
+<span class="hljs-comment">// 不必修改算法，使用迭代</span>
+    <span class="hljs-comment">// 迭代可能比递归合并排序慢一些，但不会像递归那样影响调用栈</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">mergeSort</span>(<span class="hljs-params">items</span>) </span>{
+        <span class="hljs-keyword">if</span>(items.length == <span class="hljs-number">1</span>) {
+            <span class="hljs-keyword">return</span> items;
+        }
+        <span class="hljs-keyword">var</span> work = [];
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>, len = items.length; i<len; i++)="" {="" work.push([items[i]]);="" }="" work.push([]);="" for(var="" lim="len;">1; lim = (lim+<span class="hljs-number">1</span>) /<span class="hljs-number">2</span> ) {
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> j=<span class="hljs-number">0</span>, k=<span class="hljs-number">0</span>; k<lim; j++,="" k+="2)" {="" work[j]="merge(work[k]," work[k+1]);="" }="" return="" work[0];="" 032.使用制表="" 代码所做的事情越少运行的就越快，避免重复使得制表成为递归算法中最有用的技术="" 制表法重写="" factorial()="" function="" memfactorial(n)="" if(!memfactorial.cache)="" memfactorial.cache="{" '0':="" 1,="" '1':="" 1="" };="" if(!memfactorial.cache.hasownproperty(n))="" memfactorial.cache[n]="n*memfactorial(n-1);" memfactorial.cache[n];="" 核心思想：将计算过的结果保存起来，以达到避免重复的效果="" 033.循环优化="" 优化结构="" var="" a="true;" for(="" b="1;" b<10;="" b++="" )="" if(a="=true)" {}="" 在="" if="" 条件不受循环结构影响的前提下="" for(var="" b++)="" 避免不必要的操作="" 比如，固定的数组放在循环体外="" b<5;="" alert(a[b]);="" 妥善定义循环变量="" 将循环变量定义在循环结构外部会增加系统开销="" i="0;" s="0;" for(i="0;" i<="100;" i++)="" s+="i;" alert(s);="" 034.字符串的非值操作="" 字符串在复制、传递过程中，js解释器以引用的方式实现对字符串的操作="" 将字符串数据存储到堆区，然后将字符串的地址存储在字符串变量中="" 避免失误，解释器强制约定字符串在堆区存储的数据是不可变的="" 相当于“只读”，因此没有语法、方法、属性可以改变字符串中的原字符="" 当进行字符串的复制和传递时，只是在栈区复制和传递字符串的引用地址="" 此法可以不必将字符串都读取到栈区操作，从而节省时间，提高效率="" 035.获取字节长度="" string="" 对象的="" length="" 属性可以返回字符串的长度，不管是单字节还是双字节="" 获取字节长度方式一：利用循环结构枚举每个字符，依据字符编码判断单双字节再递加="" string.prototype.lengthb="function()" l="this.length;" if(l)="" i<l;="" if(this.charcodeat(i)="">255) {
+                    b+=<span class="hljs-number">2</span>;
+                } <span class="hljs-keyword">else</span> {
+                    b++;
+                }
+            }
+            <span class="hljs-keyword">return</span> b;
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+        }
+    }
+    <span class="hljs-keyword">var</span> s = <span class="hljs-string">'String对象长度'</span>;
+    alert(s.lengthB());
+
+    <span class="hljs-comment">// 判断单双字节的另一种思路</span>
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i<l; i++)="" {="" var="" c="this.charAt(i);" if(escape(c).length="">4) {
+            b+=<span class="hljs-number">2</span>;
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>( c != <span class="hljs-string">'\r'</span>) {
+            b++;
+        }
+    }
+
+    <span class="hljs-comment">// 使用正则</span>
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i<l; i++)="" {="" var="" c="this.charAt(i);" if(="" ^[\u0000-\u00ff]$="" .test(c)="" )="" b++;="" }="" else="" b+="2;" 获取字节长度方式二：利用正则表达式把字符串中的双字节字符替换为两个单字节字符="" string.prototype.lengthb="function()" s="this.replace(/[^\x00-\xff$]/g,'**');" return="" s.length;="" 此法虽简，两次遍历导致速度慢="" string="" 对象的="" length="" 属性是只读的，不同于="" array="" 对象（length="" 可以被设置）="" 字符串中的字符是不能被="" for="" in="" 枚举，也不能使用="" delete="" 删除指定位置的字符="" 2016-11-08="" 036.警惕字符串链接操作="" 字符串连接表现出惊人的“性能紧张”。="" +、+="str" +="one" 'two';="" 1.在内存中创建了一个临时字符串="" 2.临时字符串的值被赋予‘onetwo’="" 3.临时字符串与str的值进行连接="" 4.把结果赋予="" str="" 避免="" 1.="" 2.，两个离散的表达式直接将内容附加到="" 上="" ;="" 同样的="" 'one'="" 改变顺序后将会失去优化性能="" 编译器合并：在赋值表达式中所有的字符串连接都属于编译器常量="" ff会在编译期自动合并它们="" 'time'="" 'folding';="" 没有中间字符，连接的时间和内存为零，但并不经常起作用="" 数组联结="" 原生方法将数组中的所有元素合并成一个字符串，并以传入的参数作为间隔="" 传入空字符串的话，相当于连接字符串="" array.prototype.join()="" 此法在大多数浏览器中较慢，但在ie7-中是唯一的高效途径="" ,="" newstr="" appends="5000;" while(appends--)="" 使用数组联结="" strs="[]," newstr,="" strs[strs.length]="str;" 避免了重复的内存分配和复制越来越大的字符串="" 浏览器宁愿分配足够大的内存用于整个字符串="" 也不会超过一次的复制最终字符串的统一部分="" concat="" 也比="" 037.推荐使用="" replace="" 会同时执行查找和替换两个操作，如没有全局符号，将只替换第一个="" 参一表示执行的正则，参二可以是文本、生成替换文本的函数（*推荐但非禁止*）="" 不同于="" search="" 和="" match="" 不会将字符串转换为正则对象，而是以字符串直接量文本模式匹配="" 约定的="" $="" 特殊字符="" b="s.replace(/(java)(script)/,'$2-$1');" 'script-java'="" 第一个小括号表示第一个表达式，使用字符串'$1'表示对它们匹配文本的引用="" '$1'="" 不是标识符，只是一个标记，所以不可以作为变量参与计算="" 其它="" $&amp;="" 与正则表达式相匹配的字符串="" $`="" 位于匹配子字符串左侧的文本="" $'="" 位于匹配子字符串右侧的文本="" $$="" 符号本身="" 换句鸡哥的话说：就是按照指定的模式输出="" javascriptjavascript="" !="$`');" javascript="" d="s.replace(/java/," $&amp;"="" is="" $'");="" script="" 038.正则="" 工作机制="" 一：编译="" 表达式创建后，浏览器检查模版是否存在错误，转换成本机代码例程="" 将表达式赋予给变量可避免重复此操作="" 二：设置起始位置="" 由字符串的起始位置，或表达式的="" lastindex="" 属性指定="" 如从四返回到此，将位于最后一次尝试起始位置推后一个字符的位置上="" 三：匹配表达式字元="" 确定起始位置，逐个扫描目标文本和正则表达式模板="" 当一个特定字元匹配失败时，将回溯到扫描之前的位置上，再进入其它可能的路径="" 四：匹配结果="" 如果在当前位置上发现一个完全匹配的字符，宣布成功="" 如果所有可能的路径都尝试过且都没有匹配到，则回到二="" 只有所有位置，包括字符串末尾都经历此过程都没匹配到，才宣布彻底失败="" 2016-11-09="" 039.正则="" 回溯="" 如果设计失误，回溯是影响整体性能的唯一因素,当减少使用频率="" 匹配html文件，为每个匹配字符进行多次前瞻，缺乏效率，且匹配过程相当慢="" 040.正则="" 分组="" 分组，使用小括号语法分隔符来包含一系列字符、字符类、重复类量词，以实现各种处理="" 在'\'后加一位或多位数字实现对表达式中前面子表达式的引用="" 数字指定了带括号的子表达式在正则表达式中的位置="" 由于子表达式可以嵌套，所以顺序是由左括号决定的="" r="/(<\/?\w+">).*\<span class="hljs-number">1</span>/g;
+
+
+<span class="hljs-number">041.</span>正则 引用
+<span class="hljs-comment">// 反向引用</span>
+    <span class="hljs-comment">// 执行匹配时会把每个分组（子表达式）存储一处以备不时之需</span>
+    <span class="hljs-keyword">var</span> s = <span class="hljs-string">'abcdefghijklmn'</span>;
+    <span class="hljs-keyword">var</span> r = <span class="hljs-regexp">/(a(b(c)))/</span>;
+    <span class="hljs-keyword">var</span> a = s.match(r);  <span class="hljs-comment">// ['abc','abc','bc','c']</span>
+
+    <span class="hljs-comment">// 所有的子表达式文本都被分组存储在 RegExp 构造函数属性内</span>
+    <span class="hljs-comment">// 使用 $ + index 来引用这些临时属性</span>
+    <span class="hljs-built_in">RegExp</span>.$<span class="hljs-number">2</span>  <span class="hljs-comment">// 表示对第二个子表达式的引用</span>
+
+
+<span class="hljs-number">042.</span>正则 静态值
+<span class="hljs-comment">// 长名          短名      说明</span>
+<span class="hljs-comment">// input          $_      最后用于匹配到的字符串，即传递给 exec() 或 test() 方法的</span>
+<span class="hljs-comment">// lastMatch      $&amp;      最后匹配到的 字符</span>
+<span class="hljs-comment">// lastParen      $+      最后匹配到的 分组</span>
+<span class="hljs-comment">// leftContext     $`          上次匹配之 前 的字符串</span>
+<span class="hljs-comment">// rightContext $'      上次匹配之 后 的字符串</span>
+<span class="hljs-comment">// multiline      $*      指定是否所有表达式都使用多行模式</span>
+
+    <span class="hljs-keyword">var</span> s = <span class="hljs-string">'Javascript,not javascript'</span>;
+    <span class="hljs-keyword">var</span> r = <span class="hljs-regexp">/(Java)Script/gi</span>;
+    <span class="hljs-keyword">var</span> a = r.exec(s);
+    <span class="hljs-built_in">RegExp</span>.input  <span class="hljs-comment">// 'Javascript,not Javascript'</span>
+    <span class="hljs-built_in">RegExp</span>.leftContext  <span class="hljs-comment">// 空字符串</span>
+    <span class="hljs-built_in">RegExp</span>.rightContext  <span class="hljs-comment">// ',not Javascript'</span>
+    <span class="hljs-built_in">RegExp</span>.lastMatch  <span class="hljs-comment">// 'Javascript'</span>
+    <span class="hljs-built_in">RegExp</span>.lastParen  <span class="hljs-comment">// 'Java'</span>
+    <span class="hljs-built_in">RegExp</span>.multiline = <span class="hljs-literal">true</span>;
+
+
+<span class="hljs-comment">// 2016-11-10</span>
+<span class="hljs-number">043.</span>正则 增强 exec
+<span class="hljs-comment">// 非全局模式下，它们的返回值是相同的</span>
+    <span class="hljs-comment">// RegExp.exec()  以 字符串 为参数</span>
+    <span class="hljs-comment">// String.match() 以 正则   为参数</span>
+
+<span class="hljs-comment">// 这是一个较复杂的方法，返回一个存放匹配结果的数组，没有则返回 null</span>
+    <span class="hljs-keyword">var</span> s = <span class="hljs-string">'javascript'</span>, r = <span class="hljs-regexp">/java/g</span>;
+    <span class="hljs-keyword">var</span> a = r.exec(s);  <span class="hljs-comment">// ['java']</span>
+
+<span class="hljs-comment">// 工作机制：先检索字符串参数，从中获取与正则表达式相匹配的文本</span>
+    <span class="hljs-comment">// 匹配失败：返回 null</span>
+    <span class="hljs-comment">// 匹配成功：返回数组</span>
+        <span class="hljs-comment">// 第 0 个元素：与表达式相匹配的文本</span>
+        <span class="hljs-comment">// 第 1 个元素：与第一个子表达式相匹配的文本（如果存在）</span>
+        <span class="hljs-comment">// 第 2 个元素：与第二个子表达式相匹配的文本（如果存在）</span>
+
+        <span class="hljs-comment">// 返回数组的属性：</span>
+            <span class="hljs-comment">// length：数组元素个数</span>
+            <span class="hljs-comment">// index：匹配文本的第一个字符的位置</span>
+            <span class="hljs-comment">// input：包含整个字符串</span>
+
+    <span class="hljs-comment">// 全局模式匹配时会定义 lastIndex 属性</span>
+        <span class="hljs-comment">// 指定下一次执行匹配时开始检索字符串的位置</span>
+        <span class="hljs-comment">// 返回 null 时， 被重置为 0</span>
+
+<span class="hljs-comment">// 通过循环结构反复调用 exec 方法是唯一获得全局模式完整模式匹配信息的方法</span>
+
+
+<span class="hljs-number">044.</span>正则 原子组
+<span class="hljs-comment">// 正则引擎里面的一种属性，但 JS 没有，写作（?&gt;…），也称贪婪子表达式</span>
+<span class="hljs-comment">// JS 利用前瞻实现：前瞻也是原子组，但前瞻在匹配过程中不消耗字符</span>
+    <span class="hljs-comment">// 前瞻只是在检查自己包含的模版是否能在当前位置匹配</span>
+    <span class="hljs-comment">// 在捕获组中包装一个前瞻模板，在前瞻之外向它添加一个向后引用</span>
+    (?=(pattern to make atomic))\<span class="hljs-number">1</span>
+
+
+<span class="hljs-number">045.</span>正则 嵌套量词 回溯失控
+<span class="hljs-comment">// 回溯失控就会进入“快车道”，内部量词和外部两次的排列组合产生了巨大的分支路径</span>
+<span class="hljs-comment">// 确保正则表达式的两个部分不能对字符串的同一部分进行匹配</span>
+<span class="hljs-comment">// 确保正则表达式的简单易懂</span>
+
+
+<span class="hljs-number">046.</span>正则 提高效率
+<span class="hljs-comment">// 如何让正则更快失败，处理过程慢往往是因为匹配失败的过程慢！</span>
+<span class="hljs-comment">// 以简单、必需的字元开始</span>
+<span class="hljs-comment">// 编写两次模板，使后面的字元相互排斥</span>
+<span class="hljs-comment">// 减小分支数量，缩小范围</span>
+<span class="hljs-comment">// 使用非捕获组</span>
+<span class="hljs-comment">// 捕获兴趣文字，减少处理</span>
+<span class="hljs-comment">// 暴露所需字元</span>
+<span class="hljs-comment">// 适当使用量词</span>
+<span class="hljs-comment">// 将正则表达式赋给变量，以复用</span>
+<span class="hljs-comment">// 分解成简单片段</span>
+
+
+<span class="hljs-comment">// 2016-11-11</span>
+<span class="hljs-number">047.</span>正则 场景避免
+<span class="hljs-comment">// 只搜索文字字符串时正则匹配就显得多余，尤其是知道了要测试字符串的哪一部分</span>
+    <span class="hljs-comment">// 检查字符串是否是以分号结束</span>
+    endsWithSemicolon = <span class="hljs-regexp">/;$/</span>.test(str);
+
+    <span class="hljs-comment">// 更好的办法</span>
+    endsWithSemicolon = str.charAt(str.length - <span class="hljs-number">1</span>) == <span class="hljs-string">';'</span>;
+
+
+<span class="hljs-number">048.</span>正则 慎用修剪字符串
+<span class="hljs-comment">// 修剪首尾空格</span>
+    <span class="hljs-keyword">if</span>(!<span class="hljs-built_in">String</span>.prototype.trim) {
+        <span class="hljs-built_in">String</span>.prototype.trim = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.replace(<span class="hljs-regexp">/^\s+/</span>,<span class="hljs-string">''</span>).replace(<span class="hljs-regexp">/\s+$/</span>,<span class="hljs-string">''</span>);
+        }
+    }
+    <span class="hljs-keyword">var</span> str = <span class="hljs-string">' \t\n test string '</span>.trim();
+    alert(str == <span class="hljs-string">'test string'</span>);  <span class="hljs-comment">//  true</span>
+
+<span class="hljs-comment">// 慢一点的正则方式：利用分支合并表达式</span>
+    <span class="hljs-built_in">String</span>.prototype.trim = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.replace(<span class="hljs-regexp">/^\s+|\s+$/g</span>,<span class="hljs-string">''</span>);
+    }
+
+<span class="hljs-comment">// 结合方式：正则修剪头部，非正则修剪尾部</span>
+    <span class="hljs-built_in">String</span>.prototype.trim = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> str = <span class="hljs-keyword">this</span>.replace(<span class="hljs-regexp">/^\s+/</span>,<span class="hljs-string">''</span>), end = str.length <span class="hljs-number">-1</span>, ws = <span class="hljs-regexp">/\s/</span>;
+        <span class="hljs-keyword">while</span>( ws.test(str.charAt(end)) ) {
+            end--;
+        }
+        <span class="hljs-keyword">return</span> str.slice(<span class="hljs-number">0</span>, end+<span class="hljs-number">1</span>);
+    }
+
+<span class="hljs-comment">//所有修剪方法总的趋势：</span>
+    <span class="hljs-comment">// 在基于正则表达式的方案中，字符串总长比修剪掉的字符数量更影响性能</span>
+    <span class="hljs-comment">// 而非正则表达式方案从字符串末尾反向查找，不受字符串总长的影响，但明显受到修剪空格数量的影响</span>
+    <span class="hljs-comment">// 简单地使用两个子正则表达式在所有浏览器上处理不同内容和长度的字符串时，均表现出稳定的性能</span>
+    <span class="hljs-comment">// 因此可以说这种方案是最全面的解决方案</span>
+    <span class="hljs-comment">// 混合解决方案在处理长字符串时特别快，其代价是代码稍长，在某些浏览器上处理尾部长空格时存在弱点</span>
+
+
+<span class="hljs-number">049.</span>数组 对象 同源特性
+<span class="hljs-comment">// 数组不过是一个具有额外功能层的对象</span>
+<span class="hljs-comment">// 使用typeof运算符时就会发现这一点，因为将其作用于一个数组的值，返回值是字符串“object”</span>
+<span class="hljs-comment">// 数组是一段线性分配的内存，它通过整数去计算偏移并访问其中的元素</span>
+
+<span class="hljs-comment">// 数组可以是访问速度很快的数据结构，不幸的是，JS没有数组这样的数据结构</span>
+<span class="hljs-comment">// 相反，JS提供了一种拥有一些类数组（array-like）特性的对象，把数组的下标转变成字符串，将其作为属性</span>
+<span class="hljs-comment">// 这类对象的访问速度明显比真正数组慢，但它使用更方便</span>
+<span class="hljs-comment">// 属性的检索和更新方式与对象一模一样，数组有它自己的字面量格式，还有一套非常有用的内置方法</span>
+<span class="hljs-comment">// 在大多数语言中，一个数组的所有元素都要是相同的类型，而JavaScript允许数组包含任意混合类型的值</span>
+
+
+<span class="hljs-number">050.</span>数组 类型检测
+规则很简单：当属性名是小而连续的整数时，应该使用数组，或者当对属性的位置和排列顺序有要求时，应该使用数组。否则，使用对象。
+<span class="hljs-comment">// 在不同的窗口（window）或帧（frame）中构造的数组会失败的方法</span>
+    <span class="hljs-keyword">var</span> is_array = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">value</span>) </span>{
+        <span class="hljs-keyword">return</span> value &amp;&amp; <span class="hljs-keyword">typeof</span> value === <span class="hljs-string">'object'</span> &amp;&amp; value.constructor === <span class="hljs-built_in">Array</span>;
+    }
+
+<span class="hljs-comment">// 参数不接受 null 和其它假值</span>
+    <span class="hljs-keyword">var</span> is_array = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">value</span>) </span>{
+        <span class="hljs-keyword">return</span> value &amp;&amp;
+        <span class="hljs-keyword">typeof</span> value === <span class="hljs-string">'object'</span> &amp;&amp;
+        value.constructor === <span class="hljs-built_in">Array</span> &amp;&amp;
+        <span class="hljs-keyword">typeof</span> value.length === <span class="hljs-string">'number'</span> &amp;&amp;
+        <span class="hljs-keyword">typeof</span> value.splice === <span class="hljs-string">'function'</span> &amp;&amp;
+        !(value.propertyIsEnumerable(<span class="hljs-string">'length'</span>));
+    }
+
+<span class="hljs-comment">// 更简洁的方法</span>
+    <span class="hljs-keyword">var</span> is_array = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">value</span>) </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">Object</span>.prototype.toString.apply(value) === <span class="hljs-string">'[Object Array]'</span>;
+    }
+
+
+<span class="hljs-number">051.</span>数组 长度的有限性和无限性
+<span class="hljs-comment">// 每个数组都有一个length属性。和大多数其他语言不同，JavaScript数组的length是没有上限的</span>
+<span class="hljs-comment">// 如果用大于或等于当前length的数字作为下标来保存一个元素，length将增大以容纳新元素，不会发生数组边界错误</span>
+<span class="hljs-comment">// 根据ECMAScript 262标准，数组的下标必须是大于或等于0且小于232-1的整数</span>
+<span class="hljs-comment">// 当把length设置为小于数组的实际长度时，将导致所有下标大于或等于新length的元素被删除</span>
+
+
+<span class="hljs-number">052.</span>数组 删除使用 splice
+<span class="hljs-comment">// .length：只能从末尾开始删除</span>
+
+<span class="hljs-comment">// delete：会留下空洞</span>
+    <span class="hljs-keyword">var</span> num = [<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>];
+    <span class="hljs-keyword">delete</span> num[<span class="hljs-number">2</span>];  <span class="hljs-comment">// [1,2,undefined,4]</span>
+
+<span class="hljs-comment">// splice：参一为起始序号，参二为删除个数，尤其在大型数组中效率更高</span>
+    num.splice(<span class="hljs-number">2</span>,<span class="hljs-number">2</span>);  <span class="hljs-comment">// [1,2]</span>
+
+<span class="hljs-comment">// 删除数组元素的方法有多种，最简单的方法是利用length属性来截断数组，但这种方法比较笨拙，仅能够截断尾部元素</span>
+<span class="hljs-comment">// 在JS中，由于数组其实就是对象，因此使用delete运算符可以从数组中移除元素</span>
+
+
+<span class="hljs-number">053.</span>数组 维度
+<span class="hljs-comment">// 程序设计中尝试读取每一个数据之前，必须定义这个数组：</span>
+    <span class="hljs-built_in">Array</span>.dim = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">dimension, initial</span>) </span>{
+        <span class="hljs-keyword">var</span> a = [], i;
+        <span class="hljs-keyword">for</span>(i=<span class="hljs-number">0</span>; i<dimension; i+="1)" {="" a[i]="initial;" }="" return="" a;="" };="" 创建一个包含100个0的数组="" var="" arr="Array.dim(100," 0);="" js="" 中没有多维数组，但支持数组中包含数组="" matrix="[" [1,2,3],="" [4,5,6],="" [7,8,9]="" ];="" matrix[1,1]="" 5="" 定义矩阵数组函数="" array.matrix="function(m," n,="" initial)="" a,="" i,="" j,="" mat="[];" for(i="0;" i<m;="" a="[];" for(j="0;" j<n;="" j+="1)" a[j]="initial;" mat[i]="a;" mat;="" 5x5="" 初始值为0="" 的矩阵="" mymatrix="Array.matrix(5,5,0);" mymatrix[2][4]="" 0="" 054.数组="" 排序增强="" sort="" 通过提供的="" 比较函数="" 参数，执行不同排序="" 从小到大="" function="" f(a,b)="" (a-b)="" a.sort(f);="" alert(a);="" [1,2,3,4,5]="" 从大到小="" -(a-b)="" 奇偶性质排列="" b="b%2;" if(a="=0)" 1;="" if(b="=0)" -1;="" [3,1,2,4,5,7,6,8,0,9]="" [3,1,5,7,9,0,8,6,4,2]="" 偶数在前="" 小写在前="" (a<b);="" 不区分大小写排序="" if(a<b)="" else="" 浮点数="" 整数分开排列="">Math.floor(a)) <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">if</span>(b&gt;<span class="hljs-built_in">Math</span>.floor(b)) <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    }
+
+
+<span class="hljs-number">055.</span>数组 下标 不要拘泥于数字
+<span class="hljs-comment">// 文本下标</span>
+    <span class="hljs-keyword">var</span> a = [];
+    a[<span class="hljs-number">-1</span>] = <span class="hljs-number">1</span>;  <span class="hljs-comment">// 非法</span>
+
+    a.length  <span class="hljs-comment">// 0</span>
+    a[<span class="hljs-number">-1</span>]  <span class="hljs-comment">// 1</span>
+    a[<span class="hljs-string">'-1'</span>]  <span class="hljs-comment">// 1 说明值以对象属性的形式被存储</span>
+
+<span class="hljs-comment">// 布尔值下标</span>
+    <span class="hljs-keyword">var</span> a = [];
+    a[<span class="hljs-literal">true</span>] = <span class="hljs-number">1</span>;
+    a[<span class="hljs-literal">false</span>] = <span class="hljs-number">0</span>;
+
+    a.length  <span class="hljs-comment">// 0</span>
+    a[<span class="hljs-literal">true</span>]  <span class="hljs-comment">// 1</span>
+    a[<span class="hljs-literal">false</span>]  <span class="hljs-comment">// 0</span>
+    a[<span class="hljs-number">0</span>]  <span class="hljs-comment">// undefined  这里JS并没有将 true 和 false 转换成 1 和 0</span>
+    a[<span class="hljs-number">1</span>]  <span class="hljs-comment">// undefined  只是作为对象属性被保存</span>
+
+    <span class="hljs-comment">// 而数字文本会被转换：这种数据存储格式被成为哈希表</span>
+    a[<span class="hljs-string">'1'</span>] = <span class="hljs-number">1</span>;
+    a[<span class="hljs-number">1</span>]  <span class="hljs-comment">// 1</span>
+
+    <span class="hljs-comment">// 哈希表的检索速度要快于数组迭代检索</span>
+    <span class="hljs-keyword">var</span> a = [[<span class="hljs-string">'张三'</span>,<span class="hljs-number">1</span>],[<span class="hljs-string">'李四'</span>，<span class="hljs-number">2</span>][<span class="hljs-string">'王五'</span>,<span class="hljs-number">3</span>]];  <span class="hljs-comment">// 二维数组</span>
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">in</span> a) {  <span class="hljs-comment">// 遍历</span>
+        <span class="hljs-keyword">if</span>(a[i][<span class="hljs-number">0</span>]==<span class="hljs-string">'李四'</span>) {
+            alert(a[i][<span class="hljs-number">1</span>]);  <span class="hljs-comment">// 找出指定元素</span>
+        }
+    }
+
+        <span class="hljs-comment">// 文本下标更高效</span>
+        <span class="hljs-keyword">var</span> a = [];
+        a[<span class="hljs-string">'张三'</span>] = <span class="hljs-number">1</span>;
+        a[<span class="hljs-string">'李四'</span>] = <span class="hljs-number">2</span>;
+        a[<span class="hljs-string">'王武'</span>] = <span class="hljs-number">3</span>;
+        alert(a[<span class="hljs-string">'李四'</span>])；
+
+<span class="hljs-comment">// 二维数组下标</span>
+    <span class="hljs-keyword">var</span> a = [];
+    a[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>] = <span class="hljs-number">1</span>;
+    a[<span class="hljs-number">0</span>,<span class="hljs-number">1</span>] = <span class="hljs-number">2</span>;
+    a[<span class="hljs-number">1</span>,<span class="hljs-number">0</span>] = <span class="hljs-number">3</span>;
+    a[<span class="hljs-number">1</span>,<span class="hljs-number">1</span>] = <span class="hljs-number">4</span>;
+
+    a.length  <span class="hljs-comment">// 2 逗号表达式</span>
+    a[<span class="hljs-number">0</span>]  <span class="hljs-comment">// 3</span>
+    a[<span class="hljs-number">1</span>]  <span class="hljs-comment">// 3</span>
+
+    <span class="hljs-comment">// 解决值被覆盖的问题</span>
+    <span class="hljs-keyword">var</span> a = [], i = <span class="hljs-number">1</span>;
+    <span class="hljs-keyword">while</span>(i&lt;<span class="hljs-number">10</span>) {
+        a[i*=<span class="hljs-number">2</span>,i] = i;
+    }
+
+    a.length  <span class="hljs-comment">// 17</span>
+    a  <span class="hljs-comment">// [,,2,,4,,,,8,,,,,,,,16]</span>
+
+<span class="hljs-comment">// 对象下标</span>
+    <span class="hljs-comment">// JS 会试图把对象转换为值 实在不行 转换为字符串作为文本下标</span>
+    <span class="hljs-keyword">var</span> a = [];
+    <span class="hljs-keyword">var</span> b = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ <span class="hljs-keyword">return</span> <span class="hljs-number">2</span>; }
+    a[b] = <span class="hljs-number">1</span>;
+
+    a.length  <span class="hljs-comment">// 0</span>
+    a[b]  <span class="hljs-comment">// 1</span>
+
+    <span class="hljs-comment">// 读取</span>
+    <span class="hljs-keyword">var</span> s = b.toString();
+    a[s]
+
+    <span class="hljs-comment">// 或者</span>
+    a[b()] = <span class="hljs-number">1</span>;
+    a[<span class="hljs-number">2</span>]
+
+
+<span class="hljs-number">056.</span>函数 <span class="hljs-built_in">arguments</span>对象 模拟重载
+<span class="hljs-comment">// 在JavaScript中，每个函数内部可以使用arguments对象，该对象包含了函数被调用时的实际参数值</span>
+<span class="hljs-comment">// arguments对象虽然在功能上与数组有些类似，但它不是数组</span>
+
+<span class="hljs-comment">// arguments对象与数组的类似体现在它有一个length属性，同时实际参数的值可以通过[]操作符来获取</span>
+<span class="hljs-comment">// 但arguments对象并没有数组可以使用的push、pop、splice等方法</span>
+<span class="hljs-comment">// 其原因是arguments对象的prototype指向的是Object.prototype，而不是Array.prototype</span>
+
+<span class="hljs-comment">// Java C++ 都支持重载：允许出现名称相同而形式参数不同的方法</span>
+<span class="hljs-comment">// 而在 JS 中，重名会被覆盖</span>
+
+<span class="hljs-comment">// 通过实际参数个数 arguments.length 来模拟重载 </span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sayHello</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">switch</span> (<span class="hljs-built_in">arguments</span>.length) {
+            <span class="hljs-keyword">case</span> <span class="hljs-number">0</span>:
+                <span class="hljs-keyword">return</span> <span class="hljs-string">'Hello'</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-number">1</span>:
+                <span class="hljs-keyword">return</span> <span class="hljs-string">'Hello, '</span> + <span class="hljs-built_in">arguments</span>[<span class="hljs-number">0</span>];
+            <span class="hljs-keyword">case</span> <span class="hljs-number">2</span>:
+                <span class="hljs-keyword">return</span> (<span class="hljs-built_in">arguments</span>[<span class="hljs-number">1</span>] == <span class="hljs-string">'cn'</span> ? <span class="hljs-string">' 你好，'</span> : <span class="hljs-string">'Hello, '</span>) + <span class="hljs-built_in">arguments</span>[<span class="hljs-number">0</span>];
+        }
+    }
+    sayHello();  <span class="hljs-comment">// 'Hello'</span>
+    sayHello(<span class="hljs-string">'Chisw'</span>);  <span class="hljs-comment">// 'Hello, Chisw'</span>
+    sayHello(<span class="hljs-string">'Chisw'</span>,<span class="hljs-string">'cn'</span>);  <span class="hljs-comment">// ' 你好，Chisw'</span>
+
+<span class="hljs-comment">// callee</span>
+    <span class="hljs-comment">// 是 arguments对象 的一个属性，值就是当前 function对象，用于匿名函数的递归调用</span>
+
+    <span class="hljs-comment">// 计算裴波那契序列中第 N 个值</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fibonacci</span>(<span class="hljs-params">num</span>) </span>{
+        <span class="hljs-keyword">return</span> (<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">num</span>) </span>{
+            <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> num !== <span class="hljs-string">'number'</span>)
+                <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+            num = <span class="hljs-built_in">parseInt</span>(num);
+            <span class="hljs-keyword">if</span>(num&lt;<span class="hljs-number">1</span>)
+                <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+            <span class="hljs-keyword">if</span>(num==<span class="hljs-number">1</span> || num==<span class="hljs-number">2</span>)
+                <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;
+            <span class="hljs-keyword">return</span> <span class="hljs-built_in">arguments</span>.callee(num<span class="hljs-number">-1</span>) + <span class="hljs-built_in">arguments</span>.callee(num<span class="hljs-number">-2</span>);
+        })(num);
+    }
+    fibonacci(<span class="hljs-number">100</span>);
+
+</dimension;></l;></l;></lim;></len;></items.length;></code></pre>

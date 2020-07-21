@@ -1,0 +1,212 @@
+<pre><code class="js hljs javascript">
+<span class="hljs-comment">/*
+
+    JavaScript 李兴华
+
+    2016-06-27
+    ~
+    2016-07-02 Noted by Chisw
+
+    2016-09-10 Modified
+
+*/</span>
+
+
+<span class="hljs-number">001.</span>判空
+<span class="hljs-number">002.</span>乘法口诀表
+<span class="hljs-number">003.</span>模块顶部距离控制
+<span class="hljs-number">004.</span>简单画廊 
+<span class="hljs-number">005.</span><span class="hljs-built_in">document</span>.all(<span class="hljs-string">'id'</span>)
+<span class="hljs-number">006.</span>基础表单验证
+<span class="hljs-number">007.</span>表单常见方法
+
+
+<span class="hljs-comment">// 2016-06-27</span>
+<span class="hljs-number">001.</span>判空
+    <span class="hljs-comment">// 函数名.arguments.length   以数组的形式操作 </span>
+    <span class="hljs-keyword">var</span> obj = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'test'</span>);
+
+    <span class="hljs-keyword">if</span>( obj != <span class="hljs-literal">undefined</span> ) {
+        obj.addEventListener(<span class="hljs-string">'click'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{alert(<span class="hljs-string">'s'</span>)});
+    }
+
+
+<span class="hljs-number">002.</span>乘法口诀表
+    <span class="hljs-built_in">document</span>.write(<span class="hljs-string">"&lt;table border='1'&gt;"</span>);
+    <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> x = <span class="hljs-number">1</span>; x &lt;= <span class="hljs-number">9</span>; x++ ) {
+        <span class="hljs-built_in">document</span>.write(<span class="hljs-string">"&lt;tr&gt;"</span>);
+        <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> y = <span class="hljs-number">1</span>; y &lt;= x; y++ ) {
+            <span class="hljs-built_in">document</span>.write(<span class="hljs-string">"&lt;td&gt;"</span> + y + <span class="hljs-string">"x"</span> + x + <span class="hljs-string">"="</span> + (x*y) + <span class="hljs-string">"&lt;/td&gt;"</span>);
+        }
+        <span class="hljs-keyword">for</span> ( <span class="hljs-keyword">var</span> y = <span class="hljs-number">1</span>; y &lt;= <span class="hljs-number">9</span>-x; y++ ) {
+            <span class="hljs-built_in">document</span>.write(<span class="hljs-string">"&lt;td&gt;&lt;/td&gt;"</span>)
+        }
+        <span class="hljs-built_in">document</span>.write(<span class="hljs-string">"&lt;/tr&gt;"</span>);
+    }
+    <span class="hljs-built_in">document</span>.write(<span class="hljs-string">"&lt;/table&gt;"</span>);
+
+
+<span class="hljs-number">003.</span>模块顶部距离控制
+    <span class="hljs-comment">// 保存 tab 初始位置</span>
+    <span class="hljs-keyword">var</span> nTabTopDefault = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'tour-tab'</span>).offsetTop;
+    <span class="hljs-comment">// 滚动事件处理</span>
+    <span class="hljs-built_in">window</span>.onscroll = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ 
+
+        <span class="hljs-comment">// tab 当前位置</span>
+        <span class="hljs-keyword">var</span> nTabTopCurr = nTabTopDefault - <span class="hljs-built_in">document</span>.body.scrollTop;
+
+        <span class="hljs-comment">// 调试</span>
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'test'</span>).innerHTML = nTabTopCurr;
+
+        <span class="hljs-comment">// 顶部高度判断</span>
+        <span class="hljs-keyword">if</span>( nTabTopCurr &lt; <span class="hljs-number">0</span> ) {
+            $(<span class="hljs-string">"#tour-tab"</span>).css({<span class="hljs-string">'position'</span>:<span class="hljs-string">'fixed'</span>,<span class="hljs-string">'top'</span>:<span class="hljs-string">'0'</span>});
+        } <span class="hljs-keyword">else</span> {
+            $(<span class="hljs-string">"#tour-tab"</span>).css({<span class="hljs-string">'position'</span>:<span class="hljs-string">'absolute'</span>,<span class="hljs-string">'top'</span>: nTabTopDefault + <span class="hljs-string">'px'</span>});
+        }
+    }
+
+
+<span class="hljs-number">004.</span>简单画廊
+    <span class="hljs-comment">/*
+        &lt;img src="pic (1).jpg" id="pic" width=100 /&gt;&lt;br/&gt;
+        &lt;button id="prevBtn"&gt;PREV&lt;/button&gt;
+        &lt;button id="nextBtn"&gt;NEXT&lt;/button&gt;
+    */</span>
+    <span class="hljs-comment">// 手动</span>
+    <span class="hljs-keyword">var</span> curr = <span class="hljs-number">1</span>;
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">changePic</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> oPic = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'pic'</span>).src = <span class="hljs-string">'pic ('</span> + curr + <span class="hljs-string">').jpg'</span>;
+    }
+
+    <span class="hljs-keyword">var</span> prevBtn = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'prevBtn'</span>);
+    <span class="hljs-keyword">var</span> nextBtn = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'nextBtn'</span>);
+
+    prevBtn.onclick = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">if</span>(curr &gt; <span class="hljs-number">1</span>) {
+            curr --;
+        }
+        changePic();
+    }
+
+    nextBtn.onclick = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">if</span>(curr &lt; <span class="hljs-number">4</span>) {
+            curr ++;
+        }
+        changePic();
+    }
+
+    <span class="hljs-comment">// 自动</span>
+    <span class="hljs-keyword">var</span> curr = <span class="hljs-number">1</span>;
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">changePic</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">if</span>(curr &lt; <span class="hljs-number">4</span>) {
+            curr++;
+        } <span class="hljs-keyword">else</span> {
+            curr = <span class="hljs-number">1</span>;
+        }
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'pic'</span>).src = <span class="hljs-string">'pic ('</span> + curr + <span class="hljs-string">').jpg'</span>;
+    }
+
+    setInterval(changePic,<span class="hljs-number">2000</span>);
+
+
+<span class="hljs-comment">// 2016-06-29</span>
+<span class="hljs-number">005.</span><span class="hljs-built_in">document</span>.all(<span class="hljs-string">'id'</span>)
+    <span class="hljs-comment">// 得到一个对象数组 遍历使用</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">changeColor</span>(<span class="hljs-params"> obj, color</span>) </span>{
+        obj.style.color = color;
+    }
+
+    <span class="hljs-keyword">var</span> oP = <span class="hljs-built_in">document</span>.all(<span class="hljs-string">'test'</span>);
+
+    <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i&lt;oP.length; i++ ) {
+        oP.addEventListener(<span class="hljs-string">'mouseover'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            changeColor(<span class="hljs-keyword">this</span>,<span class="hljs-string">'#ffffff'</span>);
+        },<span class="hljs-literal">false</span>);
+        oP.addEventListener(<span class="hljs-string">'mouseout'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            changeColor(<span class="hljs-keyword">this</span>,<span class="hljs-string">'#f5f5f5'</span>);
+        },<span class="hljs-literal">false</span>);
+    }
+
+
+<span class="hljs-comment">// 2016-07-01</span>
+<span class="hljs-number">006.</span>基础表单验证
+    <span class="hljs-comment">/*
+        &lt;form action="pass.html" method="post" id="loginForm" &gt;
+            &lt;input type="text" id="email" name='email' /&gt;
+            &lt;input type="submit" id="subBtn" name='subBtn' /&gt;
+        &lt;/form&gt;
+    */</span>
+    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'loginForm'</span>).addEventListener(<span class="hljs-string">'submit'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>)</span>{
+        <span class="hljs-keyword">var</span> email = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'email'</span>);
+        <span class="hljs-keyword">if</span>( !email.value ) {
+            <span class="hljs-comment">// alert('NO');</span>
+            <span class="hljs-keyword">if</span>(e &amp;&amp; e.preventDefault ) {
+                e.preventDefault();
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-built_in">window</span>.event.returnValue = <span class="hljs-literal">false</span>;
+            }
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">if</span> ( <span class="hljs-regexp">/^\w+@\w+\.\w+$/</span>.test(email.value) ){
+                <span class="hljs-keyword">this</span>.submit();
+            } <span class="hljs-keyword">else</span> {
+
+                alert(<span class="hljs-string">'格式不正确'</span>);
+
+                <span class="hljs-keyword">if</span>(e &amp;&amp; e.preventDefault ) {
+                    e.preventDefault();
+                } <span class="hljs-keyword">else</span> {
+                    <span class="hljs-built_in">window</span>.event.returnValue = <span class="hljs-literal">false</span>;
+                }
+            }
+        }
+    },<span class="hljs-literal">false</span>);
+
+
+<span class="hljs-comment">// 2016-07-02</span>
+<span class="hljs-number">007.</span>表单常见方法
+    <span class="hljs-comment">// 类型</span>
+    判空
+    正则
+    判等
+    <span class="hljs-comment">// 选框</span>
+    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'test'</span>).checked = <span class="hljs-literal">true</span>;
+    <span class="hljs-comment">// 下拉框</span>
+    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'city'</span>).addEventListener(<span class="hljs-string">'change'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        alert( <span class="hljs-keyword">this</span>.value );
+    },<span class="hljs-literal">false</span>);
+    <span class="hljs-comment">// 文本域</span>
+    <span class="hljs-comment">/*
+        &lt;textarea id="test"&gt;&lt;/textarea&gt;
+        &lt;p&gt;您还可以再输入&lt;span id="rest"&gt;20&lt;/span&gt;个字&lt;/p&gt;
+        &lt;input type="submit" name="" id="btn" /&gt;
+    */</span>
+    <span class="hljs-built_in">window</span>.onload = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+
+        <span class="hljs-keyword">var</span> rest = <span class="hljs-string">''</span>;
+        <span class="hljs-keyword">var</span> set = <span class="hljs-number">20</span>;
+
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'test'</span>).addEventListener(<span class="hljs-string">'keydown'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            curr = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'test'</span>).value.length;
+
+            <span class="hljs-keyword">if</span>( curr &gt; set ) {
+                <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'btn'</span>).disabled = <span class="hljs-literal">true</span>;
+                <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'rest'</span>).style.color = <span class="hljs-string">"red"</span>;
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'btn'</span>).disabled = <span class="hljs-literal">false</span>;
+                <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'rest'</span>).style.color = <span class="hljs-string">"black"</span>;
+            }
+
+            <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'rest'</span>).innerHTML = set - curr;
+
+        },<span class="hljs-literal">false</span>);
+
+    }
+    <span class="hljs-comment">// 确认框返回值</span>
+    <span class="hljs-keyword">var</span> box = confirm(<span class="hljs-string">'ninwg'</span>);
+    <span class="hljs-keyword">if</span>(box) {
+        alert(<span class="hljs-string">'yes'</span>);
+    } <span class="hljs-keyword">else</span> {
+        alert(<span class="hljs-string">'no'</span>);
+    }
+</code></pre>

@@ -1,0 +1,1611 @@
+﻿<pre><code class="js hljs javascript">
+<span class="hljs-comment">/*
+
+    Java 韩顺平
+
+    2015-07-21
+    ~
+    2015-07-30 Noted by Chisw
+
+    2016-09-06 Modified
+
+*/</span>
+
+
+<span class="hljs-number">001.</span>概述
+<span class="hljs-number">002.</span>安装
+<span class="hljs-number">003.</span>第一个java程序
+<span class="hljs-number">004.</span>基本四大数据类型
+<span class="hljs-number">005.</span>java基本语法：定义变量-初始化-赋值-基本数据转换
+<span class="hljs-number">006.</span>java基本语法：运算符
+<span class="hljs-number">007.</span>面向对象编程一：类与方法-构造方法
+<span class="hljs-number">008.</span>面向对象编程二：<span class="hljs-keyword">this</span>-类变量/类方法-四大特征
+<span class="hljs-number">009.</span>约瑟夫问题
+<span class="hljs-number">010.</span>面向对象编程三：抽象类-接口-final
+<span class="hljs-number">011.</span>数组：一维数组-排序-查找-多维数组
+<span class="hljs-number">012.</span>java编程基础：二进制-位运算-移位运算符
+<span class="hljs-number">013.</span>集合-泛型-异常
+<span class="hljs-number">014.</span>跳水比赛问题
+<span class="hljs-number">015.</span>界面
+<span class="hljs-number">016.</span>数据库
+<span class="hljs-number">017.</span>SQL Server
+
+
+<span class="hljs-comment">// 2015-07-21</span>
+<span class="hljs-number">001.</span>概述
+    java se      <span class="hljs-comment">// Java Platform，Standard Edition</span>
+    java ee      <span class="hljs-comment">// Java Platform，Enterprise Edition</span>
+    java me      <span class="hljs-comment">// Java Platform，Micro Edition</span>
+
+<span class="hljs-comment">// JDK Java Development Kit</span>
+    jre          <span class="hljs-comment">// java runtime environment</span>
+    javac.exe      <span class="hljs-comment">// 编译器</span>
+    java.exe      <span class="hljs-comment">// 解释执行器</span>
+    java类库      <span class="hljs-comment">// 3600+ 常用150+</span>
+
+
+<span class="hljs-number">002.</span>安装
+<span class="hljs-comment">// 安装</span>
+<span class="hljs-comment">// 配置</span>
+    添加环境变量
+        计算机-属性-高级-环境变量-新建
+            PATH
+            D:\Java\JDK\bin
+        确定
+
+
+<span class="hljs-number">003.</span>第一个java程序
+<span class="hljs-comment">// 编写一个Hello.java</span>
+    <span class="hljs-comment">//public 表示这个类是公共的</span>
+    <span class="hljs-comment">//一个java中只能有一个public类</span>
+    <span class="hljs-comment">//class表示这是一个类</span>
+    <span class="hljs-comment">//Hello 是类名(公共类的类名必须和文件名一致)</span>
+    public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Hello</span> 
+    </span>{
+        <span class="hljs-comment">// 一个主函数，相当于是程序的入口</span>
+        public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span> args[])
+        {
+            <span class="hljs-comment">// 执行语句</span>
+            System.out.println(<span class="hljs-string">"Hello!"</span>);
+            <span class="hljs-comment">//  包↑      函数↑</span>
+        }
+    }
+
+<span class="hljs-comment">// 编译Hello.java ==&gt; javac Hello.java</span>
+    <span class="hljs-comment">// 在cmd中</span>
+        cd
+        dir
+        javac
+        java
+
+
+<span class="hljs-number">004.</span>基本四大数据类型
+<span class="hljs-comment">// 整数</span>
+    byte      <span class="hljs-comment">//一个字节 -128 ~ 127</span>
+    short      <span class="hljs-comment">//两个字节 -32768 ~ 32767</span>
+    int      <span class="hljs-comment">//四个字节 -2147483648 ~ 2147483647</span>
+    long      <span class="hljs-comment">//八个字节 -？ ~ ？</span>
+    <span class="hljs-comment">// 一个字节有八个 bit</span>
+
+<span class="hljs-comment">// 小数</span>
+    flaot
+    double
+
+<span class="hljs-comment">// 布尔</span>
+    boolean
+
+<span class="hljs-comment">// 字符类型</span>
+    字符类型可以表示单个字符，字符类型是char
+    char 是两个字节 可以存放汉字
+    多个字符我们称为字符串，在java中<span class="hljs-built_in">String</span>这种数据类型表示，但是<span class="hljs-built_in">String</span>不是基本数据类型，而是类
+    类是复合数据类型
+    在java中，对char进行运算的时候，直接当作ascii码对应的整数对待
+
+
+<span class="hljs-number">005.</span>java基本语法：定义变量-初始化-赋值-基本数据转换
+<span class="hljs-comment">// 定义变量</span>
+    int a;
+    float haha;
+
+<span class="hljs-comment">// 初始化变量</span>
+    int a = <span class="hljs-number">45</span>;
+
+<span class="hljs-comment">// 赋值</span>
+    int tt;
+    tt = <span class="hljs-number">780</span>;
+
+<span class="hljs-comment">// 基本数据转换</span>
+    <span class="hljs-comment">// 自动转换</span>
+        int a = <span class="hljs-number">1.2</span>;
+        double b = <span class="hljs-number">3</span>;
+        <span class="hljs-comment">// 数据类型可以自动的从低精度转换到高精度，反之则不行</span>
+        <span class="hljs-comment">// 精度排序：byte</span><short<int<long<float<double 强制转换="" int="" a="(int)1.2;" double="" b="4.5;" 计算过程中的转换="" +="" 3.4;="" 当一个整数和一个double运算的时候，运算结果会向高精度转换="" 2015-07-22="" 006.java基本语法：运算符="" 算术运算符="" [="" ][="" -="" *="" %="" ++="" --="" =="" 关系运算符=""><span class="hljs-comment"> ][ &lt; ][ &gt;= ][ &lt;= ][ != ]</span>
+
+<span class="hljs-comment">// 逻辑运算符</span>
+    [ &amp;&amp; ][ || ][ ！ ]
+
+<span class="hljs-comment">// 顺序控制</span>
+    分支控制
+        单分支
+        双分支
+        多分支
+
+<span class="hljs-comment">// 循环控制</span>
+    <span class="hljs-keyword">for</span>循环
+    <span class="hljs-keyword">while</span>循环
+    dowhile循环
+
+    public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">chisw</span> </span>{
+        public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span>[] args) {
+            int lay = <span class="hljs-number">8</span>;
+            <span class="hljs-keyword">for</span>(int i = <span class="hljs-number">1</span>; i &lt;= lay; i++){
+                <span class="hljs-keyword">for</span>(int k =<span class="hljs-number">1</span>;k &lt;=lay-i;k++){
+                    System.out.print(<span class="hljs-string">" "</span>);
+                }
+                <span class="hljs-keyword">for</span>( int j = <span class="hljs-number">1</span>; j&lt;=(i<span class="hljs-number">-1</span>)*<span class="hljs-number">2</span>+<span class="hljs-number">1</span>; j++){
+                    System.out.print(<span class="hljs-string">"*"</span>);
+                }
+                System.out.println();
+            }
+        }
+    }
+
+
+<span class="hljs-number">007.</span>面向对象编程一：类与方法-构造方法
+<span class="hljs-comment">// 类是抽象的，概念的，代表一类事物</span>
+<span class="hljs-comment">// 对象是具体的，实际的，代表一个事物</span>
+<span class="hljs-comment">// 类是对象的模版，对象是类的一个个体、实例</span>
+
+    public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">chisw</span> </span>{
+        public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span>[] args) {
+            
+            int cat1Age = <span class="hljs-number">3</span>;
+            <span class="hljs-built_in">String</span> cat1Name = <span class="hljs-string">"小白"</span>;
+            <span class="hljs-built_in">String</span> cat1Color = <span class="hljs-string">"白色"</span>;
+            
+            int cat2Age = <span class="hljs-number">100</span>;
+            <span class="hljs-built_in">String</span> cat2Name = <span class="hljs-string">"小花"</span>;
+            <span class="hljs-built_in">String</span> cat2Color = <span class="hljs-string">"花色"</span>;
+            
+            <span class="hljs-comment">// 创建一只猫</span>
+            Cat cat1 = <span class="hljs-keyword">new</span> Cat();
+            cat1.age = <span class="hljs-number">3</span>;
+            cat1.name = <span class="hljs-string">"little white"</span>;
+            cat1.color = <span class="hljs-string">"white"</span>;
+            
+            <span class="hljs-comment">// 第二只猫</span>
+            Cat cat2 = <span class="hljs-keyword">new</span> Cat();
+            cat2.age = <span class="hljs-number">100</span>;
+            cat2.name = <span class="hljs-string">"little flower"</span>;
+            cat2.color = <span class="hljs-string">"flower"</span>;
+        }
+
+    }
+
+    <span class="hljs-comment">//类名首字母大写</span>
+        <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Cat</span> </span>{
+            <span class="hljs-comment">// 以下就是类的成员变量/属性</span>
+            int age;
+            <span class="hljs-built_in">String</span> name;
+            <span class="hljs-built_in">String</span> color;
+        }
+
+    <span class="hljs-comment">// 类-如何定义类</span>
+        <span class="hljs-comment">// 一个全面的类定义比较复杂</span>
+            package 包名：
+            <span class="hljs-class"><span class="hljs-keyword">class</span> 类名 <span class="hljs-keyword">extends</span> 父类 <span class="hljs-title">implements</span>
+            接口名 </span>{
+                成员变量；
+                构造方法；
+                成员方法；
+            }
+
+        <span class="hljs-comment">// 一个简单的类</span>
+            <span class="hljs-class"><span class="hljs-keyword">class</span> 类名 </span>{
+                成员变量；
+            }
+
+    <span class="hljs-comment">// 创建对象</span>
+        <span class="hljs-comment">// 先声明再创建</span>
+            对象声明： 类名  对象名
+            对象创建： 对象名= <span class="hljs-keyword">new</span> 类名()
+
+        <span class="hljs-comment">// 一步到位法</span>
+            类名 对象名= <span class="hljs-keyword">new</span> 类名();
+            Person a = <span class="hljs-keyword">new</span> Person();
+            a.age = <span class="hljs-number">10</span>;
+            a.name = <span class="hljs-string">"xiaoming"</span>;
+            Person b;
+            b = a;
+            System.out.println(b.age);
+
+    <span class="hljs-comment">// 访问成员变量</span>
+        对象名.变量名
+
+<span class="hljs-comment">// 成员变量和成员方法</span>
+    <span class="hljs-comment">// 成员变量是类的一个组成部分，一般是基本数据类型，可能是引用类型</span>
+    <span class="hljs-comment">// 在某些情况下，我们需要定义成员方法比如人有属性还可以有行为这时就要一难过成员方法才能完成</span>
+    public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">chisw</span> </span>{
+        public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span>[] args) {
+            Person p1 = <span class="hljs-keyword">new</span> Person();
+            p1.jiSuan();
+            p1.jiSuan(<span class="hljs-number">100</span>);
+        }
+    }
+    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person</span></span>{
+        <span class="hljs-comment">// 可以计算的成员函数</span>
+        public <span class="hljs-keyword">void</span> jiSuan(){
+            int result = <span class="hljs-number">0</span>;
+            <span class="hljs-keyword">for</span>(int i = <span class="hljs-number">1</span>; i &lt;=<span class="hljs-number">1000</span>; i++){
+                result += i;
+            }
+            System.out.println(<span class="hljs-string">"结果是"</span> + result);
+        }
+        <span class="hljs-comment">// 带参数的成员方法</span>
+        public <span class="hljs-keyword">void</span> jiSuan(int n){
+            int result = <span class="hljs-number">0</span>;
+            <span class="hljs-keyword">for</span>(int i =<span class="hljs-number">1</span>; i &lt;= n; i++){
+                result += i;
+            }
+            System.out.println(<span class="hljs-string">"结果是"</span> + result);
+        }
+    }
+    
+<span class="hljs-comment">// 类的成员方法-声明</span>
+    public int test(int a);  <span class="hljs-comment">// 方法声明</span>
+    这句话的作用是声明该方法，格式为：
+
+        访问修饰符 数据类型 函数名 (参数列表);
+
+    在给Person类添加 add()方法 的例题中，我们看到的关键字 <span class="hljs-keyword">return</span>，
+    它的功能就是把表达式的值返回给主调用方法
+        retrun 表达式;
+
+<span class="hljs-comment">// 掌握构造方法的使用</span>
+    构造方法是类的一种特殊方法，它的主要作用是完成对新对象的初始化
+        方法名和类名相同
+        没有返回值
+        在创建一个类的新对象时，系统会自动的调用该类的构造方法完成对新对象的初始化
+        在创建新对象时，系统自动调用该类的构造方法
+        一个类可以有多个构造方法
+        每个类都有一个默认的构造方法
+
+
+<span class="hljs-comment">//2015-07-23</span>
+<span class="hljs-number">008.</span>面向对象编程二：<span class="hljs-keyword">this</span>-类变量/类方法-四大特征
+<span class="hljs-comment">// this 不能在类定义的外部使用，只能在类定义的方法中使用</span>
+    public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">chisw</span> </span>{
+        public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span>[] args) {
+            Dog dog1 = <span class="hljs-keyword">new</span> Dog(<span class="hljs-number">2</span>,<span class="hljs-string">"little Yellow"</span>);
+            Person p1 = <span class="hljs-keyword">new</span> Person(dog1,<span class="hljs-number">23</span>,<span class="hljs-string">"Chisw"</span>);
+            Person p2 = <span class="hljs-keyword">new</span> Person(dog1,<span class="hljs-number">22</span>,<span class="hljs-string">"Chiue"</span>);
+            p1.showInfo();
+            p1.dog.showInfo();
+        }
+    }
+
+    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person</span></span>{
+        int age;
+        <span class="hljs-built_in">String</span> name;
+        Dog dog;
+        public Person(Dog dog,int age, <span class="hljs-built_in">String</span> name){
+            <span class="hljs-keyword">this</span>.age = age;
+            <span class="hljs-keyword">this</span>.name = name;
+            <span class="hljs-keyword">this</span>.dog = dog;
+        }
+        public <span class="hljs-keyword">void</span> showInfo(){
+            System.out.println(<span class="hljs-string">"The name is "</span> + name);
+        }
+    }
+
+    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Dog</span></span>{
+        int age;
+        <span class="hljs-built_in">String</span> name;
+        public Dog(int age,<span class="hljs-built_in">String</span> name){
+            <span class="hljs-keyword">this</span>.age = age;
+            <span class="hljs-keyword">this</span>.name = name;
+        }
+        public <span class="hljs-keyword">void</span> showInfo(){
+            System.out.println(<span class="hljs-string">"The dog name is "</span> + name);
+        }
+    }
+
+<span class="hljs-comment">// 类变量/类方法</span>
+    类变量是该类的所有对象共享的变量，任何一个该类的对象去访问它时，取到的都是相同的值
+    同样，任何一个该类的对象去修改它时，修改的也是同一个变量
+
+    定义类变量：
+        访问修饰符 <span class="hljs-keyword">static</span> 数据类型 变量名;
+
+    访问类变量：
+        类名.类变量名
+        对象名.类变量名
+
+    类变量与实例变量的区别：
+        加上<span class="hljs-keyword">static</span>称为类变量或静态变量，否则称为实例变量
+        类变量是与类相似的，公共的属性
+        实例变量属于每个对象个体的属性
+        类变量可以通过类名.类变量名直接访问
+        
+        public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">chisw</span> </span>{
+            public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span>[] args) {
+                int total = <span class="hljs-number">0</span>;
+                Child ch1 = <span class="hljs-keyword">new</span> Child(<span class="hljs-number">3</span>,<span class="hljs-string">"chisw"</span>);
+                ch1.joinGame();
+                Child ch2 = <span class="hljs-keyword">new</span> Child(<span class="hljs-number">2</span>,<span class="hljs-string">"chiue"</span>);
+                ch2.joinGame();
+                System.out.println(Child.total);
+            }
+        }
+        <span class="hljs-class"><span class="hljs-keyword">class</span>  <span class="hljs-title">Child</span></span>{
+            int age;
+            <span class="hljs-built_in">String</span> name;
+
+            <span class="hljs-keyword">static</span> int total = <span class="hljs-number">0</span>;  <span class="hljs-comment">// ********</span>
+
+            public Child(int age,<span class="hljs-built_in">String</span> name){
+                <span class="hljs-keyword">this</span>.age = age;
+                <span class="hljs-keyword">this</span>.name = name;
+            }
+            public <span class="hljs-keyword">void</span> joinGame(){
+                total ++ ;
+                System.out.println(<span class="hljs-string">"There is a child joined in"</span>);
+            }
+        }
+
+<span class="hljs-comment">// 2015-07-24</span>
+    类方法的定义：
+        类方法是属于所有对象实例的，其形式如下：
+
+            访问修饰符 <span class="hljs-keyword">static</span> 数据返回类型 方法名(){}
+
+        类方法中不能访问非静态变量(类变量)
+
+    类方法的使用：
+        类名.类方法名
+        对象名.类方法名
+
+        类方法属于与类相关的，公共的方法
+        实例方法属于每个对象个体的方法
+        类方法可以通过类名.类方法名直接访问
+
+        public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">chisw</span> </span>{
+            <span class="hljs-comment">//创建一个学生</span>
+            Stu stu1 = <span class="hljs-keyword">new</span> Stu(<span class="hljs-number">23</span>,<span class="hljs-string">"chisw"</span>,<span class="hljs-number">1000</span>);
+            Stu stu2 = <span class="hljs-keyword">new</span> Stu(<span class="hljs-number">22</span>,<span class="hljs-string">"chiue"</span>,<span class="hljs-number">800</span>);
+            System.out.println(Stu.getTotalFee());
+        }
+        <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Stu</span> </span>{
+            int age;
+            <span class="hljs-built_in">String</span> name;
+            int fee;
+            <span class="hljs-keyword">static</span> int totalFee;
+            public Stu( int age, <span class="hljs-built_in">String</span> name, int fee){
+                <span class="hljs-keyword">this</span>.age = age;
+                <span class="hljs-keyword">this</span>.name = name;
+                totalFee += fee;
+            }
+            public <span class="hljs-keyword">static</span> int getTotalFee(){
+                <span class="hljs-keyword">return</span> totalFee;
+            }
+        }
+
+<span class="hljs-comment">// 四大特征 抽象、封装、继承、多态</span>
+    （一）抽象：
+        把一类事物共有的属性和行为提取出来，形成一个物理模型
+        这种研究问题的方法叫作抽象
+
+    （二）封装：
+        封装就是把抽象出来的数据和对数据的操作封装在一起，数据被保护在内部，
+        程序的其它部分只有通过被授权的操作（成员方法），才能对数据进行操作
+
+        访问控制修饰符-java提供四种访问控制修饰符控制方法和变量的访问权限
+            公开级别 public 对外公开
+            受保护级别 protected 对子类和同一个包中的类公开
+            默认级别 没有修饰符 向同一个包的类公开
+            私有级别 private 只有类本身可以访问，不对外公开
+
+            public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">chisw</span> </span>{
+                Clerk clerk1 = <span class="hljs-keyword">new</span> Clerk(<span class="hljs-string">"chisw"</span>,<span class="hljs-number">23</span>,<span class="hljs-number">3988.4</span>f);
+                System.out.println(<span class="hljs-string">"The salary is "</span> + clerk1.getSal());
+            }
+            <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Clerk</span></span>{
+                public <span class="hljs-built_in">String</span> name;
+                private int age;
+                private float salary;
+                public Clerk( <span class="hljs-built_in">String</span> name, int age,float sal){
+                    <span class="hljs-keyword">this</span>.name = name;
+                    <span class="hljs-keyword">this</span>.age = age;
+                    <span class="hljs-keyword">this</span>.salary = sal;
+                }
+                public float getSal(){
+                    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.salary;
+                }
+            }
+
+        包-必要性- package
+            三大作用
+                区分相同名字的类
+                当类很多时，可以很好的管理
+                控制访问范围
+            打包命令
+                package com.chisw 一般放在文件头部
+            命名规范
+                全部小写 com.chisw.chiue
+            常用的包
+                java.lang.* 自动引入
+                java.util.* 工具包
+                java.net.* 网络开发包
+                java.awt.* 窗口工具包
+            包的引入
+                <span class="hljs-keyword">import</span> com.chisw
+
+
+<span class="hljs-comment">//2015-07-25</span>
+    （三）继承：
+        继承可以解决代码复用，让我们的编程更加靠近人类的思维
+        当个类存在相同的属性和方法时，可以从这些类中抽象出父类，在父类中定义这些相同的属性和方法
+
+        <span class="hljs-comment">/*
+            package com.chisw;
+            public class Test {
+                public static void main(String [] args){
+                    
+                }
+            }
+            // 小学生类
+            class Pupil {
+                // 定义成员属性
+                private int age;
+                private String name;
+                private float fee;
+                
+                // 缴费
+                public void pay(float fee) {
+                    this.fee = fee;
+                }
+            }
+            // 中学生类
+            class MiddleStu {
+                // 定义成员属性
+                private int age;
+                private String name;
+                private float fee;
+                
+                // 缴费
+                public void pay(float fee) {
+                    this.fee = fee*0.8f;
+            }
+        */</span>
+
+        所有的子类不需要重新定义这些属性和方法，只需要通过 extends 语句来声明继承父类：
+
+            <span class="hljs-comment">// class 子类 extends 父类</span>
+
+        这样子类就会自动拥有父类定义的属性和方法
+            package com.chisw;
+            public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span> </span>{
+                public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span> [] args){
+                    
+                }
+            }
+            <span class="hljs-comment">// 将学生的共同属性提取出来做一个父类</span>
+            <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Stu</span> </span>{
+                public int age;
+                public <span class="hljs-built_in">String</span> name;
+                public float fee;
+                
+            }
+            <span class="hljs-comment">// 小学生类</span>
+            <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Pupil</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Stu</span> </span>{
+                <span class="hljs-comment">// 缴费</span>
+                public <span class="hljs-keyword">void</span> pay(float fee) {
+                    <span class="hljs-keyword">this</span>.fee = fee;
+                }
+            }
+            <span class="hljs-comment">// 中学生类</span>
+            <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MiddleStu</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Stu</span> </span>{
+                <span class="hljs-comment">// 缴费</span>
+                public <span class="hljs-keyword">void</span> pay(float fee) {
+                    <span class="hljs-keyword">this</span>.fee = fee*<span class="hljs-number">0.8</span>f;
+                }
+            }
+            <span class="hljs-comment">// 大学生类</span>
+            <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ColStu</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Stu</span> </span>{
+                <span class="hljs-comment">// 缴费</span>
+                public <span class="hljs-keyword">void</span> pay(float fee) {
+                    <span class="hljs-keyword">this</span>.fee = fee*<span class="hljs-number">0.1</span>f;
+                }
+            }
+
+        父类的 public protected 默认修饰符 的属性和方法被子类继承了
+        而父类的 private 修饰符的属性和方法不能被子类继承
+        所以在编程中，如果你不希望某个子类继承属性和方法就将其声明为 private
+
+        注意事项：
+            子类最多只能继承一个父类
+            java所有类都是<span class="hljs-built_in">Object</span>类的子类 java.lang.Object
+            JDK6中有<span class="hljs-number">202</span>个包<span class="hljs-number">3777</span>个类、接口、异常、枚举、注释和错误
+            在做开发的时候，建议多查jdk帮助文档
+
+            package com.chisw;
+            <span class="hljs-keyword">import</span> javax.swing.*;
+            public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test1</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">JFrame</span> </span>{
+                public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main ( <span class="hljs-built_in">String</span> [] args){
+                    Test1 test1 = <span class="hljs-keyword">new</span> Test1();
+                }
+                public Test1(){
+                    <span class="hljs-keyword">this</span>.setVisible(<span class="hljs-literal">true</span>);
+                    <span class="hljs-keyword">this</span>.setSize(<span class="hljs-number">300</span>,<span class="hljs-number">200</span>);
+                }
+            }
+
+    （四）多态：
+        方法重载（overload）
+            即使方法名相同，会根据参数个数的不同，以及参数类型的不同会自动选择相应的方法
+            方法重载就是在类的同一种功能的多种实现方式
+
+            注意事项：
+                方法名相同
+                方法的参数类型，个数，顺序至少有一项不同
+                方法返回类型可以不同
+                方法的修饰符可以不同
+                但如果只是返回类型不一样并不能构成重载
+
+        方法覆盖（override）--方法的重写
+            public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span> </span>{
+                public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span> [] args){
+                    Cat cat1 = <span class="hljs-keyword">new</span> Cat();
+                    cat1.cry();
+                    
+                }
+            }
+            <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Animal</span></span>{
+                int age;
+                <span class="hljs-built_in">String</span> name;
+                public <span class="hljs-keyword">void</span> cry(){
+                    System.out.println(<span class="hljs-string">"I'm Animal,don't know how to shout"</span>);
+                }
+            }
+            <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Cat</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Animal</span> </span>{
+                <span class="hljs-comment">// override the function in parent class</span>
+                public <span class="hljs-keyword">void</span> cry(){
+                    System.out.println(<span class="hljs-string">"Meow"</span>);
+                }
+            }
+
+            方法覆盖就是子类有一个方法，和父类的某个方法的名称、返回类型、参数一样
+            因此会导致这个子类的方法覆盖了父类的那个方法
+
+            注意事项：
+                子类的方法返回类型，参数，方法让名称，要和父类方法返回的类型，参数方法名称完全一样
+                子类方法不能缩小父类方法的访问权限
+
+        多态-概念
+            所谓多态，就是指一个引用在不同的情况下的多种状态
+            也可以理解为多态是指通过指向父类的指针，来调用在不同子类中实现的方法
+
+            注意事项：
+                java允许父类的引用变量引用它的子类的实例（对象），这种转换是自动完成的
+                子类不能转换成父类
+
+                public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span> </span>{
+                    public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span> [] args){
+                        Animal cat = <span class="hljs-keyword">new</span> Cat();
+                        cat.cry();
+                        Animal dog = <span class="hljs-keyword">new</span> Dog();
+                        dog.cry();
+                    }
+                }
+                <span class="hljs-comment">// 动物类 Animal</span>
+                <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Animal</span> </span>{
+                    public <span class="hljs-keyword">void</span> cry() {
+                        System.out.println(<span class="hljs-string">"Don't know how to shout"</span>);
+                    }
+                }
+                <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Dog</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Animal</span> </span>{
+                    public <span class="hljs-keyword">void</span> cry() {
+                        System.out.println(<span class="hljs-string">"Fite"</span>);
+                    }
+                }
+                <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Cat</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Animal</span> </span>{
+                    public <span class="hljs-keyword">void</span> cry () {
+                        System.out.println(<span class="hljs-string">"Meow"</span>);
+                    }
+                }
+
+
+<span class="hljs-number">009.</span>约瑟夫问题
+    Josephu问题为：设编号为<span class="hljs-number">1</span>，<span class="hljs-number">2.</span>.n 的 n 个人围坐一圈，约定编号为 k (<span class="hljs-number">1</span> &lt;= k &lt;= n) 的人从 <span class="hljs-number">1</span> 开始报数，
+    数到 m 的那个人出列，它的下一位又从 <span class="hljs-number">1</span> 开始报数，数到 m 的那个人又出列，依此类推，直到所有人都出列
+    为止，由此产生一个出队编号的序列
+
+    提示：
+        用一个不带头节点的循环链表来处理Josephu问题：
+            先构成一个有 n 个节点的单循环链表，然后由 k 节点起从 <span class="hljs-number">1</span> 开始计数，计到 m 时，对应节点从链
+            表中删除，然后再从被删除节点的下一个节点又从 <span class="hljs-number">1</span> 开始计数，直到最后一个节点从链表中删除，算
+            法结束
+
+    public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span> </span>{
+        public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span> [] args){
+            CycLink cyclink = <span class="hljs-keyword">new</span> CycLink();
+            cyclink.setLen(<span class="hljs-number">10</span>);
+            cyclink.createLink();
+            cyclink.setK(<span class="hljs-number">2</span>);
+            cyclink.setM(<span class="hljs-number">2</span>);
+            cyclink.show();
+            cyclink.play();
+        }
+    }
+    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Child</span> </span>{
+        int no;
+        Child nextChild = <span class="hljs-literal">null</span>;
+        public Child(int no){
+            <span class="hljs-keyword">this</span>.no = no;
+        }
+    }
+    <span class="hljs-comment">// 环形链表</span>
+    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CycLink</span> </span>{
+        <span class="hljs-comment">// 先定义一个指向链表头第一个小孩的一个引用</span>
+        <span class="hljs-comment">// 指向第一个小孩的引用不能动</span>
+        Child firstChild = <span class="hljs-literal">null</span>;
+        Child temp = <span class="hljs-literal">null</span>;
+        int len = <span class="hljs-number">0</span>;<span class="hljs-comment">//表示共有多少个小孩</span>
+        int k = <span class="hljs-number">0</span>;
+        int m = <span class="hljs-number">0</span>;
+        <span class="hljs-comment">// 设置环形链表的大小</span>
+        public <span class="hljs-keyword">void</span> setLen(int len){
+            <span class="hljs-keyword">this</span>.len = len;
+        }
+        <span class="hljs-comment">// 设置m</span>
+        public <span class="hljs-keyword">void</span> setM(int m){
+            <span class="hljs-keyword">this</span>.m = m;
+        }
+        <span class="hljs-comment">// 设置从第k个人开始数数</span>
+        public <span class="hljs-keyword">void</span> setK(int k){
+            <span class="hljs-keyword">this</span>.k = k;
+        }
+        <span class="hljs-comment">// 开始play</span>
+        public <span class="hljs-keyword">void</span>  play() {
+            Child temp = <span class="hljs-keyword">this</span>.firstChild;
+            <span class="hljs-comment">// 先找到开始数数的人</span>
+            <span class="hljs-keyword">for</span>(int i = <span class="hljs-number">0</span>; i &lt; k ; i++ ) {
+                temp = temp.nextChild;
+            }
+            <span class="hljs-comment">// 数 m 下</span>
+            <span class="hljs-keyword">for</span> ( int j = <span class="hljs-number">0</span> ; j &lt; m ; j++ ){
+                temp = temp.nextChild;
+            }
+            <span class="hljs-comment">// 找到出圈的前一个小孩</span>
+            Child temp2 = temp;
+            <span class="hljs-keyword">while</span>(temp2.nextChild != temp ){
+                temp2 = temp2.nextChild;
+            }
+            <span class="hljs-comment">// 将数到m的小孩删除</span>
+            temp2.nextChild =temp.nextChild;
+            <span class="hljs-comment">// 让temp指向下一个数数的小孩</span>
+            temp = temp.nextChild;
+            <span class="hljs-keyword">this</span>.len--;
+            <span class="hljs-comment">// 最后一个小孩</span>
+            System.out.println(<span class="hljs-string">"The last one is "</span> + temp.no);
+        }
+        <span class="hljs-comment">// 初始化环形链表</span>
+        public <span class="hljs-keyword">void</span> createLink(){
+            <span class="hljs-keyword">for</span>(int i = <span class="hljs-number">1</span> ; i &lt;= len ; i++ ){
+                <span class="hljs-keyword">if</span> ( i == <span class="hljs-number">1</span> ){
+                    <span class="hljs-comment">// 创建第一个小孩</span>
+                    Child ch = <span class="hljs-keyword">new</span> Child(i);
+                    <span class="hljs-keyword">this</span>.firstChild = ch;
+                    <span class="hljs-keyword">this</span>.temp = ch;
+                } <span class="hljs-keyword">else</span> {
+                    <span class="hljs-comment">// 最后一个小孩</span>
+                    <span class="hljs-keyword">if</span> ( i == len ) {
+                        <span class="hljs-comment">// 继续创建小孩</span>
+                        Child ch = <span class="hljs-keyword">new</span> Child(i);
+                        temp.nextChild = ch;
+                        temp = ch;
+                        temp.nextChild = <span class="hljs-keyword">this</span>.firstChild;
+                    } <span class="hljs-keyword">else</span> {
+                        <span class="hljs-comment">// 继续创建小孩</span>
+                        Child ch = <span class="hljs-keyword">new</span> Child(i);
+                        temp.nextChild = ch;
+                        temp = ch;
+                    }
+                }
+            }
+        }
+        <span class="hljs-comment">// 打印该环形链表</span>
+        public <span class="hljs-keyword">void</span> show(){
+            <span class="hljs-comment">// 定义一个跑龙套的</span>
+            Child temp = <span class="hljs-keyword">this</span>.firstChild;
+            <span class="hljs-keyword">do</span> {
+                System.out.print(temp.no + <span class="hljs-string">" "</span>);
+                temp = temp.nextChild;
+            }<span class="hljs-keyword">while</span>(temp != <span class="hljs-keyword">this</span>.firstChild);
+        }
+    }
+
+
+<span class="hljs-comment">//2015-07-26</span>
+<span class="hljs-number">010.</span>面向对象编程三：抽象类-接口-final
+<span class="hljs-comment">// 抽象类</span>
+    当父类的一些方法不能确定时，可以用abstract关键字来修饰该方法（抽象方法），用abstract修饰该类（抽象类）
+    注意事项：
+        抽象类不能被实例化
+        抽象类不一定要包含abstract方法
+        一旦类包含了abstract方法，则这个类必须声明为abstract
+        抽象方法不能有主体
+
+        public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span> </span>{
+            public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span> [] args ) {
+                
+            }
+        }
+        abstract <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Animal</span> </span>{
+            <span class="hljs-built_in">String</span> name;
+            int age;
+            <span class="hljs-comment">// 动物会叫</span>
+            abstract public <span class="hljs-keyword">void</span> cry();
+        }
+        <span class="hljs-comment">// 当一个类继承的父类是抽象类的话</span>
+        <span class="hljs-comment">// 需要我们把抽象类中所有抽象的方法全部实现</span>
+        <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Cat</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Animal</span> </span>{
+            <span class="hljs-comment">// 实现父类的抽象方法</span>
+            public <span class="hljs-keyword">void</span> cry() {
+                <span class="hljs-comment">// nothing</span>
+            }
+        }
+
+<span class="hljs-comment">// 接口</span>
+    接口就是给出一些没有内容的方法，封装到一起，到某个类要使用的时候，再根据情况把这些方法写出来
+
+    语法：
+        <span class="hljs-class"><span class="hljs-keyword">class</span> 类名 <span class="hljs-title">implements</span> 接口 </span>{
+            方法;
+            变量;
+        }
+
+    接口是更加抽象的类，抽象类里的方法可以有方法体，接口里所有方法都没有方法体
+    接口提现了程序设计的多态和高内聚低耦合的设计思想
+
+    注意事项：
+        接口不能被实例化
+        接口中所有的方法都不能有主体
+        一个类可以实现多个接口
+        接口中可以有变量，但变量不能使用private和protected修饰
+        接口中的变量本质上都是<span class="hljs-keyword">static</span>的，而且是final，不管你加不加<span class="hljs-keyword">static</span>修饰
+        在java开发中，我们经常把经常用的变量定义在接口中，作为全局变量使用
+
+            访问形式： 接口名.变量名
+
+        一个接口不能继承其它的类，但是可以继承别的接口
+
+        public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span> </span>{
+            public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span> [] args ) {
+                Computer computer = <span class="hljs-keyword">new</span> Computer();
+                Camera camera1 = <span class="hljs-keyword">new</span> Camera();
+                computer.useUsb(camera1);
+            }
+        }
+        interface Usb{
+            <span class="hljs-comment">// declare 2 function</span>
+            public <span class="hljs-keyword">void</span> start();
+            public <span class="hljs-keyword">void</span> stop();
+        }
+        <span class="hljs-comment">// 编写CAMERA类并实现接口</span>
+        <span class="hljs-comment">// 一个重要的原则：当一个类实现了一个接口，就要求该类把这个接口的所有方法都实现</span>
+        <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Camera</span> <span class="hljs-title">implements</span> <span class="hljs-title">Usb</span> </span>{
+            public <span class="hljs-keyword">void</span> start(){
+                System.out.println(<span class="hljs-string">"IM CAMERA,START"</span>);
+            }
+            public <span class="hljs-keyword">void</span> stop() {
+                System.out.println(<span class="hljs-string">"IM CAMERA,STOP"</span>);
+            }
+        }
+        <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Computer</span> </span>{
+            public <span class="hljs-keyword">void</span> useUsb( Usb usb) {
+                usb.start();
+                usb.stop();
+            }
+        }
+
+        实现接口 相比 继承类：
+            java的继承是单继承，也就是一个类最多只能有一个父类，这种单继承的机制可保证类的纯洁性，比C++中的
+            多继承机制简洁
+            但不可否认，最子类功能的扩展有一定的影响
+            所以我们认为：
+                实现接口可以看作是对继承的一种补充
+                    还有一点，继承是层级式的，不太灵活这种结构修改某个类就会打破这种继承的平衡，而接口就
+                    没有这样的麻烦，因为它只针对实现接口的类才起作用
+                实现接口可以在不打破继承关系的前提下，对某个类功能扩展，非常之灵活
+
+            public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span> </span>{
+                public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span> [] args ) {
+                }
+            }
+            interface Fish {
+                public <span class="hljs-keyword">void</span> swimming();
+            }
+            interface Bird {
+                public <span class="hljs-keyword">void</span> fly();
+            }
+            <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Monkey</span> </span>{
+                int age;
+                public <span class="hljs-keyword">void</span> jump() {
+                    System.out.println(<span class="hljs-string">"Monkey can jump"</span>);
+                }
+            }
+            <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LittleMonkey</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Monkey</span> <span class="hljs-title">implements</span> <span class="hljs-title">Fish</span>,<span class="hljs-title">Bird</span> </span>{
+                @Override
+                public <span class="hljs-keyword">void</span> swimming() {
+                    <span class="hljs-comment">// TODO Auto-generated method stub</span>
+                }
+                @Override
+                public <span class="hljs-keyword">void</span> fly() {
+                    <span class="hljs-comment">// TODO Auto-generated method stub</span>
+                }
+            }
+
+<span class="hljs-comment">// final</span>
+    当不希望父类的某个方法被子类覆盖时可以使用final关键字修饰符
+    当不希望类的某个变量的值被修改，可以使用final
+    当不希望类被继承时，可以用final
+
+    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Aaa</span> </span>{
+        <span class="hljs-comment">// 给方法用final修饰，则表示不可以被修改和覆盖</span>
+        final public <span class="hljs-keyword">void</span> sendMes(){
+            System.out.println(<span class="hljs-string">""</span>);
+        }
+    }
+
+    注意事项：
+        final修饰的变量又叫做常量，一般用xx_xx_xx来命名
+        final修饰的变量在定义时，必须赋初值，否则无法编译，并且以后不能再赋值
+
+    使用条件：
+        因为安全的考虑,类的某个方法不允许修改
+        类不会被其它类继承
+        某些变量值是固定不变的，比如圆周率
+
+
+<span class="hljs-number">011.</span>数组：一维数组-排序-查找-多维数组
+<span class="hljs-comment">// 一维数组</span>
+    float arr[] = <span class="hljs-keyword">new</span> float[<span class="hljs-number">6</span>];
+    arr[<span class="hljs-number">0</span>] = <span class="hljs-number">3.0</span>f;
+    <span class="hljs-comment">// float arr[] = {3.0f,2,4};</span>
+
+    float all = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">for</span> ( int i = <span class="hljs-number">0</span> ; i &lt; arr.length ; i ++ ) {
+        all += arr[i];
+    }
+
+    数组的定义：
+        数据类型 数组名 [] = <span class="hljs-keyword">new</span> 数据类型 [大小];
+
+    对象数组：
+        <span class="hljs-keyword">import</span> java.io.*;
+        public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span> </span>{
+            public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span> [] args ) throws Exception {
+                <span class="hljs-comment">// 定义一个对象数组可以存放四只狗</span>
+                Dog dogs[] = <span class="hljs-keyword">new</span> Dog[<span class="hljs-number">4</span>];
+                <span class="hljs-comment">// Initial dog arr</span>
+                <span class="hljs-comment">// dogs[0] = new Dog();</span>
+                <span class="hljs-comment">// dogs[0].setName("HUAHUA");</span>
+                <span class="hljs-comment">// dogs[0].setWeight(4.5);</span>
+                InputStreamReader isr = <span class="hljs-keyword">new</span> InputStreamReader(System.in);
+                BufferedReader br = <span class="hljs-keyword">new</span> BufferedReader(isr);
+                <span class="hljs-keyword">for</span> ( int i = <span class="hljs-number">0</span> ; i &lt; <span class="hljs-number">4</span> ; i ++ ){
+                    dogs[i] = <span class="hljs-keyword">new</span> Dog();
+                    System.out.println(<span class="hljs-string">"Please input the "</span>+ (i+<span class="hljs-number">1</span>) + <span class="hljs-string">" dog's name"</span>);
+                    <span class="hljs-comment">// 从控制台读取狗名</span>
+                    <span class="hljs-built_in">String</span> name = br.readLine();
+                    <span class="hljs-comment">// 将名字赋给对象</span>
+                    dogs[i].setName(name);
+                    System.out.println(<span class="hljs-string">"Please input the "</span>+ (i+<span class="hljs-number">1</span>) + <span class="hljs-string">" dog's weight"</span>);
+                    <span class="hljs-built_in">String</span> s_weight = br.readLine();
+                    float weight = Float.parseFloat(s_weight);
+                    dogs[i].setWeight(weight);
+                }
+                float allWeight = <span class="hljs-number">0</span>;
+                <span class="hljs-keyword">for</span> ( int i = <span class="hljs-number">0</span> ; i &lt; <span class="hljs-number">4</span> ; i++ ) {
+                    allWeight += dogs[i].getWeight();
+                }
+                float avgWeight = allWeight/dogs.length;
+                System.out.println(<span class="hljs-string">"The allWeight is "</span> + allWeight + <span class="hljs-string">" The avgWeight is "</span> + avgWeight);
+                <span class="hljs-comment">// 找出体重最大的狗 假设第一只狗体重最大</span>
+                float maxWeight = dogs[<span class="hljs-number">0</span>].getWeight();
+                int maxIndex = <span class="hljs-number">0</span>;
+                <span class="hljs-keyword">for</span> (int i = <span class="hljs-number">1</span> ; i &lt; dogs.length ; i++ ) {
+                    <span class="hljs-keyword">if</span> ( maxWeight &lt; dogs[i].getWeight()) {
+                        maxWeight = dogs[i].getWeight();
+                        maxIndex = i;
+                    }
+                }
+                System.out.println(<span class="hljs-string">"The heavist dog is the No."</span> + ( maxIndex +<span class="hljs-number">1</span>) 
+                    + <span class="hljs-string">" And the weight is "</span> + dogs[maxIndex].getWeight() );
+            }
+        }
+
+        <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Dog</span></span>{
+            private <span class="hljs-built_in">String</span> name;
+            private float weight;
+            
+            public <span class="hljs-built_in">String</span> getName() {
+                <span class="hljs-keyword">return</span> name;
+            }
+            public <span class="hljs-keyword">void</span> setName(<span class="hljs-built_in">String</span> name) {
+                <span class="hljs-keyword">this</span>.name = name;
+            }
+            
+            public float getWeight() {
+                <span class="hljs-keyword">return</span> weight;
+            }
+            public <span class="hljs-keyword">void</span> setWeight(float weight) {
+                <span class="hljs-keyword">this</span>.weight = weight;
+            }
+        }
+
+    数组小结：
+        数组可存放同一类型数据
+        简单数据类型（int,float）数组可直接赋值
+        对象数组在定义后，赋值时需要再次为每个对象分配空间（即：<span class="hljs-keyword">new</span> 对象）
+        数组大小必须事先指定
+        数组名可以理解为指向数组首地址的引用
+        数组的下标是从<span class="hljs-number">0</span>开始编号的
+
+<span class="hljs-comment">// 排序</span>
+    排序是将一群数据，依指定顺序进行排列的过程
+
+    （一）内部排序：
+        指将需要处理的所有数据都加载到内部存储器中进行排序
+        包括：交换式排序，选择式排序，和插入式排序
+            (<span class="hljs-number">1</span>)交换式排序
+                是运用数据值比较后，依次判断规则对数据位置进行交换，以达到排序的目的
+                    a.冒泡排序法 Bubble sort
+                        基本思想：通过对待排序序列从后向前（从下标较大的元素开始），依次比较相邻元素的
+                        排序码，若发现逆序则交换，使排序码较小的元素逐渐从后部向前部（从下标较大的单
+                        元移向较小的单元），就像水底下的气泡一样逐渐向上冒
+
+                        public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span> </span>{
+                            public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span> [] args ) throws Exception {
+                                int arr[] = {<span class="hljs-number">1</span>,<span class="hljs-number">6</span>,<span class="hljs-number">0</span>,<span class="hljs-number">-1</span>,<span class="hljs-number">9</span>};
+                                int temp = <span class="hljs-number">0</span> ;
+                                <span class="hljs-comment">// 外层循环，它可以决定一共走几趟</span>
+                                <span class="hljs-keyword">for</span> (int i = <span class="hljs-number">0</span> ; i &lt; arr.length<span class="hljs-number">-1</span> ; i++ ) {
+                                    <span class="hljs-comment">// 内层循环，开始逐个比较，如果发现前一个数比后一个书数大，则交换</span>
+                                    <span class="hljs-keyword">for</span> (int j = <span class="hljs-number">0</span> ; j &lt; arr.length<span class="hljs-number">-1</span>-i; j++){
+                                        <span class="hljs-keyword">if</span> ( arr[j] &gt; arr[ j + <span class="hljs-number">1</span> ] ) {
+                                            <span class="hljs-comment">// 换位，需要一个中间变量</span>
+                                            temp = arr[j];
+                                            arr[j] = arr[j+<span class="hljs-number">1</span>];
+                                            arr[j+<span class="hljs-number">1</span>] = temp;
+                                        }
+                                    }
+                                }
+
+                                <span class="hljs-keyword">for</span> ( int i = <span class="hljs-number">0</span> ; i&lt; arr.length ; i++ ) {
+                                    System.out.print(arr[i]  + <span class="hljs-string">" "</span>);
+                                }
+
+                            }
+                        }
+
+                    b.快速排序法 Quick sort
+                        是对冒泡排序的一种改进由 C.A.R Hoare在<span class="hljs-number">1962</span>年提出
+                        基本思想：通过一趟排序将要排序的数据分割成独立的两部分，其中一部分的所有数据都比
+                        另外一部分的所有数据都要小，然后再按此方法对这两部分数据分别进行快速排序，整个排
+                        序过程可以递归进行，以此达到整个数据变成有序数列
+
+            (<span class="hljs-number">2</span>)选择式排序
+                是从欲排序的数据中，按指定规则选出某一元素，经过和其它元素重整，再依原则交换位置后达到排序的目的
+                    a.选择式排序法 Selection sort
+                        <span class="hljs-keyword">import</span> java.util.*;
+                        public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span> </span>{
+                            public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span> [] args ) throws Exception {
+                                int len = <span class="hljs-number">100000</span>;
+                                int [] arr = <span class="hljs-keyword">new</span> int[len];
+                                <span class="hljs-keyword">for</span> ( int i = <span class="hljs-number">0</span> ; i &lt; len ; i++ ) {
+                                    int t = (int)(<span class="hljs-built_in">Math</span>.random()*<span class="hljs-number">10000</span>);
+                                    arr[i] = t;
+                                }
+                                <span class="hljs-comment">// int arr[] = {1,0,22,-6};</span>
+                                Select select = <span class="hljs-keyword">new</span> Select();
+                                Calendar cal = Calendar.getInstance();
+                                System.out.println(<span class="hljs-string">"Start from "</span> + cal.getTime());
+                                select.sort(arr);
+                                cal = Calendar.getInstance();
+                                System.out.println(<span class="hljs-string">"And end at "</span> + cal.getTime());
+                                <span class="hljs-keyword">for</span> ( int i = <span class="hljs-number">0</span> ; i&lt; arr.length ; i++ ) {
+                                    System.out.print(arr[i]  + <span class="hljs-string">" "</span>);
+                                }
+                            }
+                        }
+                        <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Select</span> </span>{
+                            <span class="hljs-comment">// 选择排序</span>
+                            public <span class="hljs-keyword">void</span> sort(int arr[]){
+                                int temp = <span class="hljs-number">0</span>;
+                                <span class="hljs-keyword">for</span>( int j = <span class="hljs-number">0</span> ; j &lt; arr.length - <span class="hljs-number">1</span> ; j++ ) {
+                                    <span class="hljs-comment">// 假设第一个数是最小的</span>
+                                    int min = arr[j];
+                                    <span class="hljs-comment">// 记录最小数的下标</span>
+                                    int minIndex = j;
+                                    <span class="hljs-keyword">for</span> (int k = j+<span class="hljs-number">1</span> ; k &lt; arr.length; k++){
+                                        <span class="hljs-keyword">if</span> ( min &gt; arr[k]){
+                                            min = arr[k];
+                                            minIndex = k;
+                                        }
+                                    }
+                                    <span class="hljs-comment">// 当退出for时就找到了这次的最小值</span>
+                                    temp = arr[j];
+                                    arr[j] = arr[minIndex];
+                                    arr[minIndex] = temp; 
+                                }
+                            }
+                        }
+
+                    b.堆排序法 Heap sort
+
+            (<span class="hljs-number">3</span>)插入式排序
+                是对于欲排序的元素加以插入的方式找寻该元素的适当位置，以达到排序的目的
+                    a.插入式排序法 Insertion sort
+                        基本思想：把n个待排序的元素看成为一个有序表和一个无序表，开始时表中只包含一个元素，无序表中
+                        包含n<span class="hljs-number">-1</span>个元素，排序过程中每次从无序表中取出第一个元素，把它的排序码依次与有序表元素的排序码
+                        进行比较，将它插入到有序表中的适当位置，使之成为新的有序表
+
+                        public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span> </span>{
+                            public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span> [] args ) throws Exception {
+                                int len = <span class="hljs-number">100</span>;
+                                int [] arr = <span class="hljs-keyword">new</span> int[len];
+                                <span class="hljs-keyword">for</span> ( int i = <span class="hljs-number">0</span> ; i &lt; len ; i++ ) {
+                                    int t = (int)(<span class="hljs-built_in">Math</span>.random()*<span class="hljs-number">10000</span>);
+                                    arr[i] = t;
+                                }
+                                InsertSort insertsort = <span class="hljs-keyword">new</span> InsertSort();
+                                insertsort.sort(arr);
+                                <span class="hljs-keyword">for</span> ( int i = <span class="hljs-number">0</span> ; i&lt; arr.length ; i++ ) {
+                                    System.out.print(arr[i]  + <span class="hljs-string">" "</span>);
+                                }
+                            }
+                        }
+                        <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">InsertSort</span> </span>{
+                            public <span class="hljs-keyword">void</span> sort(int arr[]){
+                                <span class="hljs-keyword">for</span>(int i = <span class="hljs-number">1</span> ; i &lt; arr.length ; i++ ) {
+                                    int insertVal = arr[i];
+                                    int index = i - <span class="hljs-number">1</span> ;
+                                    <span class="hljs-keyword">while</span> (index &gt;= <span class="hljs-number">0</span> &amp;&amp; insertVal &lt; arr[index]){
+                                        arr[index + <span class="hljs-number">1</span>] = arr[index];
+                                        index--;
+                                    }
+                                    arr[index+<span class="hljs-number">1</span>] = insertVal;
+                                }
+                            }
+                        }
+                        
+                    b.谢耳式排序法 Shell sort
+                    c.二叉树排序法 Binary-tree sort
+
+    （二）外部排序法：
+        数据量过大，无法全部加载到内存中，需要借助外部存储进行排序
+        包括：合并排序，和直接合并排序
+
+    排序是数据处理中一种很重要的运算，同时也是很常用的运算，一般数据处理工作的<span class="hljs-number">25</span>%的
+    时间都是在进行排序
+    简单的说，排序就是把一组记录（元素）按照某个域的值的递增或递减的次序重新排列的过程
+
+<span class="hljs-comment">//2015-07-27</span>
+<span class="hljs-comment">// 查找</span>
+    顺序查找
+    二分查找
+
+    public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span> </span>{
+        public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span> [] args ) throws Exception {
+            int arr[] = {<span class="hljs-number">2</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>,<span class="hljs-number">7</span>,<span class="hljs-number">34</span>,<span class="hljs-number">6</span>};
+            BinaryFind bf = <span class="hljs-keyword">new</span> BinaryFind();
+            bf.find(<span class="hljs-number">0</span>, arr.length<span class="hljs-number">-1</span>,<span class="hljs-number">5</span>,arr);
+        }
+    }
+
+    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BinaryFind</span></span>{
+        public <span class="hljs-keyword">void</span> find( int leftIndex, int rightIndex,int val,int arr[]){
+            <span class="hljs-comment">// 首先找到中间的数</span>
+            int midIndex = (rightIndex + leftIndex)/<span class="hljs-number">2</span>;
+            int midVal = arr[midIndex];
+            <span class="hljs-keyword">if</span> (rightIndex &gt; leftIndex) {
+                <span class="hljs-keyword">if</span> (midVal &gt; val) {
+                    find(leftIndex,midIndex<span class="hljs-number">-1</span>,val , arr);
+                    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (midVal &lt; val){
+                        find(midIndex+<span class="hljs-number">1</span>,rightIndex, val ,arr);
+                } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (midVal == val){
+                    System.out.println(<span class="hljs-string">"The index is "</span> + midIndex);
+                }
+            }
+        }
+    }
+
+<span class="hljs-comment">// 多维数组</span>
+    二维数组
+
+        语法：    类型 数组名 [][] = <span class="hljs-keyword">new</span> 类型 [][];
+                int a [][] = <span class="hljs-keyword">new</span> int [<span class="hljs-number">2</span>][<span class="hljs-number">3</span>];
+
+        public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span> </span>{
+            public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span> [] args ) throws Exception {
+                int a[][] = <span class="hljs-keyword">new</span> int [<span class="hljs-number">4</span>][<span class="hljs-number">6</span>];
+                a[<span class="hljs-number">1</span>][<span class="hljs-number">2</span>] = <span class="hljs-number">1</span>;
+                a[<span class="hljs-number">2</span>][<span class="hljs-number">1</span>] = <span class="hljs-number">2</span>;
+                a[<span class="hljs-number">2</span>][<span class="hljs-number">3</span>] = <span class="hljs-number">3</span>;
+                <span class="hljs-keyword">for</span>(int i = <span class="hljs-number">0</span> ; i &lt; <span class="hljs-number">4</span> ; i++ ) {
+                    <span class="hljs-keyword">for</span> (int j = <span class="hljs-number">0</span>; j&lt; <span class="hljs-number">6</span> ; j++ ){
+                        System.out.print(a[i][j] + <span class="hljs-string">" "</span> );
+                    }
+                    System.out.println();
+                }
+            }
+        }
+
+
+<span class="hljs-number">012.</span>java编程基础：二进制-位运算-移位运算符
+<span class="hljs-comment">// 二进制-原码-反码-补码</span>
+    int a = <span class="hljs-number">1</span>; 合计：<span class="hljs-number">4</span> 字节 / <span class="hljs-number">32</span> 位 &lt;==&gt; <span class="hljs-number">4</span> byte / <span class="hljs-number">32</span> bit.
+    对于有符号的而言：
+        二进制的最高位是符号位：<span class="hljs-number">0</span>表示正数 <span class="hljs-number">1</span>表示负数
+        正数的原码、反码、补码都一样
+        负数的反码 = 它原码符号位不变，其它位取反
+        负数的补码 = 它的反码+<span class="hljs-number">1</span>
+        <span class="hljs-number">0</span>的反码、补码都是 <span class="hljs-number">0</span>
+        java中的数都是有符号的
+        计算机中都是以补码的形式来运行的
+
+<span class="hljs-comment">// 位运算</span>
+    &amp;     按位与        两位全为<span class="hljs-number">1</span>，结果为<span class="hljs-number">1</span>
+    |     按位或         两位有一位为<span class="hljs-number">1</span>，结果为<span class="hljs-number">1</span>
+    ^     按位异或     两位一个为<span class="hljs-number">0</span>，一个为<span class="hljs-number">1</span>，结果为<span class="hljs-number">1</span>
+         按位取反     <span class="hljs-number">0</span>-&gt;<span class="hljs-number">1</span>      <span class="hljs-number">1</span>-&gt;<span class="hljs-number">0</span>
+
+<span class="hljs-comment">// 移位运算</span>
+    &gt;&gt;     算术右移     低位溢出，符号位不变，并用符号位补溢出的高位
+    &lt;&lt;     算术左移     符号位不变，低位补<span class="hljs-number">0</span>
+    &gt;&gt;&gt; 逻辑右移     低位溢出，高位补<span class="hljs-number">0</span>
+
+
+<span class="hljs-comment">//2015-07-28</span>
+<span class="hljs-number">013.</span>集合-泛型-异常
+<span class="hljs-comment">// 集合框架</span>
+    ArrayList
+        <span class="hljs-keyword">import</span> java.util.*;
+        public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span> </span>{
+            public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span> [] args ) throws Exception {
+                <span class="hljs-comment">// 定义一个ArrayList对象</span>
+                ArrayList al = <span class="hljs-keyword">new</span> ArrayList();
+                System.out.println(<span class="hljs-string">"AL's size : "</span> + al.size());
+                Clerk clerk1 = <span class="hljs-keyword">new</span> Clerk(<span class="hljs-string">"Chisw"</span>,<span class="hljs-number">23</span>,<span class="hljs-number">3899.9</span>f);
+                <span class="hljs-comment">// 增</span>
+                al.add(clerk1);
+                Clerk clerk2 = <span class="hljs-keyword">new</span> Clerk(<span class="hljs-string">"Chiue"</span>,<span class="hljs-number">22</span>,<span class="hljs-number">3899.9</span>f);
+                al.add(clerk2);
+                al.add(clerk1);
+                al.add(clerk1);
+                System.out.println(<span class="hljs-string">"AL's size : "</span> + al.size());
+                
+                <span class="hljs-comment">// Clerk temp = (Clerk)al.get(0);</span>
+                <span class="hljs-comment">// System.out.println("The first one is " + temp.getName());</span>
+                
+                <span class="hljs-comment">// 删</span>
+                al.remove(<span class="hljs-number">1</span>);
+                <span class="hljs-keyword">for</span> ( int i = <span class="hljs-number">0</span> ; i &lt; al.size() ; i++ ) {
+                    Clerk temp = (Clerk) al.get(i);
+                    System.out.println(<span class="hljs-string">"Name is "</span> + temp.getName());
+                }
+            }
+        }
+        <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Clerk</span> </span>{
+            private <span class="hljs-built_in">String</span> name;
+            public <span class="hljs-built_in">String</span> getName() {
+                <span class="hljs-keyword">return</span> name;
+            }
+            public <span class="hljs-keyword">void</span> setName(<span class="hljs-built_in">String</span> name) {
+                <span class="hljs-keyword">this</span>.name = name;
+            }
+            public int getAge() {
+                <span class="hljs-keyword">return</span> age;
+            }
+            public <span class="hljs-keyword">void</span> setAge(int age) {
+                <span class="hljs-keyword">this</span>.age = age;
+            }
+            public float getSal() {
+                <span class="hljs-keyword">return</span> sal;
+            }
+            public <span class="hljs-keyword">void</span> setSal(float sal) {
+                <span class="hljs-keyword">this</span>.sal = sal;
+            }
+            private int age;
+            private float sal;
+            public Clerk(<span class="hljs-built_in">String</span> name, int age, float sal) {
+                <span class="hljs-keyword">this</span>.name = name;
+                <span class="hljs-keyword">this</span>.age = age;
+                <span class="hljs-keyword">this</span>.sal = sal;
+            }
+        }
+
+    HashMap
+    Hashtable
+
+    如果要求线性安全使用 Vector,Hashtable
+    如果不要求线性安全，应使用 ArrayList,LinkedList,HashMap
+    如果要求键值对，则使用 HashMap,Hashtable
+    如果数据量很大，又考虑线程安全使用 Vector
+
+<span class="hljs-comment">// 泛型</span>
+    泛型是JAVA SE <span class="hljs-number">1.5</span> 的新特性，泛型的本质是参数化类型，也就是说所操作的数据类型是被指定为
+    一个参数这种参数可以用在类、接口和方法的创建中，分别称为泛型类，泛型接口，泛型方法
+    java语言中引入泛型的好处是简单安全
+    在java se <span class="hljs-number">1.5</span> 之前，没有泛型的情况下，通过对类型<span class="hljs-built_in">Object</span>的引用来实现参数的“任意化”，
+    “任意化”带来的缺点就是要做显式的强制类型转换，而这种转换是要求开发者对事件参数类型
+    可以预知的情况下进行的对于强制类型转换错误的情况，编译器可能不提示错误，在运行的时
+    候才出现异常，这是一个安全隐患
+    泛型的好处是在编译的时候检查类型安全，并且所有的强制转换都是自动和隐式的，提高代码的
+    重用率
+    优点：
+        类型安全
+        向后兼容
+        层次清晰
+        性能较高
+
+<span class="hljs-comment">//2015-07-29</span>
+<span class="hljs-comment">// 异常</span>
+    当出现程序无法控制的外部环境问题（用户提供的文件不存在，文件内容损坏，网络不可用）时，
+    Java就会用异常对象来描述
+    处理方法：
+        在发生异常的地方直接处理；
+        将异常抛给调用者，让调用者处理
+
+    异常分类：
+        检查性异常：java.lang.Exception
+        运行期异常：java.lang.RuntimeException
+        错误：java.lang.Error
+
+        顶层是 java.lang.Throwable类，检查性异常，运行期异常，错误都是这个类的子孙类
+        java.lang.Exception 和 java.lang.Error 继承自 java.lang.Throwable
+        java.lang.RuntimeException 继承自 java.lang.Exception
+
+        <span class="hljs-keyword">try</span> <span class="hljs-keyword">catch</span>
+        <span class="hljs-keyword">finally</span>
+            <span class="hljs-keyword">finally</span>块一般会得到执行，它相当于万能的保险，即使前面的<span class="hljs-keyword">try</span>块发生异常，而又
+            没有对应异常的<span class="hljs-keyword">catch</span>块，<span class="hljs-keyword">finally</span>块将马上执行
+            以下情形将不会执行：
+                <span class="hljs-keyword">finally</span>块中发生了异常
+                程序所在的线程死亡
+                在前面的代码中使用了System.exit();
+                关闭CPU
+
+
+<span class="hljs-number">014.</span>跳水比赛问题
+    跳水比赛，<span class="hljs-number">8</span>个评委打分，运动员的成绩是<span class="hljs-number">8</span>个成绩去掉一个最高分，去掉一个最低分，剩下<span class="hljs-number">6</span>个的平均分就是最后的成绩
+    使用一维数组实现打分功能
+
+    package com.chisw;
+    <span class="hljs-keyword">import</span> java.io.*;
+    public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span> </span>{
+        public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span> [] args ) {
+            Judge judge = <span class="hljs-keyword">new</span> Judge();
+            System.out.println(judge.lastFen());
+        }
+    }
+    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Judge</span> </span>{
+        <span class="hljs-comment">// define an array that can store 8 decimals</span>
+        float fens[] = <span class="hljs-literal">null</span>;
+        int size = <span class="hljs-number">3</span>;
+        <span class="hljs-comment">// process the constructor function</span>
+        public Judge () {
+            fens = <span class="hljs-keyword">new</span> float[size];
+            <span class="hljs-comment">// initialize</span>
+            InputStreamReader isr = <span class="hljs-keyword">new</span> InputStreamReader (System.in);
+            BufferedReader br = <span class="hljs-keyword">new</span> BufferedReader(isr);
+             <span class="hljs-keyword">try</span> {
+                 <span class="hljs-keyword">for</span> (int i = <span class="hljs-number">0</span> ; i&lt; fens.length ; i++ ) {
+                     System.out.println(<span class="hljs-string">"Please input the "</span> + (i+<span class="hljs-number">1</span>) + <span class="hljs-string">"th judge's comment"</span>);
+                     fens[i] = Float.parseFloat(br.readLine());
+                 }
+             } <span class="hljs-keyword">catch</span> (Exception e) {
+                 e.printStackTrace();
+             } <span class="hljs-keyword">finally</span> {
+                 <span class="hljs-keyword">try</span> {
+                     br.close();
+                 } <span class="hljs-keyword">catch</span> (IOException e) {
+                     e.printStackTrace();
+                 }
+             }
+        }
+        <span class="hljs-comment">// get the final score</span>
+        public float lastFen() {
+            float lastFen = <span class="hljs-number">0</span>;
+            float allFen = <span class="hljs-number">0</span>;
+            int minIndex = <span class="hljs-keyword">this</span>.getLowFenIndex();
+            int maxIndex = <span class="hljs-keyword">this</span>.getHighFenIndex();
+            <span class="hljs-keyword">for</span> (int i = <span class="hljs-number">0</span> ;i &lt; fens.length ; i ++ ) {
+                <span class="hljs-keyword">if</span>(i != minIndex &amp;&amp; i != maxIndex ){
+                    allFen += fens[i];
+                }
+            }
+            <span class="hljs-keyword">return</span> allFen/(fens.length<span class="hljs-number">-2</span>);
+        }
+        <span class="hljs-comment">// remove the highest score</span>
+        public int getHighFenIndex() {
+            <span class="hljs-comment">// recognize the first is the lowest socre</span>
+            float maxFen = fens[<span class="hljs-number">0</span>];
+            int maxIndex = <span class="hljs-number">0</span>;
+            <span class="hljs-keyword">for</span> (int i = <span class="hljs-number">0</span> ; i &lt; fens.length ; i ++ ) {
+                <span class="hljs-keyword">if</span> ( maxFen &gt; fens[i] ) {
+                    maxFen = fens[i];
+                    maxIndex = i;
+                }
+            }
+            <span class="hljs-keyword">return</span> maxIndex;
+        }
+        <span class="hljs-comment">// remove the lowest score</span>
+        public int getLowFenIndex() {
+            <span class="hljs-comment">//recognize the first is the lowest socre</span>
+            float minFen = fens[<span class="hljs-number">0</span>];
+            int minIndex = <span class="hljs-number">0</span>;
+            <span class="hljs-keyword">for</span> (int i = <span class="hljs-number">0</span> ; i &lt; fens.length ; i ++ ) {
+                <span class="hljs-keyword">if</span> ( minFen &gt; fens[i] ) {
+                    minFen = fens[i];
+                    minIndex = i;
+                }
+            }
+            <span class="hljs-keyword">return</span> minIndex;
+        }
+    }
+
+
+<span class="hljs-number">015.</span>界面
+<span class="hljs-comment">// Graphics User Interface GUI</span>
+    Abstract Window Toolkit AWT
+    swing
+    SWT
+        JFace
+
+        <span class="hljs-keyword">import</span> java.awt.*;
+        <span class="hljs-keyword">import</span> javax.swing.*;
+        public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span> </span>{
+            public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span> [] args ) {
+                JFrame jf = <span class="hljs-keyword">new</span> JFrame();
+                JButton jb1 = <span class="hljs-keyword">new</span> JButton(<span class="hljs-string">"I'm button"</span>);
+                jf.setTitle(<span class="hljs-string">"Jisuowei's first JF"</span>);
+                jf.setSize(<span class="hljs-number">200</span>,<span class="hljs-number">200</span>);
+                jf.add(jb1);
+                jf.setLocation(<span class="hljs-number">50</span>,<span class="hljs-number">50</span>);
+                jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                jf.setVisible(<span class="hljs-literal">true</span>);
+            }
+        }
+
+        <span class="hljs-keyword">import</span> java.awt.*;
+        <span class="hljs-keyword">import</span> javax.swing.*;
+        public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">JFrame</span> </span>{
+            JButton jb1 = <span class="hljs-literal">null</span>;
+            public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span> [] args ) {
+                Test test = <span class="hljs-keyword">new</span> Test();
+            }
+            public Test () {
+                jb1 = <span class="hljs-keyword">new</span> JButton(<span class="hljs-string">"I'm button"</span>);
+                <span class="hljs-keyword">this</span>.setTitle(<span class="hljs-string">"Jisuowei"</span>);
+                <span class="hljs-keyword">this</span>.setSize(<span class="hljs-number">200</span>,<span class="hljs-number">200</span>);
+                <span class="hljs-keyword">this</span>.add(jb1);
+                <span class="hljs-keyword">this</span>.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                <span class="hljs-keyword">this</span>.setVisible(<span class="hljs-literal">true</span>);
+            }
+        }
+    
+<span class="hljs-comment">// 布局管理器</span>
+    概念：
+        组件在容器中的位置和大小是由布局管理器来决定的所有的容器都会使用一个布局管理器，通过它来自动进行组件的布局管理
+
+    种类：
+        java共提供了五种布局管理器
+            流式布局管理器 FlowLayout
+                <span class="hljs-keyword">import</span> java.awt.*;
+                <span class="hljs-keyword">import</span> javax.swing.*;
+                public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">JFrame</span> </span>{
+                    JButton jb1,jb2,jb3,jb4,jb5,jb6;
+                    public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span> [] args ) {
+                        Test test = <span class="hljs-keyword">new</span> Test();
+                    }
+                    public Test() {
+                        jb1 = <span class="hljs-keyword">new</span> JButton(<span class="hljs-string">"chisw"</span>);
+                        jb2 = <span class="hljs-keyword">new</span> JButton(<span class="hljs-string">"chisw"</span>);
+                        jb3 = <span class="hljs-keyword">new</span> JButton(<span class="hljs-string">"chisw"</span>);
+                        jb4 = <span class="hljs-keyword">new</span> JButton(<span class="hljs-string">"chisw"</span>);
+                        jb5 = <span class="hljs-keyword">new</span> JButton(<span class="hljs-string">"chisw"</span>);
+                        jb6 = <span class="hljs-keyword">new</span> JButton(<span class="hljs-string">"chisw"</span>);
+                        <span class="hljs-keyword">this</span>.add(jb1);
+                        <span class="hljs-keyword">this</span>.add(jb2);
+                        <span class="hljs-keyword">this</span>.add(jb3);
+                        <span class="hljs-keyword">this</span>.add(jb4);
+                        <span class="hljs-keyword">this</span>.add(jb5);
+                        <span class="hljs-keyword">this</span>.add(jb6);
+                        <span class="hljs-comment">// set the size of button</span>
+                        <span class="hljs-keyword">this</span>.setLayout(<span class="hljs-keyword">new</span> FlowLayout(FlowLayout.LEFT));
+                        <span class="hljs-comment">// set the infomation of the window</span>
+                        <span class="hljs-keyword">this</span>.setTitle(<span class="hljs-string">"The act of BorderLayout"</span>);
+                        <span class="hljs-keyword">this</span>.setSize(<span class="hljs-number">320</span>,<span class="hljs-number">200</span>);
+                        <span class="hljs-keyword">this</span>.setLocation(<span class="hljs-number">200</span>,<span class="hljs-number">200</span>);
+                        <span class="hljs-comment">// forbid user changing the size of window</span>
+                        <span class="hljs-keyword">this</span>.setResizable(<span class="hljs-literal">false</span>);
+                        <span class="hljs-keyword">this</span>.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        <span class="hljs-comment">// display the window</span>
+                        <span class="hljs-keyword">this</span>.setVisible(<span class="hljs-literal">true</span>);
+                    }
+                }
+
+            边界布局管理器 BorderLayout
+                将容器简单划分为东西南北中五个区域，中间区域最大
+                JFrame窗体，JDialog对话框组件默认的布局方法
+                <span class="hljs-comment">/* BorderLayout演示
+                        1.继承JFrame
+                        2.定义你需要的组件
+                        3.创建组件(构造函数) 
+                        4.添加组件
+                        5.对窗体设置
+                */</span>
+                package com.chisw;
+                <span class="hljs-keyword">import</span> java.awt.*;
+                <span class="hljs-keyword">import</span> javax.swing.*;
+                public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">JFrame</span> </span>{
+                    JButton jb1,jb2,jb3,jb4,jb5;
+                    public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span> [] args ) {
+                        Test test = <span class="hljs-keyword">new</span> Test();
+                    }
+                    public Test () {
+                        jb1 = <span class="hljs-keyword">new</span> JButton(<span class="hljs-string">"center"</span>);
+                        jb2 = <span class="hljs-keyword">new</span> JButton(<span class="hljs-string">"north"</span>);
+                        jb3 = <span class="hljs-keyword">new</span> JButton(<span class="hljs-string">"east"</span>);
+                        jb4 = <span class="hljs-keyword">new</span> JButton(<span class="hljs-string">"south"</span>);
+                        jb5 = <span class="hljs-keyword">new</span> JButton(<span class="hljs-string">"west"</span>);
+                        <span class="hljs-comment">// add all the</span>
+                        <span class="hljs-keyword">this</span>.add(jb1,BorderLayout.CENTER);
+                        <span class="hljs-keyword">this</span>.add(jb2,BorderLayout.NORTH);
+                        <span class="hljs-keyword">this</span>.add(jb3,BorderLayout.EAST);
+                        <span class="hljs-keyword">this</span>.add(jb4,BorderLayout.SOUTH);
+                        <span class="hljs-keyword">this</span>.add(jb5,BorderLayout.WEST);
+                        <span class="hljs-comment">// set the infomation of the window</span>
+                        <span class="hljs-keyword">this</span>.setTitle(<span class="hljs-string">"The act of BorderLayout"</span>);
+                        <span class="hljs-keyword">this</span>.setSize(<span class="hljs-number">300</span>,<span class="hljs-number">200</span>);
+                        <span class="hljs-keyword">this</span>.setLocation(<span class="hljs-number">200</span>,<span class="hljs-number">200</span>);
+                        <span class="hljs-keyword">this</span>.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        <span class="hljs-comment">// display the window</span>
+                        <span class="hljs-keyword">this</span>.setVisible(<span class="hljs-literal">true</span>);
+                    }
+                }
+
+            网格布局管理器 GridLayout
+                <span class="hljs-keyword">import</span> java.awt.*;
+                <span class="hljs-keyword">import</span> javax.swing.*;
+                public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">JFrame</span> </span>{
+                    int size = <span class="hljs-number">9</span>;
+                    JButton jbs[] = <span class="hljs-keyword">new</span> JButton[size];
+                    public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span> [] args ) {
+                        Test test = <span class="hljs-keyword">new</span> Test();
+                    }
+                    public Test() {
+                        <span class="hljs-comment">// create</span>
+                        <span class="hljs-keyword">for</span> (int i = <span class="hljs-number">0</span> ; i &lt; <span class="hljs-number">9</span> ; i++ ) {
+                            jbs[i] = <span class="hljs-keyword">new</span> JButton(<span class="hljs-built_in">String</span>.valueOf(i+<span class="hljs-number">1</span>));
+                        }
+                        <span class="hljs-comment">// set gridLayout</span>
+                        <span class="hljs-keyword">this</span>.setLayout(<span class="hljs-keyword">new</span> GridLayout(<span class="hljs-number">3</span>,<span class="hljs-number">3</span>,<span class="hljs-number">10</span>,<span class="hljs-number">10</span>));
+                        <span class="hljs-comment">// add</span>
+                        <span class="hljs-keyword">for</span> ( int i = <span class="hljs-number">0</span> ; i &lt; size; i++ ) {
+                            <span class="hljs-keyword">this</span>.add(jbs[i]);
+                        }
+                        <span class="hljs-comment">// set the information of the window</span>
+                        <span class="hljs-keyword">this</span>.setTitle(<span class="hljs-string">"The act of BorderLayout"</span>);
+                        <span class="hljs-keyword">this</span>.setSize(<span class="hljs-number">320</span>,<span class="hljs-number">200</span>);
+                        <span class="hljs-keyword">this</span>.setLocation(<span class="hljs-number">200</span>,<span class="hljs-number">200</span>);
+                        <span class="hljs-comment">// forbid user changing the size of window</span>
+                        <span class="hljs-keyword">this</span>.setResizable(<span class="hljs-literal">false</span>);
+                        <span class="hljs-keyword">this</span>.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        <span class="hljs-comment">// display the window</span>
+                        <span class="hljs-keyword">this</span>.setVisible(<span class="hljs-literal">true</span>);
+                    }
+                }
+
+            卡片布局管理器 CardLayout
+
+            网格包布局管理器 GridBagLayout
+
+            <span class="hljs-keyword">import</span> java.awt.*;
+            <span class="hljs-keyword">import</span> javax.swing.*;
+            public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">JFrame</span> </span>{
+                JPanel jp1,jp2,jp3;
+                JLabel jlb1,jlb2;
+                JButton jb1,jb2;
+                JTextField jtf1;
+                JPasswordField jpf1;
+                public <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(<span class="hljs-built_in">String</span> [] args ) {
+                    Test test = <span class="hljs-keyword">new</span> Test();
+                }
+                public Test() {
+                    jp1 = <span class="hljs-keyword">new</span> JPanel();
+                    jp2 = <span class="hljs-keyword">new</span> JPanel();
+                    jp3 = <span class="hljs-keyword">new</span> JPanel();
+                    jlb1 = <span class="hljs-keyword">new</span> JLabel(<span class="hljs-string">"User"</span>);
+                    jlb2 = <span class="hljs-keyword">new</span> JLabel(<span class="hljs-string">"Password"</span>);
+                    jb1 = <span class="hljs-keyword">new</span> JButton(<span class="hljs-string">"Login"</span>);
+                    jb2 = <span class="hljs-keyword">new</span> JButton(<span class="hljs-string">"Cancel"</span>);
+                    jtf1 = <span class="hljs-keyword">new</span> JTextField(<span class="hljs-number">10</span>);
+                    jpf1 = <span class="hljs-keyword">new</span> JPasswordField(<span class="hljs-number">10</span>);
+                    <span class="hljs-keyword">this</span>.setLayout(<span class="hljs-keyword">new</span> GridLayout(<span class="hljs-number">3</span>,<span class="hljs-number">1</span>));
+                    jp1.add(jlb1);
+                    jp1.add(jtf1);
+                    jp2.add(jlb2);
+                    jp2.add(jpf1);
+                    jp3.add(jb1);
+                    jp3.add(jb2);
+                    <span class="hljs-keyword">this</span>.add(jp1);
+                    <span class="hljs-keyword">this</span>.add(jp2);
+                    <span class="hljs-keyword">this</span>.add(jp3);
+                    <span class="hljs-keyword">this</span>.setTitle(<span class="hljs-string">"Login"</span>);
+                    <span class="hljs-keyword">this</span>.setSize(<span class="hljs-number">300</span>,<span class="hljs-number">150</span>);
+                    <span class="hljs-keyword">this</span>.setLocation(<span class="hljs-number">200</span>,<span class="hljs-number">200</span>);
+                    <span class="hljs-keyword">this</span>.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    <span class="hljs-keyword">this</span>.setVisible(<span class="hljs-literal">true</span>);
+                }
+            }
+<span class="hljs-number">3.</span>swing
+
+
+<span class="hljs-comment">//2015-07-30</span>
+<span class="hljs-number">016.</span>数据库
+    基本结构：
+        物理数据层
+            它是数据的最内层，是物理存储设备上实际存储的数据集合
+            这些数据是原始数据，是用户加工的对象，由内部模式来描述的指令操作处理的位串，字符和字组成
+        概念数据层
+            它是数据库的中间一层，是数据库的整体逻辑表示
+            指出了每个数据的逻辑定义及数据间的逻辑联系，是存储记录的集合
+            它所涉及的是数据库所有对象的逻辑关系，而不是它们的物理情况，是数据库管理员概念下的数据库
+        逻辑数据层
+            它是用户所看到和使用的数据库，表示了一个或一些特定用户使用的数据集合，即逻辑记录的集合
+            数据库不同层次之间的联系是通过映射进行转换的
+
+    基本特点：
+        实现数据共享
+            数据共享包含所有用户可同时存取数据库中的数据，也包括用户可以用各种方式通过接口使用数据库，
+            并提供数据共享
+        减少数据的冗余度
+            同文件系统比，数据库实现了数据共享，从而避免了用户各自简历应用文件减少了大量重复数据，
+            减少了数据冗余，维护了数据的一致性
+        数据实现集中控制
+            文件管理方式中，数据处于一种分散的状态，不同的用户或同一用户在不同处理中其文件之间毫无关系
+            利用数据库可对数据进行集中控制和管理，并通过数据模型表示各种数据的组织以及数据间的联系
+
+            数据一致性和可维护性，以确保数据的安全性和可靠性
+            故障恢复
+
+    主流数据库：
+        Microsoft    sql server,access
+        MySQL         AB COMPANY,mysql
+        IBM         db2
+        Sybase         Sybase
+        IBM         informix
+        ORACLE         oracle 
+
+    选择：
+        成本
+        功能
+        并发性
+        安全性
+
+    SQL Structured Query Language
+
+
+<span class="hljs-number">017.</span>SQL Server
+    SQL Server是一个关系数据库管理系统
+
+    安装
+
+    开发工具
+        企业管理器
+        查询分析器
+</short<int<long<float<double></code></pre>

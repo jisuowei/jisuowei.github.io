@@ -1,0 +1,485 @@
+<pre><code class="js hljs javascript">
+<span class="hljs-comment">/*
+
+    JavaScript Object
+
+    2016-08-15
+    ~
+    2016-08-24 Noted by Chisw
+
+*/</span>
+
+
+<span class="hljs-number">001.</span><span class="hljs-built_in">Array</span>
+<span class="hljs-number">002.</span><span class="hljs-built_in">Boolean</span>
+<span class="hljs-number">003.</span><span class="hljs-built_in">Date</span>
+<span class="hljs-number">004.</span><span class="hljs-built_in">Math</span>
+<span class="hljs-number">005.</span><span class="hljs-built_in">Number</span>
+<span class="hljs-number">006.</span><span class="hljs-built_in">String</span>
+<span class="hljs-number">007.</span><span class="hljs-built_in">RegExp</span>
+<span class="hljs-number">008.</span>Functions
+<span class="hljs-number">009.</span>Events
+
+
+<span class="hljs-comment">// 2016-08-15</span>
+<span class="hljs-number">001.</span><span class="hljs-built_in">Array</span>
+<span class="hljs-comment">// 创建</span>
+    <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>();
+    <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(size);
+    <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(ele0,ele1,..,elen);
+    <span class="hljs-comment">// 只传递给它一个数字参数，该构造函数将返回具有指定个数、元素为 undefined 的数组</span>
+
+<span class="hljs-comment">// 属性</span>
+    <span class="hljs-keyword">constructor</span>      // 返回对创建此对象的数组函数的引用 if (test.<span class="hljs-keyword">constructor</span>==Array){..}
+    prototype          <span class="hljs-comment">// 可以向对象添加属性和方法</span>
+    length          <span class="hljs-comment">// 设置或返回数组中元素的数目</span>
+
+<span class="hljs-comment">// 方法</span>
+    concat()              <span class="hljs-comment">// 将传入的参数或数组连接到调用的数组的后面</span>
+    slice(start,end)      <span class="hljs-comment">// 从数组中返回选定的元素构成的新数组 start必需 负数从末尾开始</span>
+    splice(index, howmany, item1,..)  <span class="hljs-comment">// index howmany 必需；从index开始删除howmany个并插入n个item</span>
+
+    shift()              <span class="hljs-comment">// 删除并返回数组中第一个元素</span>
+    pop()                  <span class="hljs-comment">// 删除并返回数组中最后一个元素</span>
+
+    unshift()              <span class="hljs-comment">// 向数组的开头添加参数(至少一个) 并返回新的长度</span>
+    push()              <span class="hljs-comment">// 向数组末尾添加参数(至少一个) 并返回新的长度</span>
+
+    sort()              <span class="hljs-comment">// 排序 数字比大小传入 sortNum function sortNum(a,b){ return a-b; }</span>
+    reverse()              <span class="hljs-comment">// 颠倒数组中元素的顺序</span>
+
+    join()              <span class="hljs-comment">// 将数组中的所有元素并成一个字符串 不传入参数默认用英文逗号隔开</span>
+    toString()          <span class="hljs-comment">// 等价于没有参数的 join()</span>
+    toLoaleString()      <span class="hljs-comment">// 把数组转换为地区特定的分隔符间隔的字符串</span>
+
+    valueOf()              <span class="hljs-comment">// 返回 Array 对象的原始值 通常由JS在后台自动调用 并不显式地出现在代码中</span>
+
+    toSource()          <span class="hljs-comment">// 表示对象的源代码 只有Gecko内核支持</span>
+
+
+<span class="hljs-comment">// 2016-08-16</span>
+<span class="hljs-number">002.</span><span class="hljs-built_in">Boolean</span>
+<span class="hljs-comment">// 创建 参数省略或 0、-0、null、""、false、undefined、NaN 则对象设置为 false；( "false"为ture )</span>
+    <span class="hljs-keyword">new</span> <span class="hljs-built_in">Boolean</span>(value);  <span class="hljs-comment">// 构造函数 返回的是一个布尔对象</span>
+    <span class="hljs-built_in">Boolean</span>(value);      <span class="hljs-comment">// 转换函数 返回的是一个布尔值</span>
+
+<span class="hljs-comment">// 属性</span>
+    <span class="hljs-keyword">constructor</span>
+    prototype
+
+// 方法
+    toSource()  // 表示对象的源代码 IE无效
+    toString()  // 把逻辑值转换为字符串 并返回结果
+    valueOf()  // 返回 Boolean 对象的原始值
+
+
+003.Date
+// 创建
+    new Date()
+    new Date(y,m,d)
+
+// 属性
+    <span class="hljs-keyword">constructor</span>
+    prototype
+
+// 方法
+    Date()    // 返回当前日期和时间 =&gt; Tue Aug 16 2016 16:23:59 GMT+0800 (中国标准时间)
+    UTC(year,month,day,hours,minutes,seconds,ms)
+        // 根据世界时返回 1970.1.1 到指定日期的毫秒数
+
+    // 根据 Date 对象
+    getFullYear()          // 四位数年份 =&gt; 2016
+    getMonth()             // 几月 =&gt; 0~11
+    getDate()              // 几号 =&gt; 1~31
+    getDay()              // 周几 =&gt; 0~6
+    getHours()          // 几点 =&gt; 0~23
+    getMinutes()          // 几分 =&gt; 0~59
+    getSeconds()          // 几秒 =&gt; 0~59
+    getMilliseconds()      // 几毫秒 =&gt; 0~999
+
+    setFullYear()          // 四位数年份 =&gt; 2016
+    setMonth()             // 几月 =&gt; 0~11
+    setDate()              // 几号 =&gt; 1~31
+    // setDay()
+    setHours()          // 几点 =&gt; 0~23
+    setMinutes()          // 几分 =&gt; 0~59
+    setSeconds()          // 几秒 =&gt; 0~59
+    setMilliseconds()      // 几毫秒 =&gt; 0~999
+
+    // 根据世界时
+    getUTCFullYear()
+    getUTCMonth()
+    getUTCDate()
+    getUTCDay()
+    getUTCHours()
+    getUTCMinutes()
+    getUTCSeconds()
+    getUTCMilliseconds()
+
+    setUTCFullYear()
+    setUTCMonth()
+    setUTCDate()
+    // setUTCDay()
+    setUTCHours()
+    setUTCMinutes()
+    setUTCSeconds()
+    setUTCMilliseconds()
+
+    //
+    parse("Jul 8, 2005")// 根据字符串返回 1970.1.1 午夜距离该日期时间的毫秒数
+    getTimezoneOffset() // 返回本地时间与格林威治标准时间 (GMT) 的分钟差
+    getTime()              // 获取1970.1.1至今的毫秒数
+    setTime()            // 以距离1970.1.1毫秒数设置 Date
+
+    toString()          // Tue Aug 16 2016 16:23:59 GMT+0800 (中国标准时间)
+    toDateString()      // Tue Aug 16 2016
+    toTimeString()      // 16:23:59 GMT+0800 (中国标准时间)
+
+    toUTCString()          // Tue, 16 Aug 2016 09:07:55 GMT
+
+    toLoaleString()      // 2016/8/16 下午5:09:43
+    toLoaleDateString()    // 2016/8/16
+    toLoaleTimeString() // 下午5:09:43
+
+    toSource()          // 表示对象的源代码 IE无效
+    valueOf()              // 返回 Date 对象的原始值
+
+    getYear()              // getFullYear() 取代
+    setYear()              // setFullYear() 取代
+    toGMTString()          // toUTCString() 取代
+
+
+// 2016-08-17
+004.Math
+// 创建
+    // Math 并不像 Date 是对象的类 没有构造函数 Math()
+    // 像 Math.sin() 这样的函数只是函数，不是某个对象的方法
+    // 您无需创建它，通过把 Math 作为对象使用就可以调用其所有属性和方法
+
+// 属性
+    E              // 返回算术常量 e，即自然对数的底数 约等于 2.718
+    LN2          // 返回 2 的自然对数 约等于 0.693
+    LN10          // 返回 10 的自然对数 约等于 2.302
+    LOG2E          // 返回以 2 为底的 e 的对数 约等于 1.414
+    LOG10E      // 返回以 10 为底的 e 的对数 约等于 0.434
+    PI          // 返回圆周率 约等于 3.14159
+    SQRT1_2     // 返回返回 2 的平方根的倒数 约等于 0.707
+    SQRT2          // 返回 2 的平方根 约等于 1.414
+
+// 方法
+    ceil(x)      // 对数进行上舍入
+    round(x)      // 把数四舍五入为最接近的整数
+    floor(x)      // 对数进行下舍入
+
+    abs(x)      // 返回数的绝对值
+    random()      // 返回 0 ~ 1 之间的随机数
+    sqrt(x)      // 返回数的平方根
+
+    sin(x)      // 返回数的正弦
+    cos(x)      // 返回数的余弦
+    tan(x)      // 返回角的正切
+    asin(x)      // 返回数的反正弦值
+    acos(x)      // 返回数的反余弦值
+    atan(x)      // 以介于 -PI/2 与 PI/2 弧度之间的数值来返回 x 的反正切值
+    atan2(y,x)  // 返回从 x 轴到点 (x,y) 的角度（介于 -PI/2 与 PI/2 弧度之间）
+
+    log(x)      // 返回数的自然对数（底为e）
+    exp(x)      // 返回 e 的指数
+
+    max(x,y)      // 返回 x 和 y 中的最高值
+    min(x,y)      // 返回 x 和 y 中的最低值
+    pow(x,y)      // 返回 x 的 y 次幂
+
+    toSource()  // 返回该对象的源代码
+    valueOf()      // 返回 Math 对象的原始值
+
+
+005.Number
+// 创建
+    new Number(value)  // 构造函数
+    Number(value)  // 转换函数
+
+// 属性
+    <span class="hljs-keyword">constructor</span>      // 返回对创建此对象的 Number 函数的引用
+    prototype          // 使您有能力向对象添加属性和方法
+
+    NaN              // 非数字值  if(month&gt;12) { month = <span class="hljs-built_in">Math</span>.NaN }
+    MAX_VALUE          <span class="hljs-comment">// 可表示的最大的数 1.7976931348623157e+308</span>
+    MIN_VALUE          <span class="hljs-comment">// 可表示的最小的数 5e-324</span>
+    NEGATIVE_INFINITY  <span class="hljs-comment">// 负无穷大，溢出时返回该值</span>
+    POSITIVE_INFINITY  <span class="hljs-comment">// 正无穷大，溢出时返回该值</span>
+
+<span class="hljs-comment">// 方法</span>
+    toString(radix)      <span class="hljs-comment">// 转字符串，使用指定的基数 radix为 2~36 默认10</span>
+    toLocaleString()      <span class="hljs-comment">// 转字符串，使用本地数字格式顺序</span>
+    toFixed(num)          <span class="hljs-comment">// 转字符串，结果的小数点后有num位数的数字 num为 0~20 默认0</span>
+    toExponential()      <span class="hljs-comment">// 把对象的值转换为指数计数法</span>
+    toPrecision(num)      <span class="hljs-comment">// 把数字格式化为指定的长度 num为1~21 默认toString()</span>
+    valueOf()              <span class="hljs-comment">// 返回一个 Number 对象的基本数字值</span>
+
+
+<span class="hljs-number">006.</span><span class="hljs-built_in">String</span>
+<span class="hljs-comment">// 创建 字符串是不可变的（immutable） 方法返回的是全新的字符串</span>
+    <span class="hljs-keyword">new</span> <span class="hljs-built_in">String</span>(s)
+    <span class="hljs-built_in">String</span>(s)
+
+<span class="hljs-comment">// 属性</span>
+    <span class="hljs-keyword">constructor</span>      // 返回对创建此对象的函数的引用
+    prototype          // 可以向对象添加属性和方法
+    length          // 字符串的长度
+
+// 方法
+    concat()                  // 连接
+    replace(origin,later)      // 替换
+    slice(start,end)          // 提取
+    subString()              // 提取 不接受负数
+    split(separator,num)      // 分割保存到数组 （以tor作为分割标准，保存前多少个） 空字符串逐个分割
+    // substr()              // 建议使用subString()
+
+    anchor(idname)    // 以字符串创建锚点  var txt = '回到顶部'; txt.anchor('#top');
+    link(url)          // 以字符串创建链接 var txt = 'JISUOWEI'; txt.link('http://jisuowei.com');
+
+    charAt(index)      // 返回指定索引位置字符
+    charCodeAt(index)// 返回指定索引位置字符Unicode编码
+    fromCharCode(num1,num2..)      // 将指定Unicode码转为字符串
+    localeCompare(target)  // 用本地特定的 Unicode 编码顺序来比较两个字符串
+
+    match()          // 返回匹配的值 失败返回null 存放匹配结果的数组内容依赖于正则是否有 g
+    search(searchvalue)  // 低配版indexOf() 忽略正则标志 g 和 lastIndex 属性
+    indexOf(searchvalue,fromindex)      // 默认搜索起始位置0
+    lastIndexOf(searchvalue,fromindex)  // 默认搜索起始位置str.length-1
+        // 检索值必需；区分大小写；检索起始位置取值为0~str.length-1；成功返回匹配位置索引 失败返回-1
+
+    toLowerCase()      // 小写
+    toUpperCase()      // 大写
+    // toLocaleLowerCase()  // 小写
+    // toLocaleUpperCase()  // 大写
+
+    big()              // 大号字体
+    small()          // 小号字体
+    bold()             // 加粗
+    italics()          // 斜体
+    fixed()         // 打字机体
+    fontcolor('red')// 颜色
+    fontsize(7)     // 字号
+    strike()          // 删除线
+    sup()              // 上标
+    sub()              // 下标
+    // blink()         // 闪动文本
+
+    toSource()
+    toString()
+    valueOf()
+
+
+// 2016-08-23
+007.RegExp
+// 创建
+    new RegExp(pattern, attr)  // 构造 var patt = new RegExp("W3School","g");
+    RegExp(ptn,attr)  // 转换
+
+// 参数
+    // ptn 是一个字符串； attr 包含 g i m；全局匹配、区分大小写，多行匹配
+    // 如果 ptn 是正则表达式，而不是字符串，则必须省略该参数
+
+// 返回值
+    // 一个新的 RegExp 对象，具有指定的模式和标志
+    // 如果 ptn 是正则表达式而不是字符串，构造函数将用与指定 RegExp 相同模式和标志创建一个新的对象
+
+// 抛出
+    SyntaxError  // ptn 是不合法的正则表达式，或 attr 含有 g i m 之外的字符
+    TypeError  // ptn 是 RE对象，但没有省略 attr 参数
+
+// 修饰符
+    i  // 忽略大小写
+    g  // 全局匹配
+    m  // 多行匹配
+
+// 范围
+    [abc]          // 查找方括号之间的任何字符
+    [^abc]      // 查找任何不在方括号之间的字符
+    [0-9]          // 查找任何从 0 至 9 的数字
+    [a-z]          // 查找任何从小写 a 到小写 z 的字符
+    [A-Z]          // 查找任何从大写 A 到大写 Z 的字符
+    [A-z]          // 查找任何从大写 A 到小写 z 的字符
+    [adgk]      // 查找给定集合内的任何字符
+    [^adgk]      // 查找给定集合外的任何字符
+    (red|blue|green)      // 查找任何指定的选项
+
+// 元字符
+    .          // 查找单个字符，除了换行和行结束符
+    \w      // 查找单词字符
+    \W      // 查找非单词字符
+    \d      // 查找数字
+    \D      // 查找非数字字符
+    \s      // 查找空白字符
+    \S      // 查找非空白字符
+    \b      // 匹配单词边界
+    \B      // 匹配非单词边界
+    \0      // 查找 NUL 字符
+    \n      // 查找换行符
+    \f      // 查找换页符
+    \r      // 查找回车符
+    \t      // 查找制表符
+    \v      // 查找垂直制表符
+    \xxx      // 查找以八进制数 xxx 规定的字符
+    \xdd      // 查找以十六进制数 dd 规定的字符
+    \uxxxx  // 查找以十六进制数 xxxx 规定的 Unicode 字符
+
+// 量词
+    n+      // 1个 及以上(至少一个)
+    n*      // 0 到 多
+    n?      // 0 或 1
+    n{X}      <span class="hljs-comment">// X 个</span>
+    n{X,Y}  <span class="hljs-comment">// X 到 Y 个</span>
+    n{X,}      <span class="hljs-comment">// 至少 X 个</span>
+    n$      <span class="hljs-comment">// 以结尾</span>
+    ^n      <span class="hljs-comment">// 以开头</span>
+    ?=n      <span class="hljs-comment">// 以指定紧接结尾</span>
+    ?!n      <span class="hljs-comment">// 不以指定紧接结尾</span>
+
+<span class="hljs-comment">// 属性</span>
+    source      <span class="hljs-comment">// 正则表达式的源文本</span>
+    lastIndex      <span class="hljs-comment">// 一个整数，标示开始下一次匹配的字符位置</span>
+
+    ignoreCase  <span class="hljs-comment">// 是否具有标志 i</span>
+    multiline      <span class="hljs-comment">// 是否具有标志 m</span>
+    global      <span class="hljs-comment">// 是否具有标志 g</span>
+
+<span class="hljs-comment">// 方法</span>
+    compile(regexp,modifier)      <span class="hljs-comment">// 编译正则表达式</span>
+    test()                          <span class="hljs-comment">// 检索字符串中指定的值 返回 true 或 false</span>
+    exec(str)                          <span class="hljs-comment">// 检索字符串中指定的值返回找到的值，并确定其位置</span>
+    <span class="hljs-comment">// 匹配后将 RegExpObject 的 lastIndex 属性设置为匹配文本的最后一个字符的下一个位置</span>
+    <span class="hljs-comment">// 可以通过反复调用 exec() 方法来遍历字符串中的所有匹配文本</span>
+    <span class="hljs-comment">// 当 exec() 再也找不到匹配的文本时，它将返回 null，并把 lastIndex 属性重置为 0</span>
+
+<span class="hljs-comment">// 在 String对象方法中支持正则表达式的方法</span>
+    replace()
+    slice()
+    match()
+    search()
+
+
+<span class="hljs-comment">// 2016-08-24</span>
+<span class="hljs-number">008.</span>Functions
+<span class="hljs-comment">// 顶层函数</span>
+    <span class="hljs-built_in">decodeURI</span>()              <span class="hljs-comment">//解码某个编码的 URI</span>
+    <span class="hljs-built_in">decodeURIComponent</span>()      <span class="hljs-comment">//解码一个编码的 URI 组件</span>
+    <span class="hljs-built_in">encodeURI</span>()              <span class="hljs-comment">//把字符串编码为 URI</span>
+    <span class="hljs-built_in">encodeURIComponent</span>()      <span class="hljs-comment">//把字符串编码为 URI 组件</span>
+    <span class="hljs-built_in">escape</span>()                  <span class="hljs-comment">//对字符串进行编码</span>
+    <span class="hljs-built_in">unescape</span>()              <span class="hljs-comment">//对由 escape() 编码的字符串进行解码</span>
+
+    getClass()              <span class="hljs-comment">//返回一个 JavaObject 的 JavaClass</span>
+    <span class="hljs-built_in">eval</span>()                  <span class="hljs-comment">//计算 JavaScript 字符串，并把它作为脚本代码来执行</span>
+
+    <span class="hljs-built_in">String</span>()                  <span class="hljs-comment">//把对象的值转换为字符串</span>
+    <span class="hljs-built_in">Number</span>()                  <span class="hljs-comment">//把对象的值转换为数字</span>
+    <span class="hljs-built_in">parseFloat</span>()              <span class="hljs-comment">//解析一个字符串并返回一个浮点数</span>
+    <span class="hljs-built_in">parseInt</span>()              <span class="hljs-comment">//解析一个字符串并返回一个整数</span>
+    <span class="hljs-built_in">isNaN</span>()                  <span class="hljs-comment">//检查某个值是否是数字</span>
+    <span class="hljs-built_in">isFinite</span>()              <span class="hljs-comment">//检查某个值是否为有穷大的数</span>
+
+<span class="hljs-comment">// 顶层属性</span>
+    <span class="hljs-literal">Infinity</span>      <span class="hljs-comment">// 代表正的无穷大的数值</span>
+    java          <span class="hljs-comment">// 代表 java.* 包层级的一个 JavaPackage</span>
+    <span class="hljs-literal">NaN</span>          <span class="hljs-comment">// 指示某个值是不是数字值</span>
+    Packages      <span class="hljs-comment">// 根 JavaPackage 对象</span>
+    <span class="hljs-literal">undefined</span>      <span class="hljs-comment">// 指示未定义的值</span>
+
+<span class="hljs-comment">// 全局对象</span>
+    <span class="hljs-comment">// 全局对象是预定义的对象，作为 JavaScript 的全局函数和全局属性的占位符</span>
+    <span class="hljs-comment">// 通过使用全局对象，可以访问所有其他所有预定义的对象、函数和属性</span>
+    <span class="hljs-comment">// 全局对象不是任何对象的属性，所以它没有名称</span>
+    <span class="hljs-comment">// 在顶层 JavaScript 代码中，可以用关键字 this 引用全局对象</span>
+    <span class="hljs-comment">// 但通常不必用这种方式引用全局对象，因为全局对象是作用域链的头</span>
+    <span class="hljs-comment">// 这意味着所有非限定性的变量和函数名都会作为该对象的属性来查询</span>
+    <span class="hljs-comment">// 例如，当JavaScript 代码引用 parseInt() 函数时，它引用的是全局对象的 parseInt 属性</span>
+    <span class="hljs-comment">// 全局对象是作用域链的头，还意味着在顶层 JavaScript 代码中声明的所有变量都将成为全局对象的属性</span>
+    <span class="hljs-comment">// 全局对象只是一个对象，而不是类。既没有构造函数，也无法实例化一个新的全局对象。</span>
+    <span class="hljs-comment">// 在 JavaScript 代码嵌入一个特殊环境中时，全局对象通常具有环境特定的属性</span>
+    <span class="hljs-comment">// 实际上，ECMAScript 标准没有规定全局对象的类型</span>
+    <span class="hljs-comment">// JavaScript 的实现或嵌入的 JavaScript 都可以把任意类型的对象作为全局对象</span>
+    <span class="hljs-comment">// 只要该对象定义了这里列出的基本属性和函数</span>
+    <span class="hljs-comment">// 例如，在允许通过 LiveConnect 或相关的技术来脚本化 Java 的 JavaScript 实现中</span>
+    <span class="hljs-comment">// 全局对象被赋予了这里列出的 java 和 Package 属性以及 getClass() 方法</span>
+    <span class="hljs-comment">// 而在客户端 JavaScript 中，全局对象就是 Window 对象，表示允许 JavaScript 代码的 Web 浏览器窗口</span>
+
+
+<span class="hljs-number">009.</span>Events
+<span class="hljs-comment">// 一般事件</span>
+    onclick          <span class="hljs-comment">// 鼠标点击时</span>
+    ondblclick      <span class="hljs-comment">// 鼠标双击时</span>
+    onmousedown      <span class="hljs-comment">// 按下鼠标时</span>
+    onmouseup          <span class="hljs-comment">// 鼠标按下后松开鼠标时</span>
+    onmouseover      <span class="hljs-comment">// 当鼠标移动到某对象范围的上方时</span>
+    onmousemove      <span class="hljs-comment">// 鼠标移动时</span>
+    onmouseout      <span class="hljs-comment">// 当鼠标离开某对象范围时</span>
+    onkeypress      <span class="hljs-comment">// 当键盘上的某个键被按下并且释放时</span>
+    onkeydown          <span class="hljs-comment">// 当键盘上某个按键被按下时</span>
+    onkeyup          <span class="hljs-comment">// 当键盘上某个按键被按放开时</span>
+    onabort          <span class="hljs-comment">// 图片在下载时被用户中断</span>
+    onbeforeunload  <span class="hljs-comment">// 当前页面的内容将要被改变时</span>
+    onerror          <span class="hljs-comment">// 出现错误时</span>
+    onload          <span class="hljs-comment">// 页面内容完成时</span>
+    onmove          <span class="hljs-comment">// 浏览器的窗口被移动时</span>
+    onresize          <span class="hljs-comment">// 当浏览器的窗口大小被改变时</span>
+    onscroll          <span class="hljs-comment">// 浏览器的滚动条位置发生变化时</span>
+    onstop          <span class="hljs-comment">// 浏览器的停止按钮被按下时或者正在下载的文件被中断</span>
+    onunload          <span class="hljs-comment">// 当前页面将被改变时</span>
+
+<span class="hljs-comment">// 表单相关事件</span>
+    onblur          <span class="hljs-comment">// 当前元素失去焦点时</span>
+    onchange          <span class="hljs-comment">// 当前元素失去焦点并且元素的内容发生改变而</span>
+    onfocus          <span class="hljs-comment">// 当某个元素获得焦点时</span>
+    onreset          <span class="hljs-comment">// 当表单中RESET的属性被激发时</span>
+    onsubmit          <span class="hljs-comment">// 一个表单被递交时</span>
+
+<span class="hljs-comment">// 滚动字幕事件</span>
+    onbounce          <span class="hljs-comment">// 在Marquee内的内容移动至Marquee显示范围之外时</span>
+    onfinish          <span class="hljs-comment">// 当Marquee元素完成需要显示的内容后</span>
+    onstart          <span class="hljs-comment">// 当Marquee元素开始显示内容时</span>
+
+<span class="hljs-comment">// 编辑事件</span>
+    onbeforecopy      <span class="hljs-comment">// 当页面当前的被选择内容将要复制到浏览者系统的剪贴板前</span>
+    onbeforecut      <span class="hljs-comment">// 当页面中的一部分或者全部的内容将被移离当前页面[剪贴]并移动到浏览者的系统剪贴板时</span>
+    onbeforeeditfocus      <span class="hljs-comment">// 当前元素将要进入编辑状态</span>
+    onbeforepaste      <span class="hljs-comment">// 内容将要从浏览者的系统剪贴板传送[粘贴]到页面中时</span>
+    onbeforeupdate  <span class="hljs-comment">// 当浏览者粘贴系统剪贴板中的内容时通知目标对象</span>
+    oncontextmenu      <span class="hljs-comment">// 当浏览者按下鼠标右键出现菜单时或者通过键盘的按键触发页面菜单时</span>
+    oncopy          <span class="hljs-comment">// 当页面当前的被选择内容被复制后</span>
+    oncut              <span class="hljs-comment">// 当页面当前的被选择内容被剪切时</span>
+    ondrag          <span class="hljs-comment">// 当某个对象被拖动时</span>
+    ondragdrop      <span class="hljs-comment">// 一个外部对象被鼠标拖进当前窗口或者帧</span>
+    ondragend          <span class="hljs-comment">// 当鼠标拖动结束时，即鼠标的按钮被释放了</span>
+    ondragenter      <span class="hljs-comment">// 当对象被鼠标拖动的对象进入其容器范围内时</span>
+    ondragleave      <span class="hljs-comment">// 当对象被鼠标拖动的对象离开其容器范围内时</span>
+    ondragover      <span class="hljs-comment">// 当某被拖动的对象在另一对象容器范围内拖动时</span>
+    ondragstart      <span class="hljs-comment">// 当某对象将被拖动时</span>
+    ondrop          <span class="hljs-comment">// 在一个拖动过程中，释放鼠标键时</span>
+    onlosecapture      <span class="hljs-comment">// 当元素失去鼠标移动所形成的选择焦点时</span>
+    onpaste          <span class="hljs-comment">// 当内容被粘贴时</span>
+    onselect          <span class="hljs-comment">// 当文本内容被选择时的事件</span>
+    onselectstart      <span class="hljs-comment">// 当文本内容选择将开始发生时</span>
+
+<span class="hljs-comment">// 数据绑定</span>
+    onafterupdate      <span class="hljs-comment">// 当数据完成由数据源到对象的传送时</span>
+    oncellchange      <span class="hljs-comment">// 当数据来源发生变化时</span>
+    ondataavailable      <span class="hljs-comment">// 当数据接收完成时触发事件</span>
+    ondatasetchanged      <span class="hljs-comment">// 数据在数据源发生变化时</span>
+    ondatasetcomplete      <span class="hljs-comment">// 当来子数据源的全部有效数据读取完毕时</span>
+    onerrorupdate      <span class="hljs-comment">// 当使用onBeforeUpdate事件触发取消了数据传送时，代替onAfterUpdate事件</span>
+    onrowenter      <span class="hljs-comment">// 当前数据源的数据发生变化并且有新的有效数据时</span>
+    onrowexit          <span class="hljs-comment">// 当前数据源的数据将要发生变化时</span>
+    onrowsdelete      <span class="hljs-comment">// 当前数据记录将被删除时</span>
+    onrowsinserted      <span class="hljs-comment">// 当前数据源将要插入新数据记录时</span>
+
+<span class="hljs-comment">// 外部事件</span>
+    onafterprint      <span class="hljs-comment">// 当文档被打印后</span>
+    onbeforeprint      <span class="hljs-comment">// 当文档即将打印时</span>
+    onfilterchange  <span class="hljs-comment">// 当某个对象的滤镜效果发生变化时</span>
+    onhelp          <span class="hljs-comment">// 当浏览者按下F1或者浏览器的帮助选择时</span>
+    onpropertychange      <span class="hljs-comment">// 当对象的属性之一发生变化时</span>
+    onreadystatechange  <span class="hljs-comment">// 当对象的初始化属性值发生变化时</span>
+</code></pre>

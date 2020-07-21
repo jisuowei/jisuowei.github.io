@@ -1,0 +1,619 @@
+﻿<pre><code class="js hljs javascript">
+<span class="hljs-comment">/*
+
+    图解CSS3核心技术与案例实战 [大漠] Illustrated CSS3 Details and Cases 机械工业出版社
+
+    2015-11-05
+    ~
+    2015-11-08 Noted by Chisw
+
+    2016-07-23 Modified
+
+*/</span>
+
+
+<span class="hljs-comment">// Mobile Unit</span>
+    <span class="hljs-comment">// Android  360     720px   32px    22.5rem</span>
+    <span class="hljs-comment">// iOS      320     640px   32px    20rem</span>
+
+
+<span class="hljs-number">001.</span>Selector
+<span class="hljs-number">002.</span>Border
+<span class="hljs-number">003.</span>Background
+<span class="hljs-number">004.</span>Text
+<span class="hljs-number">005.</span>Color
+<span class="hljs-number">006.</span>Box
+<span class="hljs-number">007.</span>Flexbox
+<span class="hljs-number">008.</span>Columns
+<span class="hljs-number">009.</span>Gradient
+<span class="hljs-number">010.</span>Transform
+<span class="hljs-number">011.</span>Transition
+<span class="hljs-number">012.</span>Animation
+<span class="hljs-number">013.</span>Responsive
+<span class="hljs-number">014.</span>Web Font
+<span class="hljs-number">015.</span>Other
+
+
+<span class="hljs-comment">// 2015-11-05</span>
+<span class="hljs-number">001.</span>Selector
+<span class="hljs-comment">// 基本选择器</span>
+    *           <span class="hljs-comment">// 通配</span>
+    E           <span class="hljs-comment">// 元素</span>
+    #id         <span class="hljs-comment">// ID</span>
+    .class      <span class="hljs-comment">// 类</span>
+    sel1,sel2   <span class="hljs-comment">// 群组</span>
+
+<span class="hljs-comment">// 层次选择器</span>
+    E   F       <span class="hljs-comment">// 子，孙，...</span>
+    E &gt; F       <span class="hljs-comment">// 子</span>
+    E + F       <span class="hljs-comment">// 相邻兄弟 同辈之后一个 不能有间隔</span>
+    E ~ F       <span class="hljs-comment">// 通用兄弟 同辈之后所有 可以有间隔</span>
+
+<span class="hljs-comment">// 伪类选择器</span>
+    <span class="hljs-comment">// 动态伪类选择器</span>
+        :link
+        :visited
+        :hover
+        :active
+        :focus
+
+    <span class="hljs-comment">// 目标伪类选择器</span>
+        :target  <span class="hljs-comment">// 突出显示当前活动的 HTML 锚</span>
+        <span class="hljs-comment">// div:target {background: red;}</span>
+        <span class="hljs-comment">// &lt;a href="#a1"&gt;1&lt;/a&gt;</span>
+        <span class="hljs-comment">// &lt;div id="a1"&gt;1&lt;/div&gt;</span>
+
+    <span class="hljs-comment">// 语言伪类选择器 通过文档标记判断</span>
+        :lang(en) { quotes: <span class="hljs-string">'"'</span> <span class="hljs-string">'"'</span>;}
+        :lang(fr) q {background: green;}
+
+    <span class="hljs-comment">// UI元素状态伪类选择器</span>
+        :checked    <span class="hljs-comment">// 选中的单复选框</span>
+        :enabled    <span class="hljs-comment">// 启用的表单元素</span>
+        :disabled   <span class="hljs-comment">// 禁用的表单元素</span>
+        <span class="hljs-comment">// &lt;input type="text" disabled /&gt;</span>
+        input:disabled &lt;==&gt; input[disabled]
+
+    <span class="hljs-comment">// 结构伪类选择器</span>
+        <span class="hljs-comment">// 序号 子</span>
+        :nth-child(n)
+        :nth-last-child(n)
+
+        <span class="hljs-comment">// 位置 子</span>
+        :first-child
+        :last-child
+        :root  <span class="hljs-comment">// 始终为html</span>
+
+        <span class="hljs-comment">// 同类型序号</span>
+        :nth-<span class="hljs-keyword">of</span>-type(n)  <span class="hljs-comment">// div.test p:nth-of-type(1)  div中所有的p在同辈中的第一个</span>
+        :nth-last-<span class="hljs-keyword">of</span>-type(n)
+
+        <span class="hljs-comment">// 同类型位置</span>
+        :first-<span class="hljs-keyword">of</span>-type() &lt;==&gt; :nth-<span class="hljs-keyword">of</span>-type(<span class="hljs-number">1</span>)
+        :last-<span class="hljs-keyword">of</span>-type &lt;==&gt; :nth-last-<span class="hljs-keyword">of</span>-type(<span class="hljs-number">1</span>)
+
+        <span class="hljs-comment">// 存在 子</span>
+        :only-child  <span class="hljs-comment">// div &gt; p:only-child {..} 匹配元素为父元素唯一的子元素 类似 独生子女 的概念</span>
+        :only-<span class="hljs-keyword">of</span>-type  <span class="hljs-comment">// 独生类型</span>
+
+        <span class="hljs-comment">// 内容</span>
+        :empty  <span class="hljs-comment">// 不包含anything 哪怕是空格</span>
+
+        <span class="hljs-comment">// n： 1，2，3 | odd 奇，even 偶 | 2n+1，-n+5</span>
+
+    <span class="hljs-comment">// 否定伪类选择器</span>
+            :not(selector)
+
+<span class="hljs-comment">// 伪元素</span>
+    ::first-letter
+    ::first-line
+    ::after
+    ::before
+    ::selection
+    <span class="hljs-comment">// -moz-::selection</span>
+
+<span class="hljs-comment">// 属性选择器</span>
+    E[attr]
+    E[attr = val ]
+    E[attr ~= val ]     <span class="hljs-comment">// 存在多个 val，匹配到给定 val</span>
+    E[attr ^= val ]     <span class="hljs-comment">// start with</span>
+    E[attr *= val ]     <span class="hljs-comment">// contain</span>
+    E[attr $= val ]     <span class="hljs-comment">// end with  // a[href$="txt"]{...}</span>
+    E[attr |= val ]     <span class="hljs-comment">// E[attr = val ] | E[attr ^= val ]</span>
+
+
+<span class="hljs-comment">// 2015-11-06</span>
+<span class="hljs-number">002.</span>Border
+<span class="hljs-comment">// 分为三个部分</span>
+    border-width: <span class="hljs-number">1</span>px;      <span class="hljs-comment">// 默认 medium 3-4px</span>
+    border-color: #efefef;  <span class="hljs-comment">// 未设置则继承前景色</span>
+    border-style: solid;    <span class="hljs-comment">// 必填项</span>
+
+<span class="hljs-comment">// 缩写 不区分顺序 但border-style为必填</span>
+    border: <span class="hljs-number">1</span>px solid red;
+
+<span class="hljs-comment">// 四向</span>
+    border-top: <span class="hljs-number">1</span>px solid red;
+    border-right-width: <span class="hljs-number">4</span>px;
+    border-bottom-color: red;
+    border-left-style: dotted;
+
+<span class="hljs-comment">// TRBL 原则</span>
+    border-color: red;                      <span class="hljs-comment">// TRBL</span>
+    border-color: red green;                <span class="hljs-comment">// TB RL</span>
+    border-color: red green blue;           <span class="hljs-comment">// T RL B</span>
+    border-color: red green blue yellow;    <span class="hljs-comment">// T R B L</span>
+    <span class="hljs-comment">// 同样适用于 border-width 和 border-style</span>
+    <span class="hljs-comment">// -moz-border-top-colors:#efefef #ccc #efefef #ded;</span>
+
+<span class="hljs-comment">// border-style 值</span>
+    none | dotted | dashed | solid
+    hidden  <span class="hljs-comment">// 隐藏后为 display:none 而不是 display:hidden</span>
+    double  <span class="hljs-comment">// solid*2</span>
+    groove  <span class="hljs-comment">// 沟槽    流入 border</span>
+    ridge   <span class="hljs-comment">// 脊      流出 border</span>
+    inset   <span class="hljs-comment">// 内凹    流入 content</span>
+    outset  <span class="hljs-comment">// 外突    流出 content</span>
+    inherit <span class="hljs-comment">// 部分浏览器不支持继承</span>
+
+<span class="hljs-comment">// border-image  前提是要设 border</span>
+    <span class="hljs-comment">// border 九宫格</span>
+        <span class="hljs-number">1</span>   <span class="hljs-number">2</span>   <span class="hljs-number">3</span>
+        <span class="hljs-number">4</span>   <span class="hljs-number">5</span>   <span class="hljs-number">6</span>
+        <span class="hljs-number">7</span>   <span class="hljs-number">8</span>   <span class="hljs-number">9</span>
+
+        <span class="hljs-number">2</span> border-top-image
+        <span class="hljs-number">3</span> border-top-right-image
+        <span class="hljs-number">6</span> border-right-image
+        <span class="hljs-number">9</span> border-bottom-right-image
+        <span class="hljs-number">8</span> border-bottom-image
+        <span class="hljs-number">7</span> border-bottom-right-image
+        <span class="hljs-number">4</span> border-left-image
+        <span class="hljs-number">1</span> border-top-left-image
+        <span class="hljs-number">5</span> content
+
+    <span class="hljs-comment">// 分为四个部分</span>
+        border-image-source: url(img.jpg);
+        border-image-slice: number | percentage | fill; <span class="hljs-comment">// 图片切割位置 支持 TRBL</span>
+        border-image-width: number;                     <span class="hljs-comment">// 图片宽度 支持 TRBL</span>
+        border-image-repeat: stretch | repeat | round;  <span class="hljs-comment">// 2,4,6,8 重复方式 不填默认stretch 不支持TRBL 支持两个</span>
+        <span class="hljs-comment">// webkit内核下 round repeat 无区别</span>
+
+    <span class="hljs-comment">// 缩写</span>
+        -webkit-border-image: url(border.png) <span class="hljs-number">27</span> repeat stretch;
+
+<span class="hljs-comment">// border-radius</span>
+    <span class="hljs-comment">// 另一种 TRBL：从左上角开始</span>
+        border-radius: <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">3</span>px <span class="hljs-number">0</span>;  <span class="hljs-comment">// 3个值走 'Z' 形顺序</span>
+        border-radius: <span class="hljs-number">100</span>px <span class="hljs-number">50</span>px;  <span class="hljs-comment">// 椭圆</span>
+    <span class="hljs-comment">// 一个角的两部分；先水平，后垂直；缩写需要用 / 隔开</span>
+        border-top-left-radius: <span class="hljs-number">10</span>px <span class="hljs-number">15</span>px;
+
+<span class="hljs-comment">// table-border</span>
+    border-spacing: <span class="hljs-number">0</span>;  <span class="hljs-comment">// 单元格间距 两个值为 水平 垂直</span>
+    border-collapse: separate | collapse | inherit;  <span class="hljs-comment">// 是否合并 border</span>
+
+<span class="hljs-comment">// border-shadow 多个逗号隔开</span>
+    box-shadow: inset x-offset y-offset blur-radius spread-radius color ,[..];
+
+
+<span class="hljs-number">003.</span>Background
+<span class="hljs-comment">// 主要分为五个部分</span>
+    background-color: red | #<span class="hljs-number">000000</span> | transparent | rgba(<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>) | hsla(<span class="hljs-number">0</span>,<span class="hljs-number">100</span>%,<span class="hljs-number">50</span>%,<span class="hljs-number">1</span>);
+    background-image: url();
+    background-repeat: repeat | no-repeat;
+    background-attachment: scroll | fixed;  <span class="hljs-comment">// 默认 scroll</span>
+    background-position: center | top | right | bottom | left | <span class="hljs-number">50</span>% <span class="hljs-number">50</span>%;
+
+<span class="hljs-comment">// 缩写</span>
+    background: #aaa url(img.jpg) no-repeat fixed center top;
+
+<span class="hljs-comment">// CSS3新增</span>
+    <span class="hljs-comment">// 左上角起点位置 前提 background-attachment:scroll; 默认 padding-box</span>
+        background-origin: padding-box | border-box | content-box;
+
+    <span class="hljs-comment">// 显示区域裁剪 默认 border-box</span>
+        background-clip: padding-box | border-box | content-box;
+        <span class="hljs-comment">// 图片填充文本 只有webkit支持</span>
+        -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+
+<span class="hljs-comment">// background-size 默认 atuo 即默认值</span>
+    background-size: auto | cover | contain | <span class="hljs-number">100</span>% | <span class="hljs-number">1200</span>px;
+    <span class="hljs-comment">// cover 铺满</span>
+    <span class="hljs-comment">// contain 包含进来</span>
+    <span class="hljs-comment">// 方形预览图 background-size: cover; background-position: center center;</span>
+
+<span class="hljs-comment">// background-break 内联 行内 上一行 仅FF支持</span>
+    background-<span class="hljs-keyword">break</span>: bounding-box | each-box | continuous;
+
+<span class="hljs-comment">// 多背景</span>
+    background: [image] | [position] [size] | [repeat] | [attachment] | [clip] | [origin];
+    div {
+        background:
+            url(..) no-repeat top left,
+            url(..) no-repeat <span class="hljs-number">10</span>px <span class="hljs-number">10</span>px top left;
+        background-image: url(), url();
+        background-repeat: repeat, no-repeat;
+    }
+
+
+<span class="hljs-number">004.</span>Text
+<span class="hljs-comment">// 主要属性</span>
+    color:;  <span class="hljs-comment">// 参 Color</span>
+    font-family:;
+    font-size:;
+    font-size-adjust:;  <span class="hljs-comment">// 是否强制文本使用同一尺寸</span>
+    font-stretch:;  <span class="hljs-comment">// 是否横向拉伸字体</span>
+    font-style: normal | italic | oblique;  <span class="hljs-comment">// 正常 斜体 倾斜</span>
+    font-weight: normal | bold | bolder | lighter | <span class="hljs-number">100</span><span class="hljs-number">-900</span>;
+    font-variant: normal | small-caps;  <span class="hljs-comment">// 小型的大写字母字体</span>
+
+<span class="hljs-comment">// 缩写</span>
+    font: italic bold <span class="hljs-number">32</span>px <span class="hljs-string">'impact'</span>;
+
+<span class="hljs-comment">// 间距</span>
+    letter-spacing: normal | length;  <span class="hljs-comment">// 字间距 可以为负</span>
+    word-spacing: normal | length;  <span class="hljs-comment">// 词间距 可以为负</span>
+
+<span class="hljs-comment">// 换行</span>
+    word-wrap: normal | <span class="hljs-keyword">break</span>-word;
+    word-<span class="hljs-keyword">break</span>: normal |  <span class="hljs-keyword">break</span>-all | keep-all;
+
+<span class="hljs-comment">// 空白符间距 文字之间 文本之间</span>
+    white-space: 
+        normal
+        nowrap      <span class="hljs-comment">// 空白符合并 换行符忽略</span>
+        pre         <span class="hljs-comment">// 空白符保留 换行符保留</span>
+        pre-wrap    <span class="hljs-comment">// 空白符保留 换行符保留</span>
+        pre-line    <span class="hljs-comment">// 空白符合并 换行符保留</span>
+
+<span class="hljs-comment">// 垂直位置</span>
+    line-height: normal | length | percentage;
+    vertical-align:
+        baseline        <span class="hljs-comment">// 基线对齐 默认</span>
+        sub             <span class="hljs-comment">// 上标对齐</span>
+        <span class="hljs-keyword">super</span>           <span class="hljs-comment">// 下标对齐</span>
+        bottom          <span class="hljs-comment">// 行框底端对齐</span>
+        text-bottom     <span class="hljs-comment">// 行内文本底端对齐</span>
+        top             <span class="hljs-comment">// 顶端对齐</span>
+        middle          <span class="hljs-comment">// 居中对齐</span>
+        percentage | length;
+
+<span class="hljs-comment">// 修饰</span>
+    text-decoration: none | underline | overline | line-through | blink;  <span class="hljs-comment">// 下划线 上划线 删除线</span>
+    text-shadow: x-offset y-offset blur-radius color ,[..];
+
+<span class="hljs-comment">// 缩进</span>
+    text-indent: length | percentage;
+
+<span class="hljs-comment">// 变化</span>
+    text-transform: none | uppercase | lowercase | capitalize;  <span class="hljs-comment">// 大写 小写 首字母大写</span>
+
+<span class="hljs-comment">// 溢出</span>
+    text-overflow: clip | ellipsis;  <span class="hljs-comment">// 裁剪 | (...) under white-space:nowrap; || &amp; overflow:hidden;</span>
+
+<span class="hljs-comment">// 方向</span>
+    direction: ltr | rtl | inherit;
+
+
+<span class="hljs-comment">// 2015-11-07</span>
+<span class="hljs-number">005.</span>Color
+    opacity: alphavalue | inherit;
+    filter: alpha(opacity=<span class="hljs-number">90</span>);
+
+    transparent
+
+    rgb(<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>)
+    rgba(<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0.2</span>)
+
+    hsl(<span class="hljs-number">0</span>,<span class="hljs-number">10</span>%,<span class="hljs-number">10</span>%)
+    hsla(<span class="hljs-number">0</span>,<span class="hljs-number">10</span>%,<span class="hljs-number">10</span>%,<span class="hljs-number">0.2</span>)
+
+
+<span class="hljs-number">006.</span>Box
+<span class="hljs-comment">// 主要模型</span>
+    inline | inline-block | block | table | position | float
+
+<span class="hljs-comment">// 主要属性</span>
+    display | position | float | width | height | margin | padding | border
+
+<span class="hljs-comment">// 模型定义 设定box包含 默认 content-box；火狐自带 padding-box</span>
+    box-sizing: content-box | border-box | inherit | padding-box;
+
+<span class="hljs-comment">// 溢出</span>
+    overflow:
+        visible     <span class="hljs-comment">// 默认可见</span>
+        auto        <span class="hljs-comment">// 自动 溢出出现滚动条</span>
+        hidden      <span class="hljs-comment">// 溢出隐藏</span>
+        scroll      <span class="hljs-comment">// 一直存在滚动条</span>
+        no-display  <span class="hljs-comment">// 溢出不显示元素</span>
+        no-content  <span class="hljs-comment">// 溢出不显示内容</span>
+
+    overflow-x:;
+    overflow-y:;
+
+<span class="hljs-comment">// 缩放 例如文本域</span>
+    resize: none | both | horizontal | vertical | inherit;
+
+<span class="hljs-comment">// 外轮廓</span>
+    outline: outline-color outline-style outline-width outline-offset | inherit;
+    outline: <span class="hljs-number">2</span>px solid #ccc;
+    outline-offset: <span class="hljs-number">-10</span>px;  <span class="hljs-comment">// 向内</span>
+
+
+<span class="hljs-number">007.</span>Flexbox
+<span class="hljs-comment">// 块布局 行内布局 表格布局 定位布局</span>
+    display: box | inline-box;  <span class="hljs-comment">// Old</span>
+    display: flex | inline-flex;  <span class="hljs-comment">// Hybrid</span>
+    display: flex | inline-flex;  <span class="hljs-comment">// Latest</span>
+
+    box-orient: horizontal | vertical | inline-axis | block-axis;  <span class="hljs-comment">// 伸缩流方向</span>
+    box-direction: normal | reverse;  <span class="hljs-comment">// 布局顺序</span>
+    box-lines: single | multiple;  <span class="hljs-comment">// 伸缩换行</span>
+    box-pack: start | end | center | justify;  <span class="hljs-comment">// 主轴对齐</span>
+    box-algin: start | end | center | baseline | stretch;  <span class="hljs-comment">// 侧轴对齐</span>
+    box-flex: number;  <span class="hljs-comment">// 伸缩性</span>
+    box-ordinal-group: integer;  <span class="hljs-comment">// 显示顺序 编号 index</span>
+
+
+<span class="hljs-number">008.</span>Columns
+<span class="hljs-comment">// 多列布局</span>
+    column-width: <span class="hljs-number">24</span>em;  <span class="hljs-comment">// 列宽</span>
+    column-count: <span class="hljs-number">3</span>;  <span class="hljs-comment">// 列数</span>
+    column-gap: <span class="hljs-number">2</span>em;  <span class="hljs-comment">// 列间距</span>
+    column-rule: <span class="hljs-number">1</span>px solid red;  <span class="hljs-comment">// 列边框</span>
+    column-span: none | all;  <span class="hljs-comment">// 子元素跨列</span>
+    column-fill: none | balance;  <span class="hljs-comment">// 列高</span>
+
+<span class="hljs-comment">// 缩写</span>
+    -webkit-columns: column-width column-counnt;
+
+<span class="hljs-comment">// 分裂符位置</span>
+    <span class="hljs-keyword">break</span>-before:;
+    <span class="hljs-keyword">break</span>-after:;
+    <span class="hljs-keyword">break</span>-inside:;
+    auto | always | avoid | left | right | page | column | avoid-page | avoid-column;
+
+
+<span class="hljs-number">009.</span>Gradient
+<span class="hljs-comment">// -webkit-</span>
+    background-image: -webkit-gradient(linear,<span class="hljs-number">0</span> <span class="hljs-number">0</span>,<span class="hljs-number">0</span> <span class="hljs-number">100</span>%,<span class="hljs-keyword">from</span>(#ff6600),to(#ff9900));  <span class="hljs-comment">// Old</span>
+    <span class="hljs-comment">// 渐变类型，起始点，结束点，起始颜色，结束颜色</span>
+    background-image: -webkit-linear-gradient(direction/deg, #ff6600,#ff9900);  <span class="hljs-comment">// Latest</span>
+    <span class="hljs-comment">// 渐变类型 方向，起始颜色，结束颜色</span>
+
+<span class="hljs-comment">// Gecko -moz-</span>
+    background-image: -webkit-linear-gradient(left,
+                        rgba(<span class="hljs-number">255</span>,<span class="hljs-number">3</span>,<span class="hljs-number">144</span>,<span class="hljs-number">1</span>) <span class="hljs-number">0</span>%,
+                        rgba(<span class="hljs-number">0</span>,<span class="hljs-number">3</span>,<span class="hljs-number">144</span>,<span class="hljs-number">0.2</span>) <span class="hljs-number">55</span>%,
+                        rgba(<span class="hljs-number">255</span>,<span class="hljs-number">3</span>,<span class="hljs-number">144</span>,<span class="hljs-number">1</span>) <span class="hljs-number">95</span>%,
+                        rgba(<span class="hljs-number">0</span>,<span class="hljs-number">3</span>,<span class="hljs-number">144</span>,<span class="hljs-number">0.1</span>) <span class="hljs-number">100</span>%);
+
+    background-image: -webkit-radial-gradient(circle,
+                        hsla(<span class="hljs-number">120</span>,<span class="hljs-number">70</span>%,<span class="hljs-number">60</span>%,<span class="hljs-number">.9</span>),
+                        hsla(<span class="hljs-number">360</span>,<span class="hljs-number">60</span>%,<span class="hljs-number">60</span>%,<span class="hljs-number">.9</span>));
+
+    background-image: -webkit-radial-gradient(ellipse,
+                        hsla(<span class="hljs-number">120</span>,<span class="hljs-number">70</span>%,<span class="hljs-number">60</span>%,<span class="hljs-number">.9</span>),
+                        hsla(<span class="hljs-number">360</span>,<span class="hljs-number">60</span>%,<span class="hljs-number">60</span>%,<span class="hljs-number">.9</span>));
+
+    background-image: -webkit-radial-gradient(<span class="hljs-number">50</span>px <span class="hljs-number">150</span>px at <span class="hljs-number">200</span>px <span class="hljs-number">150</span>px,
+                        hsla(<span class="hljs-number">120</span>,<span class="hljs-number">70</span>%,<span class="hljs-number">60</span>%,<span class="hljs-number">.9</span>),
+                        hsla(<span class="hljs-number">360</span>,<span class="hljs-number">60</span>%,<span class="hljs-number">60</span>%,<span class="hljs-number">.9</span>));
+
+<span class="hljs-comment">// 重复 under background-size:..;</span>
+    background-image: -webkit-repeating-linear-gradient(..);  
+
+<span class="hljs-comment">// 起始点 </span>
+    top         <span class="hljs-comment">// 从上到下</span>
+    left        <span class="hljs-comment">// 从左往右</span>
+    left top    <span class="hljs-comment">// 左上角到右下角</span>
+
+
+<span class="hljs-number">010.</span>Transform
+<span class="hljs-comment">// 写法</span>
+    transform: rotate(<span class="hljs-number">30</span>deg) translateX(<span class="hljs-number">20</span>px);
+
+<span class="hljs-comment">// 基点</span>
+    transform-origin: <span class="hljs-number">50</span>% <span class="hljs-number">25</span>%;  <span class="hljs-comment">// 2D基点</span>
+    transform-origin-z:;  <span class="hljs-comment">// 3D基点</span>
+
+<span class="hljs-comment">// 呈现方式*</span>
+    transform-style: flat | preserve<span class="hljs-number">-3</span>d;  <span class="hljs-comment">// 平面 | 3D环境渲染</span>
+    <span class="hljs-comment">// preserve-3d 与 overflow:hidden 相斥; 3d环境超出不可见</span>
+
+<span class="hljs-comment">// 视距*</span>
+    perspective: none | length;  <span class="hljs-comment">// 等价于 transform: perspective(length);</span>
+
+<span class="hljs-comment">// 视点</span>
+    perspective-origin: direction | percentage;
+
+<span class="hljs-comment">// 背部可见性</span>
+    backface-visibility: hidden | visible;
+
+<span class="hljs-comment">// 2D方法</span>
+    translate(<span class="hljs-number">10</span>px,<span class="hljs-number">0</span>)
+    translateX()    <span class="hljs-comment">// 水平位移</span>
+    translateY()    <span class="hljs-comment">// 垂直位移</span>
+    <span class="hljs-comment">// translate(10px) == translate(10px,0)</span>
+
+    scale(num?)     <span class="hljs-comment">// 缩放 1为原大小 &lt;1缩小 负值反向缩放</span>
+    scaleX()        <span class="hljs-comment">// 横向缩放</span>
+    scaleY()        <span class="hljs-comment">// 纵向缩放</span>
+
+    rotate(deg)     <span class="hljs-comment">// 旋转</span>
+
+    skew(deg?)      <span class="hljs-comment">// 倾斜</span>
+    skewX()         <span class="hljs-comment">// 上下倾斜</span>
+    skewY()         <span class="hljs-comment">// 左右倾斜</span>
+
+    matrix(a,b,c,d,e,f)
+
+<span class="hljs-comment">// 3D方法</span>
+    translateZ()    <span class="hljs-comment">// 仅z轴 == translate3d(0,0,z)</span>
+    translate3d(x,y,z)  <span class="hljs-comment">// z不能为百分比</span>
+
+    scaleZ(s)       <span class="hljs-comment">// 单独不起作用</span>
+    scale3d(x,y,z)  <span class="hljs-comment">// 单独不起作用</span>
+
+    rotateX()       <span class="hljs-comment">// 上下翻转</span>
+    rotateY()       <span class="hljs-comment">// 左右翻转</span>
+    rotateZ()       <span class="hljs-comment">// 旋转</span>
+    rotate3d(x,y,z,a)  <span class="hljs-comment">// 矢量值</span>
+
+    matrix3d()
+
+    perspective()   <span class="hljs-comment">// 视距 取值要大于0</span>
+
+
+<span class="hljs-comment">// 2015-11-08</span>
+<span class="hljs-number">011.</span>Transition
+<span class="hljs-comment">// 缩写</span>
+    transition: color <span class="hljs-number">2</span>s linear <span class="hljs-number">1</span>s, background <span class="hljs-number">2</span>s linear <span class="hljs-number">2</span>s;
+    <span class="hljs-comment">// 属性 过渡时间 过渡函数 延迟</span>
+
+<span class="hljs-comment">// 过渡函数</span>
+    ease            <span class="hljs-comment">// 由快到慢</span>
+    linear          <span class="hljs-comment">// 恒速</span>
+    ease-<span class="hljs-keyword">in</span>         <span class="hljs-comment">// 越来越快</span>
+    ease-out        <span class="hljs-comment">// 越来越慢</span>
+    ease-<span class="hljs-keyword">in</span>-out     <span class="hljs-comment">// 先加速再减速</span>
+    cubic-bezier(<span class="hljs-number">.85</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>)
+    step(integer?)
+
+<span class="hljs-comment">// 触发</span>
+    :hover  <span class="hljs-comment">// 伪元素</span>
+    @media only screen and(max-width:<span class="hljs-number">960</span>px){}  <span class="hljs-comment">// 媒体查询</span>
+    $(<span class="hljs-string">'.box'</span>).toggleClass(<span class="hljs-string">'on'</span>);  <span class="hljs-comment">// js</span>
+
+
+<span class="hljs-number">012.</span>Animation
+<span class="hljs-comment">// 缩写</span>
+    div{ -webkit-animation: aniName <span class="hljs-number">5</span>s linear <span class="hljs-number">2</span>s infinite alternate; }
+    <span class="hljs-comment">// 动画名 过渡时间 过渡函数 延迟 循环次数(n|infinite) 播放方向(normal|reverse|alternate|alternate-reverse|initial|inherit)</span>
+    div{ -webkit-animation-state: running | paused; }  <span class="hljs-comment">// 播放状态</span>
+    div{ -webkit-animation-fill-mode: none | backwards | forwards | both; }  <span class="hljs-comment">// 时间外属性 结束填充帧</span>
+
+<span class="hljs-comment">// 关键帧</span>
+    @-webkit-keyframes aniName {
+        <span class="hljs-comment">/* 0% */</span>    <span class="hljs-keyword">from</span> { background:red; }
+        <span class="hljs-comment">/* 100% */</span>  to { background:yellow; }
+    }
+
+
+<span class="hljs-number">013.</span>Responsive
+<span class="hljs-comment">// 媒体类型</span>
+    All
+    Braille     <span class="hljs-comment">// 盲人点字触觉回馈</span>
+    Embossed    <span class="hljs-comment">// 盲文打印机</span>
+    Handheld    <span class="hljs-comment">// 便携设备</span>
+    Print       <span class="hljs-comment">// 打印机</span>
+    Projection  <span class="hljs-comment">// 投影设备</span>
+    Screen      <span class="hljs-comment">// 显示器</span>
+    Speech      <span class="hljs-comment">// 语音音频合成器</span>
+    Tv          <span class="hljs-comment">// 电视</span>
+    Tty         <span class="hljs-comment">// 固定密度栅格媒介</span>
+
+<span class="hljs-comment">// 引用方法</span>
+    <span class="hljs-comment">// &lt;link rel="stylesheet" type="text/css" href="css.css" media="screen" /&gt;</span>
+
+    <span class="hljs-comment">// &lt;?xml-stylesheet rel="stylesheet" media="screen" href="css.css" ?&gt;</span>
+
+    <span class="hljs-comment">// &lt;style&gt;@import url(css.css) all;&lt;/style&gt;</span>
+
+    @media screen and ( max-width: <span class="hljs-number">600</span>px ) and ( min-width: <span class="hljs-number">300</span>px ) { }
+
+<span class="hljs-comment">// 设备特性</span>
+    color                   <span class="hljs-comment">// int Y 色彩字节数</span>
+    color-index             <span class="hljs-comment">// int Y 色彩数</span>
+    device-aspect-ratio     <span class="hljs-comment">// int/int Y 高宽比</span>
+    device-height           <span class="hljs-comment">// length Y 输出高度</span>
+    device-width            <span class="hljs-comment">// length Y 输出宽度</span>
+    grid                    <span class="hljs-comment">// int N 是否栅格设备</span>
+    height                  <span class="hljs-comment">// length Y 渲染高度</span>
+    width                   <span class="hljs-comment">// length Y 渲染宽度</span>
+    monochrome              <span class="hljs-comment">// int Y 像素字节</span>
+    resolution              <span class="hljs-comment">// dpi Y 分辨率</span>
+    scan                    <span class="hljs-comment">// progressive interlaced N TV 类型扫描方式</span>
+    orientation             <span class="hljs-comment">// portrait/landscape N 横屏|竖屏</span>
+
+<span class="hljs-comment">// 关键字</span>
+    and | not | only
+
+<span class="hljs-comment">// Responsive Web Design RWD 响应式设计 不是流体布局也不是网格布局，而是一种设计方法。</span>
+    <span class="hljs-comment">// 条件</span>
+        <span class="hljs-comment">// 网站必须建立灵活的网格基础</span>
+        <span class="hljs-comment">// 引用到的碗盏图片必须是可伸缩的</span>
+        <span class="hljs-comment">// 不同的显示风格需要在 Media Query 上设置不同的样式</span>
+
+    <span class="hljs-comment">// 术语</span>
+        <span class="hljs-comment">// 流体网格：使用百分比来控制网格大小</span>
+        <span class="hljs-comment">// 弹性图片： img { max-width: 100%; }</span>
+            <span class="hljs-comment">// &lt;img src="1.jpg" data-src-600px="image-600px.jpg" /&gt;</span>
+            @media ( min-device-width:<span class="hljs-number">600</span>px ) {
+                img[data-src<span class="hljs-number">-600</span>px]{
+                    content: attr(data-src<span class="hljs-number">-600</span>px,url);
+                }
+            }
+        <span class="hljs-comment">// 媒体查询：根据用户的使用设备的当前宽度加载相应的样式实现页面风格</span>
+        <span class="hljs-comment">// 屏幕分辨率：不同设备的分辨率</span>
+        <span class="hljs-comment">// 主要断点： 320px 480px 640px 720px 768px 1080px 1366px 1440px</span>
+            basic.css   mobile.css  desktop.css
+
+    <span class="hljs-comment">// 使用技巧</span>
+        <span class="hljs-comment">// 尽量少用无关紧要的 div</span>
+        <span class="hljs-comment">// 不要使用内联元素</span>
+        <span class="hljs-comment">// 减少 js 和 flash</span>
+        <span class="hljs-comment">// 丢弃没用的决定定位和浮动样式</span>
+        <span class="hljs-comment">// 摒弃任何冗余结构和100%设置</span>
+        <span class="hljs-comment">// 使用 HTML5 Doctype 和相关指南</span>
+        <span class="hljs-comment">// reset.css</span>
+        <span class="hljs-comment">// 一个简单的有语义的核心布局</span>
+        <span class="hljs-comment">// 给重要的网页元素使用简单的技巧</span>
+
+<span class="hljs-comment">// &lt;meta name="viewport" content="width=device-width,initial-scale=1.0" /&gt;</span>
+    width           <span class="hljs-comment">// 可视区域宽度 device-width</span>
+    height          <span class="hljs-comment">// 可视区域高度 device-height</span>
+    initial-scale   <span class="hljs-comment">// 缩放级别  取值为 1 时 将使页面按实际尺寸显示 无任何缩放</span>
+    minumun-scale   <span class="hljs-comment">// 最小缩放级别 取值为 1 时 禁止用户缩小至实际尺寸之下</span>
+    maximun-scale   <span class="hljs-comment">// 最大缩放级别 取值为 1 时 禁止用户放大至实际尺寸之上</span>
+    user-scalable   <span class="hljs-comment">// 指定用户是否可以缩放 yes允许 no禁止</span>
+
+
+<span class="hljs-number">014.</span>Web Font
+<span class="hljs-comment">// 缩写</span>
+    @font-face {
+        font-family: <span class="hljs-string">"fontName"</span>;
+        src: url(<span class="hljs-string">'../fonts/fontName.eot'</span>);  <span class="hljs-comment">// IE9</span>
+        src: url(<span class="hljs-string">'../fonts/fontName.woff'</span>) format(<span class="hljs-string">'woff'</span>),
+             url(<span class="hljs-string">'../fonts/fontName.eot'</span>) format(<span class="hljs-string">'eot'</span>),
+             url(<span class="hljs-string">'../fonts/fontName.svg'</span>) format(<span class="hljs-string">'svg'</span>),
+             url(<span class="hljs-string">'../fonts/fontName.ttf'</span>) format(<span class="hljs-string">'truetype'</span>);
+        font-weight: normal;
+        font-style: normal;
+        font-variant:;
+        font-size:;
+        font-stretch:;
+    }
+
+    TureType | OpenType | Web Open Font Format | Embedded Open Type
+
+<span class="hljs-comment">// 图标字体</span>
+    <span class="hljs-comment">// https://icomoon.io/app/</span>
+
+
+<span class="hljs-number">015.</span>Other
+<span class="hljs-comment">// 滤镜</span>
+    -webkit-filter: blur(<span class="hljs-number">10</span>px);  <span class="hljs-comment">// 模糊</span>
+    -webkit-filter: grayscale(<span class="hljs-number">1</span>);  <span class="hljs-comment">// 灰度</span>
+    -webkit-filter: sepia(<span class="hljs-number">1</span>);  <span class="hljs-comment">// 褐色叠加</span>
+    -webkit-filter: saturate(<span class="hljs-number">1</span>);  <span class="hljs-comment">// 饱和度</span>
+    -webkit-filter: hue-rotate(<span class="hljs-number">90</span>deg);  <span class="hljs-comment">// 色相旋转</span>
+    -webkit-filter: invert(<span class="hljs-number">1</span>);  <span class="hljs-comment">// 反色</span>
+    -webkit-filter: opacity(<span class="hljs-number">0.2</span>);  <span class="hljs-comment">// 透明度</span>
+    -webkit-filter: drop-shadow(<span class="hljs-number">5</span>px <span class="hljs-number">5</span>px <span class="hljs-number">5</span>px #ccc);  <span class="hljs-comment">// 阴影</span>
+    -webkit-filter: brightness(<span class="hljs-number">0.5</span>);  <span class="hljs-comment">// 亮度</span>
+    -webkit-filter: contrast(<span class="hljs-number">1.5</span>);  <span class="hljs-comment">// 对比</span>
+
+
+<code></pre>

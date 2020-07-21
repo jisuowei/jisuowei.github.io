@@ -1,0 +1,191 @@
+<pre><code class="js hljs javascript">
+<span class="hljs-comment">/*
+
+  JavaScript_DOM编程艺术第二版（中文） 【英】Jeremy Keith 【加】Jeffrey Sambells
+
+  2016-10-18
+  ~
+  2016-10-18 Noted by Chisw
+
+*/</span>
+
+
+<span class="hljs-number">001.</span>JS 复习
+<span class="hljs-number">002.</span>DOM 节点 常用方法
+<span class="hljs-number">003.</span>图片库案例
+<span class="hljs-number">004.</span>最佳实践
+<span class="hljs-number">005.</span>动态创建标记
+<span class="hljs-number">006.</span>CSS-DOM 抽象
+
+
+<span class="hljs-comment">// 2016-10-18</span>
+<span class="hljs-number">001.</span>JS 复习
+<span class="hljs-comment">// 在JS出现之前，Web浏览器不过是一种能够显示超文本文档的简单软件。</span>
+
+<span class="hljs-comment">// DHTML：Dynamic HTML 动态HTML</span>
+  · HTML 标记元素
+  · CSS 控制样式
+  · JS 操控页面和样式
+
+  解释型 编译型
+
+  语句      statement
+  注释      comment
+  变量      variable
+  赋值      assignment
+  声明      declare
+  驼峰式      camel <span class="hljs-keyword">case</span>
+  字面量      literal
+  类型声明    typing
+  强类型      strongly typed
+  弱类型      weakly typed
+  转义      escaping
+  浮点数      floating-point number
+  标量      scalar
+  填充      populating
+  下标      index
+  算术操作    arithmetic operation
+  操作符      operator
+  拼接      concatenation
+  条件语句    conditional statement
+  逻辑比较    operand
+  函数      <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>)</span>{}
+  参数      argument
+  作用域      scope
+  全局变量    global variable
+  局部变量    local variable
+  属性      property
+  方法      method  <span class="hljs-comment">// 某个特定对象才能调用的函数</span>
+  实例      instance
+  自定义对象    user-defined object  <span class="hljs-comment">// 用户定义对象</span>
+  内建对象    native object
+  宿主对象    host object
+
+
+<span class="hljs-number">002.</span>DOM 节点 常用方法
+<span class="hljs-comment">// 节点</span>
+  父        parent
+  子        child
+  兄弟      sibling
+  元素节点    element node
+  文本节点    text node
+  属性节点    attribute node
+  继承      inheritance
+
+<span class="hljs-comment">// 常用方法</span>
+  <span class="hljs-comment">// 返回一个给定值的元素节点对应对象</span>
+  <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'idName'</span>);
+
+  <span class="hljs-comment">// 返回一个数组，所以可以使用 .length 查看个数</span>
+  <span class="hljs-built_in">document</span>.getElementsByTagName(<span class="hljs-string">'tagName'</span>);
+
+  <span class="hljs-comment">// 返回具有相同类名元素数组</span>
+  <span class="hljs-built_in">document</span>.getElementsByClassName(<span class="hljs-string">'className'</span>);
+
+    <span class="hljs-comment">// 尝试 兼容旧浏览器</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getElementsByClassName</span>(<span class="hljs-params">node, classname</span>) </span>{
+      <span class="hljs-keyword">if</span>( node.getElementsByTagName ) {
+        <span class="hljs-keyword">return</span> node.getElementsByTagName(classname);
+      } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">var</span> res = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>();
+        <span class="hljs-keyword">var</span> elems = node.getElementsByTagName(<span class="hljs-string">'*'</span>);
+        <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;elems.length; i++ ) {
+          <span class="hljs-keyword">if</span>(elems[i].className.indexOf(classname) != <span class="hljs-number">-1</span>) {
+            res[res.length] = elems[i];
+          }
+        }
+        <span class="hljs-keyword">return</span> res;
+      }
+    }
+
+  <span class="hljs-comment">// 获取 和 设置 属性</span>
+  object.getAttribute(attribute);
+  object.setAttribute(attribute,value)
+
+
+<span class="hljs-number">003.</span>图片库案例
+<span class="hljs-comment">/*
+  &lt;li&gt;&lt;a href="coffee.jpg" onclick="showPic(this); return false;"&gt;Coffee&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="rose.jpg" onclick="showPic(this); return false;"&gt;Rose&lt;/a&gt;&lt;/li&gt;
+  &lt;img src="placeholder.jpg" id="placeholder" /&gt;
+*/</span>
+
+<span class="hljs-comment">// return false ： 防止用户被带到目标窗口</span>
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">showPic</span>(<span class="hljs-params">whichPic</span>) </span>{
+    <span class="hljs-keyword">var</span> source = whichPic.getAttribute(<span class="hljs-string">'href'</span>);
+    <span class="hljs-keyword">var</span> placeholder = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'placeholder'</span>);
+    placeholder.setAttribute(<span class="hljs-string">'src'</span>,source);
+  }
+
+  <span class="hljs-comment">// 获取一个元素的所有子元素</span>
+  element.childNodes
+
+  <span class="hljs-comment">// 节点属性</span>
+  node.nodeType  <span class="hljs-comment">// 1：元素 2：属性 3：文本</span>
+
+  <span class="hljs-comment">// 读写节点的值</span>
+  node.nodeValue
+
+  <span class="hljs-comment">// 首尾元素</span>
+  node.firstChild  <span class="hljs-comment">// == node.childNode[0]</span>
+  node.lastChild   <span class="hljs-comment">// == node.childNode[node.childNodes.length-1]</span>
+
+
+<span class="hljs-number">004.</span>最佳实践
+  平稳退化    graceful degradation
+  渐进增强    progressive enhancement
+  伪协议      pseudo-protocol
+    <span class="hljs-comment">// &lt;a href="javascript:popUp('http://jisuowei.com');"&gt;</span>
+    <span class="hljs-built_in">window</span>.onload = prepareLinks;
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">prepareLinks</span>(<span class="hljs-params"></span>)</span>{
+      <span class="hljs-keyword">var</span> links =  <span class="hljs-built_in">document</span>.getElementsByTagName(<span class="hljs-string">'a'</span>);
+      <span class="hljs-keyword">for</span>( <span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;links.length; i++)}
+        <span class="hljs-keyword">if</span>( links[i].getAttribute(<span class="hljs-string">'class'</span>) == <span class="hljs-string">'popup'</span>) {
+          links[i].onclick = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            popUp(<span class="hljs-keyword">this</span>,getAttribute(<span class="hljs-string">'href'</span>));
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+          }
+        }
+    }
+
+  对象检测    object detection  <span class="hljs-comment">// if(method) {statement}</span>
+
+  浏览器嗅探    browser sniffing
+
+  结构化程序设计 structed programming  <span class="hljs-comment">// 函数应该只有一个入口和一个出口</span>
+
+
+<span class="hljs-number">005.</span>动态创建标记
+<span class="hljs-comment">// 传统方法</span>
+  <span class="hljs-built_in">document</span>.write()
+  .innerHTML  <span class="hljs-comment">// 读写 HTML 内容</span>
+
+<span class="hljs-comment">// DOM 方法</span>
+  <span class="hljs-keyword">var</span> ele = <span class="hljs-built_in">document</span>.createElement(nodeName)  <span class="hljs-comment">// 文档碎片 document fragment</span>
+  parent.appendChild(ele);
+  <span class="hljs-keyword">var</span> txt = <span class="hljs-built_in">document</span>.createTextNode(<span class="hljs-string">'sometext'</span>);
+  ele.appendChild(txt);
+
+  insertBefore()  <span class="hljs-comment">// newElement targetElement parentElement</span>
+  nextSibling
+
+
+<span class="hljs-number">006.</span>CSS-DOM 抽象
+<span class="hljs-comment">// 三位一体</span>
+  结构层      structural layer
+  表示层      presentation layer
+  行为层      behavior layer
+
+<span class="hljs-comment">// 读写样式</span>
+  element.style.fontSize;
+  element.style.fontSize = <span class="hljs-string">'12px'</span>;
+
+<span class="hljs-comment">// 读写类名</span>
+  element.className;
+  element.className += <span class="hljs-string">' hover'</span>;
+
+<span class="hljs-comment">// 抽象 abstraction</span>
+  <span class="hljs-comment">// 把一个非常具体的东西改进为一个较为通用的东西的过程。</span>
+
+</code></pre>

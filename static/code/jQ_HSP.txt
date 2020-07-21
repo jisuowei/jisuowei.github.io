@@ -1,0 +1,204 @@
+<pre><code class="js hljs javascript">
+<span class="hljs-comment">/*
+
+    jQuery 韩顺平
+
+    2015-11-03
+    ~
+    2015-11-04 Noted by Chisw
+
+    2016-09-06 Modified
+
+*/</span>
+
+
+<span class="hljs-number">001.</span>概要
+<span class="hljs-number">002.</span>层次选择器
+<span class="hljs-number">003.</span>过滤选择器
+<span class="hljs-number">004.</span>内容过滤选择器
+<span class="hljs-number">005.</span>可见度过滤选择器
+<span class="hljs-number">006.</span>jQuery遍历
+<span class="hljs-number">007.</span>属性选择器
+<span class="hljs-number">008.</span>子元素选择器
+<span class="hljs-number">009.</span>表单对象属性过滤选择器
+<span class="hljs-number">010.</span>表单选择器
+<span class="hljs-number">011.</span>样式设置
+<span class="hljs-number">012.</span>节点操作
+<span class="hljs-number">013.</span>方法
+<span class="hljs-number">014.</span>事件
+<span class="hljs-number">015.</span>jQuery和ajax整合的方法
+
+
+<span class="hljs-comment">// 2015-11-03</span>
+<span class="hljs-number">001.</span>概要
+    jQuery框架：  为了更高效的 javascript 开发
+    <span class="hljs-comment">// write less do more</span>
+    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'id'</span>); <span class="hljs-comment">// 等价于 $('#id');</span>
+
+    由 John Resig 创建，于<span class="hljs-number">2008</span>年<span class="hljs-number">1</span>月<span class="hljs-number">14</span>日发布。
+    当前流行的javascript库有 jQuery、MooTools、Prototype、Dojo、YUI、EXTJS、DWR
+
+    jQuery中的对象不能再使用 DOM 中的方法：
+        obj.value;
+        $obj.val();
+
+    jQuery对象是一个数组对象：
+    <span class="hljs-comment">//获取</span>
+        $username = $(<span class="hljs-string">'#username'</span>);
+    <span class="hljs-comment">//转换</span>
+        <span class="hljs-keyword">var</span> username = $username[<span class="hljs-number">0</span>];
+        <span class="hljs-keyword">var</span> username = $username.get(<span class="hljs-number">0</span>);
+
+    $(<span class="hljs-keyword">this</span>).html();
+
+
+<span class="hljs-number">002.</span>层次选择器
+    ancestor descendant
+    parent &gt; child
+    prev + next
+    prev ~ siblings
+
+
+<span class="hljs-number">003.</span>过滤选择器  <span class="hljs-comment">// 以 : 开头</span>
+    :first
+    :last
+    :not(selector)
+    :even
+    :odd
+    :eq(index)  <span class="hljs-comment">// = index    equal</span>
+    :gt(index)  <span class="hljs-comment">// &gt; index    greater than</span>
+    :lt(index)  <span class="hljs-comment">// &lt; index    less than</span>
+    :header
+    :animated
+
+    <span class="hljs-comment">// $('table:eq(0) tr:even').css('background','gray');</span>
+
+
+<span class="hljs-number">004.</span>内容过滤选择器
+    :contains(<span class="hljs-string">'text'</span>)
+    :empty
+    :has(selector)
+    :parent
+
+    <span class="hljs-comment">// $("div:not(:contains('di'))").css(...);</span>
+
+
+<span class="hljs-number">005.</span>可见度过滤选择器
+    :hidden
+    :visible
+
+
+<span class="hljs-number">006.</span>jQuery遍历
+    <span class="hljs-keyword">var</span> arr = [ <span class="hljs-number">1</span>, <span class="hljs-string">'chisw'</span>, <span class="hljs-number">4</span>, {<span class="hljs-string">'name'</span>:<span class="hljs-string">'chisw'</span>} ];
+    $.each( arr, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">i, n</span>) </span>{
+        alert( i + <span class="hljs-string">' '</span> + n.name );
+    });
+
+
+<span class="hljs-comment">// 2015-11-04</span>
+<span class="hljs-number">007.</span>属性选择器
+    [ attr ]
+    [ attr = value]
+    [ attr != value ]
+    [ attr ^= value]  <span class="hljs-comment">// start with</span>
+    [ attr $= value]  <span class="hljs-comment">// end with</span>
+    [ attr *= value]  <span class="hljs-comment">// contain</span>
+    [ attr ][ attr ]
+
+    <span class="hljs-comment">// $("div[id][title*='es']")</span>
+
+
+<span class="hljs-number">008.</span>子元素选择器
+    :first-child
+    :last-child
+    :nth-child(index-even-odd-equation)    <span class="hljs-comment">// 3n\2\3n+1\3n+2</span>
+    :nth-child
+    :only-child
+
+
+<span class="hljs-number">009.</span>表单对象属性过滤选择器
+    :button  <span class="hljs-comment">// $('input[type="button"]')</span>
+    :enabled  <span class="hljs-comment">// input:</span>
+    :disabled
+    :checked
+    :selected  <span class="hljs-comment">// option:selected</span>
+
+    <span class="hljs-comment">// $(":checkbox:checked")</span>
+
+
+<span class="hljs-number">010.</span>表单选择器
+    :input
+    :text
+    :password
+    :radio
+    :checkbox
+    :submit
+
+
+<span class="hljs-number">011.</span>样式设置
+    $(<span class="hljs-string">'id'</span>).css(<span class="hljs-string">'attr'</span>,<span class="hljs-string">'value'</span>);
+    $(<span class="hljs-string">'id'</span>).attr(<span class="hljs-string">''</span>).attr(<span class="hljs-string">'class'</span>,<span class="hljs-string">'.classname'</span>);
+
+    .addClass(<span class="hljs-string">'classname'</span>);
+    .removeClass(<span class="hljs-string">'classname'</span>);
+    .toggleClass(<span class="hljs-string">'classname'</span>);
+    .hasClass(<span class="hljs-string">'classname'</span>);
+
+
+<span class="hljs-number">012.</span>节点操作
+    $(<span class="hljs-string">''</span>).replaceWith();
+    $(<span class="hljs-string">''</span>).replaceAll();
+
+
+<span class="hljs-number">013.</span>方法
+    .attr()
+    .html()
+    .text()
+    .val()
+    .height()
+    .width()
+    .css()
+    .removeAttr()
+    .remove()
+    <span class="hljs-comment">// 遍历节点</span>
+    .children()
+    .next()
+    .prev()
+    .siblings()
+
+<span class="hljs-number">014.</span>事件
+    .focus()
+    .blur()
+
+    $(<span class="hljs-string">'#input'</span>).focus(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        $curVal = $(<span class="hljs-keyword">this</span>).val();
+        <span class="hljs-keyword">if</span> ( $curVal == <span class="hljs-keyword">this</span>.defaultValue ) {
+            $(<span class="hljs-keyword">this</span>).val(<span class="hljs-string">''</span>);
+        } <span class="hljs-keyword">else</span> {
+            $(<span class="hljs-keyword">this</span>).val($curVal);
+        }
+    });
+    $(<span class="hljs-string">'#input'</span>).blur(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        $curVal = $(<span class="hljs-keyword">this</span>).val();
+        <span class="hljs-keyword">if</span> ( $curVal == <span class="hljs-string">''</span>) {
+            $( <span class="hljs-keyword">this</span> ).val( <span class="hljs-keyword">this</span>.defaultValue );
+        } <span class="hljs-keyword">else</span> {
+            $( <span class="hljs-keyword">this</span> ).val( $curVal );
+        }
+    })
+    
+
+<span class="hljs-number">015.</span>jQuery和ajax整合的方法
+<span class="hljs-comment">// 传统ajax步骤</span>
+    <span class="hljs-number">1.</span>创建 xmlHttpRequest对象
+    <span class="hljs-number">2.</span>拼接url和data
+    <span class="hljs-number">3.</span>xmlHttpRequest.open()
+    <span class="hljs-number">4.</span>指定回调函数
+    <span class="hljs-number">5.</span>xmlHttpRequest.send()
+<span class="hljs-comment">// jQuery</span>
+    <span class="hljs-number">1.</span>jqueryObj.load
+    <span class="hljs-number">2.</span>$.get()
+    <span class="hljs-number">3.</span>$.post()
+
+jQuery.get(url,[data],[callback])
+</code></pre>

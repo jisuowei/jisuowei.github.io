@@ -1,0 +1,634 @@
+<pre><code class="js hljs ">
+<span class="hljs-comment">/*
+
+    百度地图 JavaScript API、高德地图 JavaScript API
+
+    2016-11-14
+    ~
+    2016-11-16 Noted by Chisw
+
+*/</span>
+
+
+<span class="hljs-number">001.</span>显示地图
+<span class="hljs-number">002.</span>控件
+<span class="hljs-number">003.</span>自定义控件
+<span class="hljs-number">004.</span>覆盖物
+<span class="hljs-number">005.</span>自定义覆盖物
+<span class="hljs-number">006.</span>事件
+<span class="hljs-number">007.</span>地图图层
+<span class="hljs-number">008.</span>工具
+
+<span class="hljs-number">101.</span>概览
+<span class="hljs-number">102.</span>加载地图
+<span class="hljs-number">103.</span>基本参数
+<span class="hljs-number">104.</span>点标记
+<span class="hljs-number">105.</span>信息窗体
+<span class="hljs-number">106.</span>控件
+<span class="hljs-number">107.</span>室内地图
+<span class="hljs-number">108.</span>地图绘制
+
+
+<span class="hljs-comment">/*
+
+    百度地图 JavaScript API
+
+    2016-11-15
+    ~
+    2016-11-16 Noted by Chisw
+
+*/</span>
+
+
+<span class="hljs-comment">// 2016-11-15</span>
+<span class="hljs-number">001.</span>显示地图
+<span class="hljs-comment">// &lt;script src="http://api.map.baidu.com/api?v=2.0&amp;ak="&gt;&lt;/script&gt;</span>
+    <span class="hljs-keyword">var</span> map = <span class="hljs-keyword">new</span> BMap.Map(<span class="hljs-string">"map"</span>);  <span class="hljs-comment">// 创建地图实例  </span>
+    <span class="hljs-keyword">var</span> point = <span class="hljs-keyword">new</span> BMap.Point(<span class="hljs-number">116.404</span>, <span class="hljs-number">39.915</span>);  <span class="hljs-comment">// 创建点坐标  </span>
+    map.centerAndZoom(point, <span class="hljs-number">15</span>);  <span class="hljs-comment">// 初始化地图，设置中心点坐标和地图级别 </span>
+
+    <span class="hljs-comment">// case</span>
+    <span class="hljs-keyword">var</span> zoom = <span class="hljs-number">15</span>;
+    $(<span class="hljs-string">'#btn1'</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        <span class="hljs-comment">// map.panTo(new BMap.Point(116,34));</span>
+        <span class="hljs-comment">// map.zoomTo(zoom--);</span>
+    });
+
+
+<span class="hljs-number">002.</span>控件
+<span class="hljs-comment">// 类</span>
+    Control             <span class="hljs-comment">// 控件 抽象基类，所有控件均继承此类的方法、属性，可实现自定义控件</span>
+    NavigationControl   <span class="hljs-comment">// 平移缩放，PC默认在左上方，移动默认在右下方</span>
+    OverviewMapControl  <span class="hljs-comment">// 缩略地图，默认在右下方，可折叠</span>
+    ScaleControl        <span class="hljs-comment">// 比例尺，默认在左下方</span>
+    MapTypeControl      <span class="hljs-comment">// 地图类型，默认在右上方</span>
+    CopyrightControl    <span class="hljs-comment">// 版权，默认在左下方</span>
+    GeolocationControl  <span class="hljs-comment">// 定位，针对移动端开发，默认在左下方</span>
+
+<span class="hljs-comment">// 添加</span>
+    map.addControl(<span class="hljs-keyword">new</span> BMap.NavigationControl());
+    map.addControl(<span class="hljs-keyword">new</span> BMap.ScaleControl());
+    map.addControl(<span class="hljs-keyword">new</span> BMap.OverviewMapControl());
+    map.addControl(<span class="hljs-keyword">new</span> BMap.MapTypeControl());
+    map.setCurrentCity(<span class="hljs-string">"北京"</span>);  <span class="hljs-comment">// 设置城市信息，MapTypeControl切换功能才可用</span>
+
+<span class="hljs-comment">// 可选参数 opts = {anchor:***,offset:***,type:***}</span>
+    <span class="hljs-comment">// 控制位置</span>
+        <span class="hljs-comment">// anchor 上下在前 左右在后</span>
+        <span class="hljs-keyword">var</span> opts = {anchor: BMAP_ANCHOR_BOTTOM_RIGHT}  
+        map.addControl(<span class="hljs-keyword">new</span> BMap.ScaleControl(opts));
+
+        <span class="hljs-comment">// offset</span>
+        <span class="hljs-keyword">var</span> opts = {offset: <span class="hljs-keyword">new</span> BMap.Size(<span class="hljs-number">150</span>, <span class="hljs-number">5</span>)}
+        map.addControl(<span class="hljs-keyword">new</span> BMap.ScaleControl(opts));
+
+    <span class="hljs-comment">// 配置 NavigationControl （LARGE、SMALL、PAN、ZOOM）</span>
+        <span class="hljs-keyword">var</span> opts = {type: BMAP_NAVIGATION_CONTROL_SMALL}    
+        map.addControl(<span class="hljs-keyword">new</span> BMap.NavigationControl(opts));
+
+
+<span class="hljs-number">003.</span>自定义控件
+<span class="hljs-comment">// 允许通过继承Control来创建自定义地图控件</span>
+
+<span class="hljs-comment">// 1.定义一个自定义控件的构造函数</span>
+<span class="hljs-comment">// 2.设置自定义控件构造函数的prototype属性为Control的实例，以便继承控件基类</span>
+<span class="hljs-comment">// 3.实现initialize()方法并提供defaultAnchor、defaultOffset属性</span>
+
+<span class="hljs-comment">// 定义构造函数并继承Control</span>
+    <span class="hljs-comment">// 定义一个控件类，即function</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">ZoomControl</span><span class="hljs-params">()</span>{</span>
+        <span class="hljs-comment">// 设置默认停靠位置和偏移量  </span>
+        <span class="hljs-keyword">this</span>.defaultAnchor = BMAP_ANCHOR_TOP_LEFT;
+        <span class="hljs-keyword">this</span>.defaultOffset = <span class="hljs-keyword">new</span> BMap.Size(<span class="hljs-number">10</span>, <span class="hljs-number">10</span>);
+    }
+    <span class="hljs-comment">// 通过JavaScript的prototype属性继承于BMap.Control</span>
+    ZoomControl.prototype = <span class="hljs-keyword">new</span> BMap.Control();
+
+<span class="hljs-comment">// 初始化自定义控件</span>
+    <span class="hljs-comment">// 用map.addControl()方法添加自定义控件 API会用该对象的initialize()方法用来初始化控件</span>
+    <span class="hljs-comment">// 您需要实现此方法并在其中创建控件所需的DOM元素，并添加DOM事件</span>
+    <span class="hljs-comment">// 所有自定义控件中的DOM元素最终都应该添加到地图容器（即地图所在的DOM元素）中去</span>
+    <span class="hljs-comment">// 地图容器可以通过map.getContainer()方法获得</span>
+    <span class="hljs-comment">// initialize()方法需要返回控件容器的DOM元素</span>
+
+    <span class="hljs-comment">// 在本方法中创建个div元素作为控件的容器，并将其添加到地图容器中   </span>
+    ZoomControl.prototype.initialize = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(map)</span>{</span>
+        <span class="hljs-comment">// 创建一个DOM元素</span>
+        <span class="hljs-keyword">var</span> div = document.createElement(<span class="hljs-string">"div"</span>);
+        <span class="hljs-comment">// 添加文字说明</span>
+        div.appendChild(document.createTextNode(<span class="hljs-string">"放大2级"</span>));
+        <span class="hljs-comment">// 设置样式</span>
+        div.style.cursor = <span class="hljs-string">"pointer"</span>;
+        div.style.border = <span class="hljs-string">"1px solid gray"</span>;
+        div.style.backgroundColor = <span class="hljs-string">"white"</span>;
+        <span class="hljs-comment">// 绑定事件，点击一次放大两级</span>
+        div.onclick = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span>{</span>
+            map.zoomTo(map.getZoom() + <span class="hljs-number">2</span>);
+    }
+    <span class="hljs-comment">// 添加DOM元素到地图中</span>
+    map.getContainer().appendChild(div);
+        <span class="hljs-comment">// 将DOM元素返回</span>
+        <span class="hljs-keyword">return</span> div;
+    }
+
+<span class="hljs-comment">// 添加自定义控件</span>
+    <span class="hljs-keyword">var</span> myZoomCtrl = <span class="hljs-keyword">new</span> ZoomControl();
+
+
+<span class="hljs-number">004.</span>覆盖物
+<span class="hljs-comment">// 所有叠加或覆盖到地图的内容</span>
+<span class="hljs-comment">// 如标注、矢量图形元素(包括：折线和多边形和圆)、信息窗口等</span>
+<span class="hljs-comment">// 覆盖物拥有地理坐标，拖动或缩放地图时会相应的移动</span>
+
+<span class="hljs-comment">// 类</span>
+    Overlay     <span class="hljs-comment">// 覆盖物 抽象基类，所有的覆盖物均继承此类的方法</span>
+    Marker      <span class="hljs-comment">// 标注 点，可自定义图标</span>
+    Label       <span class="hljs-comment">// 标注 文本，可自定义内容</span>
+    Polyline    <span class="hljs-comment">// 折线</span>
+    Polygon     <span class="hljs-comment">// 多边形，类似于闭合折线，也可为其添加填充色</span>
+    Circle      <span class="hljs-comment">// 圆</span>
+    InfoWindow  <span class="hljs-comment">// 信息窗口，更为丰富的文字和多媒体信息，只能同时出现一个信息窗口</span>
+
+<span class="hljs-comment">// 添加 &amp; 移除</span>
+    map.addOverlay() map.removeOverlay()
+
+<span class="hljs-comment">// 标注点</span>
+    <span class="hljs-comment">// Marker的构造函数的参数为Point和MarkerOptions（可选）</span>
+    <span class="hljs-comment">// 使用自定义图标标注的点将位于标注所用图标的中心，可通过Icon的offset属性修改标定位置</span>
+    <span class="hljs-keyword">var</span> marker = <span class="hljs-keyword">new</span> BMap.Marker(point);
+    map.addOverlay(marker);
+
+    <span class="hljs-comment">// 自定义图标</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">addMarker</span><span class="hljs-params">(point, index)</span>{</span>  <span class="hljs-comment">// 创建图标对象</span>
+        <span class="hljs-keyword">var</span> myIcon = <span class="hljs-keyword">new</span> BMap.Icon(<span class="hljs-string">"marker.png"</span>, <span class="hljs-keyword">new</span> BMap.Size(<span class="hljs-number">24</span>, <span class="hljs-number">24</span>), {
+            <span class="hljs-comment">// 指定定位位置，所指位置距离图标左上角各偏移10像素和25像素</span>
+            offset: <span class="hljs-keyword">new</span> BMap.Size(<span class="hljs-number">10</span>, <span class="hljs-number">25</span>),
+            <span class="hljs-comment">// 设置图片偏移</span>
+            <span class="hljs-comment">// 需要指定大图的偏移位置，类似css sprites</span>
+            imageOffset: <span class="hljs-keyword">new</span> BMap.Size(<span class="hljs-number">0</span>, <span class="hljs-number">0</span> - index * <span class="hljs-number">25</span>)   <span class="hljs-comment">// 设置图片偏移    </span>
+        });
+        <span class="hljs-comment">// 创建标注对象并添加到地图   </span>
+        <span class="hljs-keyword">var</span> marker = <span class="hljs-keyword">new</span> BMap.Marker(point, {icon: myIcon});
+        map.addOverlay(marker);
+    }
+    <span class="hljs-comment">// 随机添加10个标注</span>
+    <span class="hljs-keyword">var</span> bounds = map.getBounds();
+    <span class="hljs-keyword">var</span> lngSpan = bounds.maxX - bounds.minX;
+    <span class="hljs-keyword">var</span> latSpan = bounds.maxY - bounds.minY;
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i ++) {
+        <span class="hljs-keyword">var</span> point = <span class="hljs-keyword">new</span> BMap.Point(bounds.minX + lngSpan * (<span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">0.7</span> + <span class="hljs-number">0.15</span>),
+                                bounds.minY + latSpan * (<span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">0.7</span> + <span class="hljs-number">0.15</span>));
+        addMarker(point, i);
+    }
+
+    <span class="hljs-comment">// 图标监听</span>
+    marker.addEventListener(<span class="hljs-string">"click"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        alert(<span class="hljs-string">"您点击了标注"</span>);
+    });
+
+    <span class="hljs-comment">// 拖拽</span>
+        <span class="hljs-comment">// 默认不支持拖拽，需调用marker.enableDragging()开启</span>
+        marker.enableDragging();
+        <span class="hljs-comment">// 开启后可以监听dragend事件来捕获拖拽后标注的最新位置</span>
+        marker.addEventListener(<span class="hljs-string">"dragend"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span>{</span>
+            alert(<span class="hljs-string">"当前位置："</span> + e.point.lng + <span class="hljs-string">", "</span> + e.point.lat);
+        })
+
+    <span class="hljs-comment">// 内存释放</span>
+    <span class="hljs-comment">// 1.1版本开始，不再需要使用此方法，API会自动完成内存释放</span>
+    map.removeOverlay(marker);
+    marker.dispose(); <span class="hljs-comment">// 1.1 版本不需要这样调用</span>
+
+<span class="hljs-comment">// 信息窗口</span>
+    <span class="hljs-keyword">var</span> opts = {
+        width : <span class="hljs-number">250</span>,
+        height: <span class="hljs-number">100</span>,
+        title : <span class="hljs-string">"Hello"</span>
+    }
+    <span class="hljs-keyword">var</span> infoWindow = <span class="hljs-keyword">new</span> BMap.InfoWindow(<span class="hljs-string">"World"</span>, opts);  <span class="hljs-comment">// 创建信息窗口对象</span>
+    map.openInfoWindow(infoWindow, map.getCenter());  <span class="hljs-comment">// 打开信息窗口</span>
+
+<span class="hljs-comment">// 折线</span>
+    <span class="hljs-keyword">var</span> polyline = <span class="hljs-keyword">new</span> BMap.Polyline([
+        <span class="hljs-keyword">new</span> BMap.Point(<span class="hljs-number">116.399</span>, <span class="hljs-number">39.910</span>),
+        <span class="hljs-keyword">new</span> BMap.Point(<span class="hljs-number">116.405</span>, <span class="hljs-number">39.920</span>)
+    ],
+        {strokeColor:<span class="hljs-string">"blue"</span>, strokeWeight:<span class="hljs-number">2</span>, strokeOpacity:<span class="hljs-number">0.9</span>}
+    );
+    map.addOverlay(polyline);
+
+
+<span class="hljs-number">005.</span>自定义覆盖物
+<span class="hljs-comment">// 1.定义一个自定义覆盖物的构造函数，通过构造函数参数可以传递一些自由的变量</span>
+<span class="hljs-comment">// 2.设置自定义覆盖物对象的prototype属性为Overlay的实例，以便继承覆盖物基类</span>
+<span class="hljs-comment">// 3.实现initialize方法，当调用map.addOverlay方法时，API会调用此方法</span>
+<span class="hljs-comment">// 4.实现draw方法</span>
+
+
+<span class="hljs-comment">// 定义构造函数并继承Overlay</span>
+    <span class="hljs-comment">// 示例定义一个名为SquareOverlay的构造函数，包含中心点和边长两个参数，用来在地图上创建一个方形覆盖物</span>
+    <span class="hljs-comment">// 定义自定义覆盖物的构造函数  </span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">SquareOverlay</span><span class="hljs-params">(center, length, color)</span>{</span>
+        <span class="hljs-keyword">this</span>._center = center;
+        <span class="hljs-keyword">this</span>._length = length;
+        <span class="hljs-keyword">this</span>._color = color;
+    }
+    <span class="hljs-comment">// 继承API的BMap.Overlay</span>
+    SquareOverlay.prototype = <span class="hljs-keyword">new</span> BMap.Overlay();
+
+<span class="hljs-comment">// 初始化自定义覆盖物</span>
+    <span class="hljs-comment">// 当调用map.addOverlay方法添加自定义覆盖物时，API会调用该对象的initialize方法用来初始化覆盖物</span>
+    <span class="hljs-comment">// 在初始化过程中需要创建覆盖物所需要的DOM元素，并添加到地图相应的容器中</span>
+    <span class="hljs-comment">// 地图提供了若干容器供覆盖物展示，通过map.getPanes方法可以得到这些容器元素，它们包括：</span>
+        floatPane
+        markerMouseTarget
+        floatShadow
+        labelPane
+        markerPane
+        mapPane
+    <span class="hljs-comment">// 这些对象代表了不同的覆盖物容器元素，它们之间存在着覆盖关系</span>
+        <span class="hljs-comment">// 最上一层为floatPane，用于显示信息窗口内容</span>
+        <span class="hljs-comment">// 下面依次为标注点击区域层、信息窗口阴影层、文本标注层、标注层和矢量图形层</span>
+
+    <span class="hljs-comment">//我们自定义的方形覆盖物可以添加到任意图层上，这里添加到markerPane上，作为其一个子结点</span>
+
+    <span class="hljs-comment">// 实现初始化方法</span>
+    SquareOverlay.prototype.initialize = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(map)</span>{</span>
+        <span class="hljs-comment">// 保存map对象实例</span>
+        <span class="hljs-keyword">this</span>._map = map;
+        <span class="hljs-comment">// 创建div元素，作为自定义覆盖物的容器</span>
+        <span class="hljs-keyword">var</span> div = document.createElement(<span class="hljs-string">"div"</span>);
+        div.style.position = <span class="hljs-string">"absolute"</span>;
+        <span class="hljs-comment">// 可以根据参数设置元素外观</span>
+        div.style.width = <span class="hljs-keyword">this</span>._length + <span class="hljs-string">"px"</span>;
+        div.style.height = <span class="hljs-keyword">this</span>._length + <span class="hljs-string">"px"</span>;
+        div.style.background = <span class="hljs-keyword">this</span>._color;
+        <span class="hljs-comment">// 将div添加到覆盖物容器中</span>
+        map.getPanes().markerPane.appendChild(div);
+        <span class="hljs-comment">// 保存div实例</span>
+        <span class="hljs-keyword">this</span>._div = div;
+        <span class="hljs-comment">// 将div元素作为返回值，调用该覆盖物的show、hide方或移除覆盖物时，API都将操作此元素</span>
+         <span class="hljs-keyword">return</span> div;    
+    }
+
+<span class="hljs-comment">// 绘制覆盖物</span>
+    <span class="hljs-comment">// 到目前为止，我们仅仅把覆盖物添加到了地图上，但是并没有将它放置在正确的位置上</span>
+    <span class="hljs-comment">// 您需要在draw方法中设置覆盖物的位置，每当地图状态发生变化（比如：位置移动、级别变化）时</span>
+    <span class="hljs-comment">// API都会调用覆盖物的draw方法，用于重新计算覆盖物的位置</span>
+    <span class="hljs-comment">// 通过map.pointToOverlayPixel方法可以将地理坐标转换到覆盖物的所需要的像素坐标</span>
+
+    <span class="hljs-comment">// 实现绘制方法</span>
+    SquareOverlay.prototype.draw = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        <span class="hljs-comment">// 根据地理坐标转换为像素坐标，并设置给容器</span>
+        <span class="hljs-keyword">var</span> position = <span class="hljs-keyword">this</span>._map.pointToOverlayPixel(<span class="hljs-keyword">this</span>._center);
+        <span class="hljs-keyword">this</span>._div.style.left = position.x - <span class="hljs-keyword">this</span>._length / <span class="hljs-number">2</span> + <span class="hljs-string">"px"</span>;
+        <span class="hljs-keyword">this</span>._div.style.top = position.y - <span class="hljs-keyword">this</span>._length / <span class="hljs-number">2</span> + <span class="hljs-string">"px"</span>;
+    }
+
+<span class="hljs-comment">// 移除覆盖物</span>
+    <span class="hljs-comment">// 调用removeOverlay或clearOverlays方法，API会自动将initialize方法返回的DOM元素进行移除</span>
+
+<span class="hljs-comment">// 显示和隐藏覆盖物</span>
+    <span class="hljs-comment">// 自定义覆盖物会自动继承Overlay的show和hide方法</span>
+    <span class="hljs-comment">// 方法会修改由initialize方法返回的DOM元素的style.display属性</span>
+    <span class="hljs-comment">// 如果自定义覆盖物元素较为复杂，您也可以自己实现show和hide方法</span>
+
+    <span class="hljs-comment">// 显示</span>
+    SquareOverlay.prototype.show = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._div){
+            <span class="hljs-keyword">this</span>._div.style.display = <span class="hljs-string">""</span>;
+        }
+    }
+    <span class="hljs-comment">// 隐藏</span>
+    SquareOverlay.prototype.hide = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._div){
+            <span class="hljs-keyword">this</span>._div.style.display = <span class="hljs-string">"none"</span>;
+        }
+    }
+
+<span class="hljs-comment">// 自定义其他方法 通过构造函数的prototype属性，您可以添加任何自定义的方法</span>
+    <span class="hljs-comment">// 每调用一次就能改变覆盖物的显示状态</span>
+    SquareOverlay.prototype.toggle = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._div){
+            <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._div.style.display == <span class="hljs-string">""</span>){
+                <span class="hljs-keyword">this</span>.hide();
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-keyword">this</span>.show();
+            }
+        }
+    }
+
+<span class="hljs-comment">// 添加覆盖物</span>
+    <span class="hljs-comment">// 初始化地图</span>
+    <span class="hljs-keyword">var</span> map = <span class="hljs-keyword">new</span> BMap.Map(<span class="hljs-string">"container"</span>);
+    <span class="hljs-keyword">var</span> point = <span class="hljs-keyword">new</span> BMap.Point(<span class="hljs-number">116.404</span>, <span class="hljs-number">39.915</span>);
+    map.centerAndZoom(point, <span class="hljs-number">15</span>);
+    <span class="hljs-comment">// 添加自定义覆盖物</span>
+    <span class="hljs-keyword">var</span> mySquare = <span class="hljs-keyword">new</span> SquareOverlay(map.getCenter(), <span class="hljs-number">100</span>, <span class="hljs-string">"red"</span>);
+    map.addOverlay(mySquare);
+
+
+<span class="hljs-comment">// 2016-11-16</span>
+<span class="hljs-number">006.</span>事件
+<span class="hljs-comment">// API拥有独立的的事件模型，地图API对象的自定义事件可监听，使用方法和DOM事件类似但不同</span>
+
+<span class="hljs-comment">// 事件监听</span>
+    <span class="hljs-comment">// API中的大部分对象都有addEventListener方法，通过该方法来监听对象事件</span>
+    <span class="hljs-comment">// 比如BMap.Map包含click、dblclick等事件</span>
+
+    <span class="hljs-comment">// 在特定环境下这些事件会被触发，同时监听函数会得到相应的事件参数e</span>
+    <span class="hljs-comment">// 比如当用户点击地图时，e参数会包含鼠标所对应的地理位置point。</span>
+
+    <span class="hljs-comment">// addEventListener方法有两个参数：监听的事件名称、事件触发时调用的函数</span>
+    map.addEventListener(<span class="hljs-string">"click"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        alert(<span class="hljs-string">"您点击了地图。"</span>);
+    });
+    <span class="hljs-comment">// 通过监听事件还可以捕获事件触发后的状态</span>
+    map.addEventListener(<span class="hljs-string">"dragend"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        <span class="hljs-keyword">var</span> center = map.getCenter();
+        alert(<span class="hljs-string">"地图中心点变更为："</span> + center.lng + <span class="hljs-string">", "</span> + center.lat);
+    });
+
+<span class="hljs-comment">// 事件参数和this</span>
+    <span class="hljs-comment">// 在 DOM Level 2 Events 中，监听函数会得到一个事件对象e，可以获取有关该事件的信息</span>
+    <span class="hljs-comment">// 同时在监听函数中 this 会指向触发该事件的 DOM 元素，API的事件模型类似</span>
+    <span class="hljs-comment">// 在事件监听函数中传递事件的对象 e 至少包含事件类型（type）、触发该事件的对象（target）</span>
+    <span class="hljs-comment">// API还保证函数内的this指向触发（同时也是绑定）事件的API对象</span>
+
+    <span class="hljs-comment">// 通过参数e得到点击的经纬度坐标</span>
+    map.addEventListener(<span class="hljs-string">"click"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span>{</span>
+        alert(e.point.lng + <span class="hljs-string">", "</span> + e.point.lat);
+    });
+    
+    <span class="hljs-comment">// 通过this得到地图缩放后的级别</span>
+    map.addEventListener(<span class="hljs-string">"zoomend"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        alert(<span class="hljs-string">"地图缩放至："</span> + <span class="hljs-keyword">this</span>.getZoom() + <span class="hljs-string">"级"</span>);
+    });
+
+
+<span class="hljs-number">007.</span>地图图层
+<span class="hljs-comment">// 概念</span>
+    <span class="hljs-comment">// 地图可以包含一个或多个图层，每层每级都是由若干图块组成，覆盖地球整个表面</span>
+    <span class="hljs-comment">// 包括街道、兴趣点、学校、公园、交通流量</span>
+    <span class="hljs-comment">// 目前提供：交通流量图层</span>
+        TrafficLayer
+
+<span class="hljs-comment">// 添加、移除</span>
+    <span class="hljs-keyword">var</span> traffic = <span class="hljs-keyword">new</span> BMap.TrafficLayer();  <span class="hljs-comment">// 创建实例</span>
+    map.addTileLayer(traffic);  <span class="hljs-comment">// 添加</span>
+    map.removeTileLayer(traffic);  <span class="hljs-comment">// 移除</span>
+
+<span class="hljs-comment">// 自定义图层</span>
+    <span class="hljs-comment">// 百度地图的地图坐标系涉及</span>
+        <span class="hljs-comment">// 经纬度球面坐标系统</span>
+        <span class="hljs-comment">// 墨卡托平面坐标系统</span>
+        <span class="hljs-comment">// 图块编号系统</span>
+
+    <span class="hljs-comment">// 格林尼治天文台原址0度经线，赤道0度纬线，百度地图中，东经和北纬用正数，西经和南纬用负数</span>
+    <span class="hljs-comment">// 投影：在地图内部系统中将球面坐标转换为平面坐标</span>
+    <span class="hljs-comment">// 百度地图使用墨卡托投影，平面坐标与经纬度坐标系的原点重合</span>
+
+    <span class="hljs-comment">// 百度地图在每级将整个地图划分成若干个图块，通过编号整合显示完整地图</span>
+    <span class="hljs-comment">// 地图被拖动或者级别发生变化时，API根据平面坐标计算出所需显示的图块的编号</span>
+
+<span class="hljs-comment">// 定义取图规则</span>
+    <span class="hljs-comment">// 通过TileLayer类开发者可以实现自定义图层</span>
+
+    <span class="hljs-comment">// TileLayer.getTilesUrl() 需要实现来告诉 API 取图规则</span>
+    <span class="hljs-comment">// 参数包括 tileCoord、zoom，图块的编号信息、图块的级别</span>
+
+    <span class="hljs-comment">// 每当地图需要显示特定级别的特定位置的图块时就会自动调用此方法，并提供这两个参数</span>
+
+    <span class="hljs-comment">// 使用者需要告知API特定编号和级别所对应的图块的地址，这样API就能正常显示自定义的图层了</span>
+
+    <span class="hljs-comment">// 添加自定义图层：在每个图块的所有缩放级别上显示一个浮动红色小水滴表示图块的轮廓</span>
+        <span class="hljs-keyword">var</span> tilelayer = <span class="hljs-keyword">new</span> BMap.TileLayer();  <span class="hljs-comment">// 创建地图层实例</span>
+        tilelayer.getTilesUrl=<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>  <span class="hljs-comment">// 设置图块路径</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-string">"layer.gif"</span>;
+        };
+        map.addTileLayer(tilelayer);  <span class="hljs-comment">// 将图层添加到地图上</span>
+
+
+<span class="hljs-number">008.</span>工具
+
+
+
+
+<span class="hljs-comment">/*
+
+    高德地图 JavaScript API
+
+    2016-11-14
+    ~
+    2016-11-14 Noted by Chisw
+
+*/</span>
+
+
+<span class="hljs-comment">// 2016-11-14</span>
+<span class="hljs-number">101.</span>概览
+<span class="hljs-comment">// 高德地图 JavaScript API，JavaScript 编写的应用程序接口</span>
+<span class="hljs-comment">// 在网站或移动端构建功能丰富、交互性强的地图应用程序</span>
+<span class="hljs-comment">// 基本地图接口外，还提供了本地搜索、路线规划等服务</span>
+<span class="hljs-comment">// 版本 V1.3.21</span>
+<span class="hljs-comment">// 开发者Key：</span>
+
+<span class="hljs-comment">// 类</span>
+    AMap
+    AMap.Map
+        map.setMapStyle(<span class="hljs-string">'dark'</span>)
+        map.setFeatures(<span class="hljs-string">'bg'</span>)
+        map.setZoom(<span class="hljs-number">10</span>)
+        map.setCenter([<span class="hljs-number">116.39</span>,<span class="hljs-number">39.9</span>])
+        map.addControl(<span class="hljs-keyword">new</span> AMap.ToolBar())
+        map.removeControl(toolBar)
+    AMap.Marker
+        marker.setMap(map);
+    AMap.InfoWindow
+        infowindow.setSize(<span class="hljs-keyword">new</span> AMap.Size(<span class="hljs-number">150</span>,<span class="hljs-number">50</span>));
+        infowindow.setContent(contentDiv);
+        infowindow.open(map,<span class="hljs-keyword">new</span> AMap.LngLat(<span class="hljs-number">116.39</span>,<span class="hljs-number">39.9</span>));
+    AMap.AdvancedInfoWindow
+    AMap.Pixel
+    AMap.LngLat
+    AMap.Size
+    AMap.plugin
+    AMap.event
+
+
+<span class="hljs-number">102.</span>加载地图
+<span class="hljs-comment">// 直接引入</span>
+    <span class="hljs-comment">// &lt;div id="GDMapContainer"&gt;&lt;/div&gt;</span>
+    <span class="hljs-comment">// &lt;script src="http://webapi.amap.com/maps?v=1.3&amp;key=您申请的key值"&gt;&lt;/script&gt;</span>
+
+    <span class="hljs-comment">// 默认属性创建</span>
+        <span class="hljs-keyword">var</span> map = <span class="hljs-keyword">new</span> AMap.Map(<span class="hljs-string">'container'</span>);
+
+    <span class="hljs-comment">// 设定地图的缩放级别 和 中心点</span>
+        <span class="hljs-comment">// 传参</span>
+        <span class="hljs-keyword">var</span> map = <span class="hljs-keyword">new</span> AMap.Map(<span class="hljs-string">'container'</span>,{
+            zoom: <span class="hljs-number">10</span>,
+            center: [<span class="hljs-number">116.39</span>,<span class="hljs-number">39.9</span>]
+        });
+
+        <span class="hljs-comment">// 方法</span>
+        <span class="hljs-keyword">var</span> map = <span class="hljs-keyword">new</span> AMap.Map(<span class="hljs-string">'container'</span>);
+        map.setZoom(<span class="hljs-number">10</span>);
+        map.setCenter([<span class="hljs-number">116.39</span>,<span class="hljs-number">39.9</span>]);
+
+        <span class="hljs-comment">// center属性的值是经纬度的二元数组，或 AMap.LngLat对象，经前纬后</span>
+        <span class="hljs-comment">// 经度 longitude  纬度 latitude</span>
+
+<span class="hljs-comment">// 异步加载</span>
+    <span class="hljs-comment">// &lt;script src="http://webapi.amap.com/maps?v=1.3&amp;key=您申请的key值&amp;callback=init"&gt;&lt;/script&gt;</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">init</span><span class="hljs-params">()</span>{</span>
+        <span class="hljs-keyword">var</span> map = <span class="hljs-keyword">new</span> AMap.Map(<span class="hljs-string">'container'</span>, {
+            center: [<span class="hljs-number">117.000923</span>, <span class="hljs-number">36.675807</span>],
+            zoom: <span class="hljs-number">6</span>
+        });
+        map.plugin([<span class="hljs-string">"AMap.ToolBar"</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            map.addControl(<span class="hljs-keyword">new</span> AMap.ToolBar());
+        });
+    }
+
+
+<span class="hljs-number">103.</span>基本参数
+    center            LL    地图 中心点坐标值（V1<span class="hljs-number">.3</span><span class="hljs-number">.0</span>起变为view对象中的center属性）
+    zoom            N    地图 显示缩放级别，若center与level未赋值，默认用户所在城市范围
+    zooms            A    地图 显示缩放级别范围，PC、移动 默认和可取范围分别是 <span class="hljs-number">3</span>-<span class="hljs-number">18</span> <span class="hljs-number">3</span>-<span class="hljs-number">19</span>
+    layers            A    地图 图层数组，数组可以是图层中的一个或多个
+    features        A    地图 显示的元素种类，支持bg、point、road、building
+
+    mapStyle        S    地图 样式，normal、dark、light、blue_light、fresh（osm）
+    lang            S    地图 语言，可选值：zh_cn：中文简体，en：英文，zh_en：中英文对照
+    cursor            S    地图 默认鼠标样式，应符合CSS规范
+
+    animateEnable    B    可否 平移中使用动画，如调用panBy、panTo、setCenter等函数
+    isHotspot        B    可否 开启地图热点，<span class="hljs-literal">false</span>（v1<span class="hljs-number">.3</span> 新增）
+    rotateEnable    B    可否 旋转，<span class="hljs-literal">false</span>（v1<span class="hljs-number">.3</span> 新增）
+    resizeEnable    B    可否 监控容器尺寸变化，<span class="hljs-literal">false</span>
+    keyboardEnable    B    可否 键盘控制：方向键控制平移，<span class="hljs-string">"+-"</span>控制缩放
+    touchZoom        B    可否 在移动终端多点触控缩放，<span class="hljs-literal">true</span>
+    zoomEnable        B    可否 缩放，<span class="hljs-literal">true</span>，支持 set/getStatus
+    doubleClickZoom    B    可否 双击放大，<span class="hljs-literal">true</span>，支持 set/getStatus
+    jogEnable        B    可否 缓动效果，<span class="hljs-literal">true</span>，支持 set/getStatus
+    dragEnable        B    可否 鼠标拖拽平移，<span class="hljs-literal">true</span>，支持 set/getStatus
+    scrollWheel        B    可否 鼠标滚轮缩放，<span class="hljs-literal">true</span>，支持 set/getStatus
+
+
+<span class="hljs-number">104.</span>点标记
+<span class="hljs-comment">// 使用 AMap.Marker 类</span>
+    <span class="hljs-comment">// 传参</span>
+    <span class="hljs-keyword">var</span> marker = <span class="hljs-keyword">new</span> AMap.Marker({
+        position: [<span class="hljs-number">116.39</span>,<span class="hljs-number">39.9</span>],
+        map:map
+    });
+
+    <span class="hljs-comment">// 方法</span>
+    <span class="hljs-keyword">var</span> marker = <span class="hljs-keyword">new</span> AMap.Marker();
+    marker.setMap(map);
+
+<span class="hljs-comment">// 移除：不传参或传空参</span>
+    marker.setMap();
+
+
+<span class="hljs-number">105.</span>信息窗体
+<span class="hljs-comment">// 使用 InfoWindow 类</span>
+    <span class="hljs-comment">// 传参</span>
+    <span class="hljs-keyword">var</span> infowindow = <span class="hljs-keyword">new</span> AMap.InfoWindow({
+        content: <span class="hljs-string">'&lt;h3&gt;高德地图&lt;/h3&gt;&lt;div&gt;中国领先的数字地图提供商。&lt;/div&gt;'</span>,
+        offset: <span class="hljs-keyword">new</span> AMap.Pixel(<span class="hljs-number">0</span>, -<span class="hljs-number">30</span>),
+        size: <span class="hljs-keyword">new</span> AMap.Size(<span class="hljs-number">230</span>,<span class="hljs-number">0</span>)
+    })
+
+    <span class="hljs-comment">// 方法</span>
+    infowindow.setSize(<span class="hljs-keyword">new</span> AMap.Size(<span class="hljs-number">150</span>,<span class="hljs-number">50</span>));
+    <span class="hljs-keyword">var</span> contentDiv = document.createElement(<span class="hljs-string">'div'</span>);
+    contentDiv.innerText=<span class="hljs-string">'我是信息窗体'</span>;
+    infowindow.setContent(contentDiv);
+
+<span class="hljs-comment">// 打开</span>
+    infowindow.open(map,<span class="hljs-keyword">new</span> AMap.LngLat(<span class="hljs-number">116.39</span>,<span class="hljs-number">39.9</span>));
+
+<span class="hljs-comment">// 事件监听打开</span>
+    <span class="hljs-keyword">var</span> clickHandle = AMap.event.addListener(marker, <span class="hljs-string">'click'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        infowindow2.open(map, marker.getPosition())
+    })
+
+<span class="hljs-comment">// 移除事件绑定</span>
+    AMap.event.removeListener(clickHandle);
+
+<span class="hljs-comment">// 高级</span>
+    AMap.plugin(<span class="hljs-string">'AMap.AdvancedInfoWindow'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        <span class="hljs-keyword">var</span> infowindow = <span class="hljs-keyword">new</span> AMap.AdvancedInfoWindow({
+            content: <span class="hljs-string">'&lt;h3 class="title"&gt;高德地图&lt;/h3&gt;'</span>+
+                <span class="hljs-string">'&lt;div class="content"&gt;高德是中国领先的数字地图内容、'</span>+
+                <span class="hljs-string">'导航和位置服务解决方案提供商。&lt;/div&gt;'</span>,
+            offset: <span class="hljs-keyword">new</span> AMap.Pixel(<span class="hljs-number">0</span>, -<span class="hljs-number">30</span>),
+            asOrigin:<span class="hljs-literal">false</span>
+        });
+        infowindow.open(map,<span class="hljs-keyword">new</span> AMap.LngLat(<span class="hljs-number">116.39</span>,<span class="hljs-number">39.9</span>));
+    })
+
+
+<span class="hljs-number">106.</span>控件
+<span class="hljs-comment">// 添加控件，先要加载插件，多个插件时，参一可以设定为控件名称数组</span>
+    AMap.plugin([<span class="hljs-string">'AMap.ToolBar'</span>,<span class="hljs-string">'AMap.Scale'</span>],<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        <span class="hljs-keyword">var</span> toolBar = <span class="hljs-keyword">new</span> AMap.ToolBar();
+        <span class="hljs-keyword">var</span> scale = <span class="hljs-keyword">new</span> AMap.Scale();
+        map.addControl(toolBar);
+        map.addControl(scale);
+    })
+
+<span class="hljs-comment">// 移除</span>
+    map.removeControl(toolBar);
+
+<span class="hljs-comment">// 总览</span>
+    ToolBar         工具条：缩放、平移、定位等功能按钮在内的组合控件
+    Scale         比例尺
+    Geolocation  定位：获取和展示用户主机所在的经纬度位置
+    OverView     鹰眼：右下角显示地图的缩略图
+    MapType         类别切换：默认图层与卫星图、实施交通图层之间切换
+
+
+<span class="hljs-number">107.</span>室内地图
+<span class="hljs-comment">// 默认室内地图：定位到有室内地图的位置就可以展示了</span>
+    <span class="hljs-keyword">var</span> map = <span class="hljs-keyword">new</span> AMap.Map(<span class="hljs-string">'mapDiv'</span>, {
+        resizeEnable: <span class="hljs-literal">true</span>,
+        center:[<span class="hljs-number">116.519942</span>, <span class="hljs-number">39.924677</span>],
+        zoom:<span class="hljs-number">18</span>
+    });
+
+    <span class="hljs-comment">// 进一步设定</span>
+    map.on(<span class="hljs-string">'indoor_create'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        map.indoorMap.showIndoorMap(<span class="hljs-string">'B000A856LJ'</span>,<span class="hljs-number">5</span>);
+    })
+
+<span class="hljs-comment">// 单独或者叠加显示某个商场的室内地图</span>
+    AMap.plugin([<span class="hljs-string">'AMap.IndoorMap'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> indoorMap = <span class="hljs-keyword">new</span> AMap.IndoorMap({alwaysShow:<span class="hljs-literal">true</span>});
+        <span class="hljs-comment">// 设定在没有矢量底图的时候也显示，默认情况下室内图仅在有矢量底图的时候显示</span>
+        <span class="hljs-keyword">var</span> map = <span class="hljs-keyword">new</span> AMap.Map(<span class="hljs-string">'mapDiv'</span>, {
+            resizeEnable: <span class="hljs-literal">true</span>,
+            showIndoorMap:<span class="hljs-literal">false</span>,  <span class="hljs-comment">// 隐藏地图自带的室内地图图层</span>
+            layers:[indoorMap]
+         });
+        indoorMap.showIndoorMap(<span class="hljs-string">'B000A856LJ'</span>);  <span class="hljs-comment">// 室内建筑ID</span>
+    });
+
+    <span class="hljs-comment">// 同时指定楼层</span>
+    indoorMap.showIndoorMap(<span class="hljs-string">'B0FFFAB6J2'</span>,<span class="hljs-number">5</span>);
+
+    <span class="hljs-comment">// 叠加图层</span>
+    layers:[indoorMap,<span class="hljs-keyword">new</span> AMap.TileLayer()]  <span class="hljs-comment">// new AMap.TileLayer().setMap(map);</span>
+
+<span class="hljs-comment">// 参数 名称          类型      说明</span>
+    hideFloorBar      B    是否显示楼层切换控件，<span class="hljs-literal">false</span>
+    opacity          N    图层 透明度 <span class="hljs-number">0</span>-<span class="hljs-number">1</span>
+    zIndex          N    图层 叠加的顺序值，<span class="hljs-number">0</span>表示最底层，室内地图默认为<span class="hljs-number">11</span>
+    cursor          S    鼠标悬停到店铺面时的样式
+    alwaysShow      B    默认情况下室内图仅在有矢量底图的时候显示，<span class="hljs-literal">false</span>
+
+
+<span class="hljs-number">108.</span>地图绘制
+</code></pre>

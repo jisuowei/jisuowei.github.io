@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title title="code">Jisuowei.com-码库</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta name="viewport" content=" width=1024,user-scalable=0">
+<link rel='stylesheet' type='text/css' href='../css/ji-common.css' />
+<style>
+
+.ji-content {
+	
+}
+
+.ji-content h3 {
+	margin: 32px 0 0 0;
+}
+
+.ji-content ul {
+	margin-top: 12px;
+}
+
+.ji-content ul li {
+	font-size: 14px;
+	line-height: 28px;
+	list-style-position: inside;
+	color: #5c5c5c;
+}
+
+#ji-mask-content {
+    background: #222222;
+	width: 980px;
+	min-height: 100px;
+	position: absolute;
+	top: 100px;
+	left: 50%;
+	margin-left: -490px;
+	overflow-x: hidden;
+	padding: 24px;
+	border: none;
+	box-sizing: border-box;
+	box-shadow: 0px 0px 50px #363636;
+
+}
+
+#ji-mask-content * {
+	font-family: 'webConsolas','微软雅黑';
+	font-size: 12px;
+}
+
+
+
+.hljs{display:block;overflow-x:auto;padding:0.5em;background:#222}
+.hljs,.hljs-subst{color:#aaa}
+.hljs-section{color:#fff}
+.hljs-comment {color: #646464;}
+.hljs-quote,.hljs-meta{color:#444}
+.hljs-string,.hljs-symbol,.hljs-bullet,.hljs-regexp{color:#ffcc33}
+.hljs-number,.hljs-addition{color:#00cc66}
+.hljs-built_in,.hljs-builtin-name,.hljs-literal,.hljs-type,.hljs-template-variable,.hljs-attribute,.hljs-link{color:#32aaee}
+.hljs-keyword,.hljs-selector-tag,.hljs-name,.hljs-selector-id,.hljs-selector-class{color:#6644aa}
+.hljs-title,.hljs-variable,.hljs-deletion,.hljs-template-tag{color:#bb1166}
+.hljs-section,.hljs-doctag,.hljs-strong{font-weight:bold}
+.hljs-emphasis{font-style:italic}
+
+</style>
+</head>
+<body>
+
+
+
+<div class="ji-content">
+
+	<h3 class="ji-title-h3">课程整理 <span>/ <span class="eng">Course Summary</span></span></h3>
+	<ul>
+		<li><a href="javascript:;" id="CSS3" > CSS3 图解CSS3核心技术与案例实战 【大漠】</a></li>
+		<li><a href="javascript:;" id="DOM_Scripting" > DOM JavaScript_DOM编程艺术【英/Jeremy Keith 加/Jeffrey Sambells】</a></li>
+		<li><a href="javascript:;" id="HTML5_Instance" > HTML5 和 CSS3实例教程 【美/霍根】</a></li>
+		<li><a href="javascript:;" id="Java_HSP" > Java 【韩顺平】</a></li>
+		<li><a href="javascript:;" id="jQ_BasicC_4" > jQuery 基础教程 第4版 【美/JonathanChaffer 美/KarlSwedberg】</a></li>
+		<li><a href="javascript:;" id="jQ_HSP" > jQuery 【韩顺平】</a></li>
+		<li><a href="javascript:;" id="jQ_W3C" > jQuery 【W3CSchool】</a></li>
+		<li><a href="javascript:;" id="JS_BasicC_8" > JavaScript 基础教程 第8版 【美/Tom Negrino Dori Smith】</a></li>
+		<li><a href="javascript:;" id="JS_HSP" > JavaScript 轻松搞定JS 【韩顺平】</a></li>
+		<li><a href="javascript:;" id="JS_LXH" > JavaScript 【李兴华】</a></li>
+		<li><a href="javascript:;" id="JS_LYH" > JavaScript 北风网瓢城web俱乐部 【李炎恢】</a></li>
+		<li><a href="javascript:;" id="JS_Miaov" > JavaScript 【妙味课堂】</a></li>
+		<li><a href="javascript:;" id="MySQL_Itcast" > MySQL 【传智播客】</a></li>
+		<li><a href="javascript:;" id="PHP_HSP" > PHP 【韩顺平】</a></li>
+		<li><a href="javascript:;" id="XML_Itcast" > XML 【传智播客】</a></li>
+		<li><a href="javascript:;" id="JS_188_1-56" > 改善JavaScript程序的188个建议 【成林】（1-56*语言基础、字符串、正则表达式和数组）</a></li>
+		<li><a href="javascript:;" id="JS_188_57-78" > 改善JavaScript程序的188个建议 【成林】（57-78*函数式编程）</a></li>
+		<li>整理中..</li>
+	</ul>
+
+	<h3 class="ji-title-h3">速查手册 <span>/ <span class="eng">QuickS Handbook</span></span></h3>
+	<ul>
+		<li><a href="javascript:;" id="Javascript" > JavaScript 内置对象</a></li>
+		<li><a href="javascript:;" id="BOM" > BOM</a></li>
+		<li><a href="javascript:;" id="DOM" > DOM</a></li>
+		<li><a href="javascript:;" id="SQL" > SQL</a></li>
+		<li><a href="javascript:;" id="ABMapAPI" > Map API【百度 + 高德】</a></li>
+		<li>整理中..</li>
+	</ul>
+
+</div><!-- ji-content end -->
+
+
+
+</body>
+<script src="../../static/js/jquery.2.1.1.min.js"></script>
+<script src="../js/jisuowei.js"></script>
+<script src="../js/ji-navi.js"></script>
+<script>
+
+$('ul li a').click(function(){
+
+	// loadDivAni();
+	$("#ji-mask-content").html('<p id="loadingTip">数据加载中..</p>');
+
+	showJiMask();
+
+	var s = $(this).attr('id');
+
+	setTimeout(function(){
+		ajax('../../static/code/'+ s + '.txt',function(str) {
+			$("#ji-mask-content").html(  str );
+		});
+
+		$('#ji-mask-content').scrollTop("0");
+
+	},1000)
+
+});
+
+$('#ji-mask').click(function(){
+	hideJiMask();
+});
+
+</script>
+</html>
