@@ -1,0 +1,134 @@
+/*
+	jikit.css for jikit.js plugin style
+	@Chisw 2018-04-15 12:00
+
+	001 carousel
+
+
+	999 media query
+*/
+
+
+/* 001 carousel */
+.jikit-carousel {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	color: #ccc;
+	overflow: hidden;
+}
+
+.jikit-carousel .fa-spinner {
+	position: absolute;
+	top: 45%;
+	left: 50%;
+	width: 20px;
+	margin-left: -10px;
+	text-align: center;
+}
+
+.jikit-carousel-box {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	/*overflow: hidden;*/
+}
+
+.jikit-carousel-avatar {
+	position: absolute;
+	display: none;
+}
+
+.jikit-carousel-avatar,
+.jikit-carousel-avatar img {
+	width: 100%;
+	height: 100%;
+}
+
+.jikit-carousel-avatar img {
+	cursor: pointer;
+}
+
+.jikit-carousel-title {
+	position: absolute;
+	left: 24px;
+	bottom: 18px;
+	border-radius: 4px;
+	font-size: 28px;
+	color: #fff;
+	text-shadow: 0 0 4px rgba(0,0,0,1);
+}
+
+.jikit-carousel-dots {
+	position: absolute;
+	right: 24px;
+	bottom: 18px;
+	height: 20px;
+	line-height: 18px;
+	padding: 0 8px;
+	border-radius: 20px;
+	background: rgba(0,0,0,.4);
+	opacity: .4;
+	transition: opacity .23s;
+}
+
+.jikit-carousel:hover .jikit-carousel-dots {
+	opacity: 1;
+}
+
+.jikit-carousel-dots span {
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+	border-radius: 10px;
+	background: #fff;
+	cursor: pointer;
+	opacity: .5;
+	transition: all .23s;
+}
+
+.jikit-carousel-dots span:hover,
+.jikit-carousel-dots span.active {
+	opacity: 1;
+}
+
+.jikit-carousel-dots span + span {
+	margin-left: 8px;
+}
+
+.jikit-carousel [class^=jikit-carousel-btn] {
+	position: absolute;
+	top: 50%;
+	display: block;
+	width: 40px;
+	height: 80px;
+	margin-top: -40px;
+	line-height: 80px;
+	font-size: 24px;
+	text-align: center;
+	background: rgba(0,0,0,0.3);
+	cursor: pointer;
+	transition: all .23s;
+}
+
+.jikit-carousel [class^=jikit-carousel-btn]:hover {
+	color: #fff;
+	background: rgba(0,0,0,0.5);
+}
+
+.jikit-carousel [class^=jikit-carousel-btn]:active {
+	color: #ccc;
+}
+
+.jikit-carousel .jikit-carousel-btn-prev {left: -40px;}
+.jikit-carousel .jikit-carousel-btn-next {right: -40px;}
+.jikit-carousel:hover .jikit-carousel-btn-prev {left: 0;}
+.jikit-carousel:hover .jikit-carousel-btn-next {right: 0;}
+
+/* 999 media query */
+@media screen and (max-width:800px){ }
+@media screen and (max-width:768px){ }
+@media screen and (max-width:360px){ }
+@media screen and (max-width:320px){ }

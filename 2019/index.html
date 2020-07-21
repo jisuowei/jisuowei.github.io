@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<title>首页-奇斯威克-jisuowei.com</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<link href="./static/img/favicon.ico" rel="shortcut icon" />
+
+	<link rel="stylesheet" type="text/css" href="./static/css/jisuowei.css" />
+	<link rel="stylesheet" type="text/css" href="./static/css/jikit.css" />
+	<link rel="stylesheet" type="text/css" href="../static/css/font-awesome.min.css" />
+
+	<link rel="stylesheet" type="text/css" href="../static/js/simditor/css/simditor.css" />
+	<link rel="stylesheet" type="text/css" href="../static/js/simditor/css/simditor-emoji.css" />
+	<link rel="stylesheet" type="text/css" href="../static/js/simditor/css/simditor-ji.css" />
+	<link rel="stylesheet" href="../static/js/highlightjs/styles/xcode.css">
+<style>
+
+#ji-home-banner {
+	width: 100%;
+}
+
+#ji-home-banner-top {
+	height: 480px;
+}
+
+#ji-home-banner-btm {
+	border: 1px solid #e5e5e5;
+	box-sizing: border-box;
+	margin-top: 3px;
+}
+
+#ji-home-banner-btm .ji-home-banner-section {
+	float: left;
+	width: 25%;
+	height: 160px;
+	transition: all .23s;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+#ji-home-banner-btm .ji-home-banner-section + .ji-home-banner-section {
+	border-left: 1px solid #e5e5e5;
+}
+
+#ji-home-banner-btm .ji-home-banner-section:hover {
+	cursor: pointer;
+	box-shadow: 0 0 20px rgba(0,0,0,.1) inset;
+}
+
+#ji-home-banner-btm .ji-home-banner-section font,
+#ji-home-banner-btm .ji-home-banner-section span {
+	position: absolute;
+	z-index: 1;
+	display: block;
+	width: 298px;
+	text-align: center;
+	margin-top: 100px;
+	color: #aaa;
+	font-size: 22px;
+	transition: all .23s;
+}
+
+#ji-home-banner-btm .ji-home-banner-section font {
+	margin-top: 36px;
+	color: #333;
+	font-size: 48px;
+	font-family: 'jidincond';
+}
+
+#ji-home-banner-btm .ji-home-banner-section i.fa {
+	display: block;
+	width: 100%;
+	height: 100%;
+	line-height: 160px;
+	color: #f8f8f8;
+	text-align: center;
+	font-size: 140px;
+	transition: all .5s;
+}
+
+#ji-home-banner-btm .ji-home-banner-section:hover span {
+	margin-top: 40px;
+	color: #333;
+	font-size: 36px;
+}
+
+#ji-home-banner-btm .ji-home-banner-section:hover font {
+	margin-top: 100px;
+	color: #aaa;
+	font-size: 24px;
+}
+
+#ji-home-banner-btm .ji-home-banner-section:hover span::before {content: '- ';}
+#ji-home-banner-btm .ji-home-banner-section:hover span::after {content: ' -';}
+
+
+#ji-home-banner-btm .ji-home-banner-section:hover i.fa {
+	font-size: 200px;
+	transform: rotate(360deg);
+}
+
+
+
+#ji-home-read {
+	transition: transform 1s, box-shadow .23s;
+}
+
+#ji-home-read-note {
+	padding-top: 20px;
+	height: 200px;
+}
+
+#ji-home-read-note > div {
+	box-sizing: border-box;
+	float: left;
+}
+
+#ji-home-read-note .left {
+	width: 25%;
+	text-align: center;
+}
+
+#ji-home-read-note .right {
+	width: 75%;
+	padding: 12px 60px;
+}
+
+#ji-home-store,
+#ji-home-like {
+	width: 580px;
+	height: 400px;
+	float: left;
+}
+
+#ji-home-store {
+	float: right;
+}
+
+#ji-home-app {
+	height: 200px;
+}
+
+
+#ji-home-board,
+#ji-home-map {
+	width: 780px;
+	height: 400px;
+	float: left;
+}
+
+#ji-home-board {
+	width: 380px;
+	float: right;
+}
+
+#ji-home-board .simditor {
+	height: 240px;
+	overflow-y: scroll;
+}
+
+</style>
+</head>
+<body>
+
+	<div class="ji-container">
+
+
+	<div id="ji-nav"></div>
+	<div id="ji-body">
+	<div class="ji-container-center">
+			
+
+		<div id="ji-home-banner" class="ji-body-row ji-module">
+
+			<div id="ji-home-banner-top"></div>
+
+			<div id="ji-home-banner-btm" class="clearfix">
+				<div class="ji-home-banner-section j_article" data-id="9hl2e0">
+					<span>历程</span>
+					<font>Origin</font>
+					<i class="fa fa-diamond"></i>
+				</div>
+				<div class="ji-home-banner-section j_article" data-id="m7cnyc">
+					<span>技能</span>
+					<font>Skill</font>
+					<i class="fa fa-star-o"></i>
+				</div>
+				<div class="ji-home-banner-section j_article" data-id="83ql0s">
+					<span>关于</span>
+					<font>About</font>
+					<i class="fa fa-paper-plane-o"></i>
+				</div>
+				<div class="ji-home-banner-section" onclick="location.href='article'">
+					<span>更多</span>
+					<font>More</font>
+					<i class="fa fa-plus-square-o"></i>
+				</div>
+			</div>
+
+		</div>
+
+
+		<div id="ji-home-read" class="ji-body-row ji-module">
+
+			<div class="ji-module-title"><span class="title"><i class="fa fa-bookmark-o"></i> 阅读</span><span class="more ji-btn small">全部书籍 <i class="fa fa-caret-right"></i></span><span id="ji-home-read-refresh" class="more ji-btn small" style="margin-right:12px;"><i class="fa fa-refresh"></i></span></div>
+
+			<div id="ji-home-read-note">
+				<div class="left" style="perspective:800px;">
+					<img src="https://cover.read.duokan.com/mfsv2/download/fdsc3/p01fMESqc9xo/NL5SYA3iXZKkA0.jpg!l" class="ji-read-avatar">
+					<p>人类简史：从动物到上帝</p>
+					<p style="color:#FFAF00;"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i></p>
+				</div>
+				<div class="right">
+					<p style="color:#666;font-family:楷体;font-size:32px;text-indent:64px;text-align:justify;">“只有智人能够表达关于从来没有看过、碰过、耳闻过的事物，而且讲得煞有其事。”</p>
+					<p class="text-right" style="color:#aaa;">—— 【以色列】尤瓦尔·赫拉利</p>
+					<p style="color:#ddd;text-align:center;font-size:14px;margin-top:20px;">从 4216 条笔记中随机抽取<br> <i class="fa fa-pencil-square"></i> 2015-11-12 15:36:28</p>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="ji-body-row clearfix">
+
+			<div id="ji-home-like" class="ji-module">
+				<div class="ji-module-title"><span class="title fa fa-heart-o"> 兴趣</span><span class="more ji-btn small">全部兴趣 <i class="fa fa-caret-right"></i></span></div>
+				
+			</div>
+
+			<div id="ji-home-store" class="ji-module">
+				<div class="ji-module-title"><span class="title fa fa-cube"> 库藏</span><span class="more ji-btn small">全部库藏 <i class="fa fa-caret-right"></i></span></div>
+				
+			</div>
+
+		</div>
+
+
+		<div id="ji-home-app" class="ji-body-row ji-module">
+			<div class="ji-module-title"><span class="title fa fa-cube"> 应用</span><span class="more ji-btn small">全部应用 <i class="fa fa-caret-right"></i></span></div>
+
+		</div>
+
+
+		<div class="ji-body-row clearfix">
+
+			<div id="ji-home-map" class="ji-module">
+
+			</div>
+
+			<div id="ji-home-board" class="ji-module">
+				<textarea id="ji-home-board-input"></textarea>
+
+				<div class="text-center">
+					<p style="line-height:64px;color:#ccc;font-size:12px;">还能输入 16 字</p>
+					<button id="ji-home-board-submit" class="ji-btn">留言</button>
+				</div>
+			</div>
+
+		</div>
+
+
+
+
+			
+	</div>
+	</div>
+	<div id="ji-footer"></div>
+	<div id="ji-fixed"></div>
+
+	</div>
+
+
+
+</body>
+<script src="../static/js/jquery.2.1.1.min.js"></script>
+<script src="./static/js/jit.js"></script>
+<script src="./static/js/jikit.js"></script>
+<script src="./static/js/jisuowei.js"></script>
+
+<script src="../static/js/simditor/js/module.js"></script>
+<script src="../static/js/simditor/js/hotkeys.js"></script>
+<script src="../static/js/simditor/js/uploader.js"></script>
+<script src="../static/js/simditor/js/simditor.js"></script>
+<script src="../static/js/simditor/js/simditor-emoji.js"></script>
+
+<script src="../static/js/highlightjs/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script src="https://api.map.baidu.com/api?v=2.0&ak=hWlAC3G3AFjWt3QGjB5o7eK4HIqzMhQZ"></script>
+<script>
+
+window.onload = function() {
+
+	Ji.init(0);
+
+
+	var data = [
+        {
+            title: '',
+            avatar: 'static/img/figure/4.png',
+            url: 'https://www.duohui.cn'
+        },
+        {
+            title: '',
+            avatar: 'static/img/figure/3.png',
+            url: 'https://www.pomotodo.com'
+        },
+        {
+            title: '',
+            avatar: 'static/img/figure/2.jpg',
+            url: ''
+        },
+	];
+
+	Jikit.carousel.init({data: data, el:'#ji-home-banner-top'});
+
+
+	if(BMap) {
+		var map = new BMap.Map('ji-home-map');
+		var point = new BMap.Point(120.6259,31.3241);
+		map.addControl(new BMap.NavigationControl());
+		map.centerAndZoom(point, 11);
+		map.disableDragging();
+		var marker = new BMap.Marker(point);  // 创建标注
+		map.addOverlay(marker);               // 将标注添加到地图中
+		marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+	}
+
+
+
+	var editor;
+	if(Simditor) {
+		var emojiArr = [];
+		for(var index=100;index<283;index++){
+			if(index==210) continue
+			emojiArr.push('qzonestyle.gtimg.cn/qzone/em/e'+ index +'.gif')
+		} 
+
+		editor = new Simditor({
+		  textarea: $('#ji-home-board-input'),
+		  toolbar: [
+			'emoji',
+
+			'bold',
+			'italic',
+			'color',
+		  ],
+		  defaultImage: '',
+		  codeLanguages:
+			  [
+				  { name: 'Bash', value: 'bash' },
+				  { name: 'C++', value: 'c++' },
+				  { name: 'C#', value: 'cs' },
+				  { name: 'CSS', value: 'css' },
+				  { name: 'Erlang', value: 'erlang' },
+				  { name: 'Less', value: 'less' },
+				  { name: 'Sass', value: 'sass' },
+				  { name: 'Diff', value: 'diff' },
+				  { name: 'CoffeeScript', value: 'coffeescript' },
+				  { name: 'HTML,XML', value: 'html' },
+				  { name: 'JSON', value: 'json' },
+				  { name: 'Java', value: 'java' },
+				  { name: 'JavaScript', value: 'js' },
+				  { name: 'Markdown', value: 'markdown' },
+				  { name: 'Objective C', value: 'oc' },
+				  { name: 'PHP', value: 'php' },
+				  { name: 'Perl', value: 'parl' },
+				  { name: 'Python', value: 'python' },
+				  { name: 'Ruby', value: 'ruby' },
+				  { name: 'SQL', value: 'sql'}
+				],
+			emoji: {
+				imagePath: 'https://',
+				images: emojiArr || []
+			},
+			allowedAttributes: {
+				p: ['class']
+			}
+
+		});
+		editor.setValue('<p><img src="https://qzonestyle.gtimg.cn/qzone/em/e144.gif" data-emoji="true" data-non-image="true">点留言试试。。↓</p>');
+	}
+
+
+	$('body')
+		.on('click','#ji-home-board-submit',function(){
+			if(editor) {
+				var html = editor.getValue();
+
+				if($(html).text().length > 16) {
+					Ji.toast({text:' 字数过长',type:'error'});
+					return
+				}
+
+				Ji.toast({text:' 留言功能建设中，留言数据暂不入库..',type:'info'});
+
+				var flag = new Date().getTime();
+
+				var top = 10 + Math.ceil(Math.random()*80);
+
+				var barrage = 
+				`<div id="ji-barrage-${flag}" class="ji-barrage" style="top:${top}%;">
+					<img class="avatar" src="static/img/avatar.jpg">
+					<p class="content">${html}</p>
+					<span class="time">${new Date().getDatetime()}</span>
+				</div>`;
+
+				$('#ji-fixed').append(barrage);
+
+				var $barg = $('#ji-barrage-'+ flag);
+
+				$barg.animate({left:'-500px'},16000,'linear');
+
+				setTimeout(function(){
+					$barg.remove();
+				},17000)
+
+
+			}
+		})
+
+
+		// var barrageTimes = 10;
+		// var barrageTimer = setInterval(function(){
+		// 	if(barrageTimes<=0) {
+		// 		clearInterval(barrageTimer);
+		// 	}
+		// 	$('#ji-home-board-submit').trigger('click');
+		// 	barrageTimes--;
+		// },1600);
+
+
+}
+
+</script>
+</html>

@@ -1,0 +1,33 @@
+.simditor {
+    border-color: #e5e5e5;
+}
+
+.simditor .simditor-body > p {
+  /*text-indent: 2rem;*/
+}
+
+.editor-style blockquote > p,
+.simditor .simditor-body blockquote > p {
+  margin-bottom: 0;
+}
+
+.simditor .simditor-toolbar .toolbar-menu-emoji {
+  width: 336px;
+}
+
+.simditor .simditor-toolbar ul.emoji-list li {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+}
+.simditor .simditor-toolbar ul.emoji-list img {
+  display: inline-block;
+}
+
+.editor-style img[data-emoji],
+.simditor .simditor-body img[data-emoji] {
+  width: auto;
+  height: auto;
+  max-width: 24px;
+  max-height: 24px;
+}
