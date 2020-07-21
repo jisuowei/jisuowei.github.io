@@ -1,0 +1,55 @@
+<table id="storeTable">
+	<thead>
+		<tr>
+			<th>标签</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		<!-- <tr><td>音乐</td><td><a target="_blank" href=""></a></td></tr> -->
+		<tr><td>设计</td><td><a target="_blank" href="http://www.bilibili.com/video/av6128029/index_7.html">【优设基础训练营】Ps基础篇 贝塞尔曲线</a></td></tr>
+		<tr><td>幽默</td><td><a target="_blank" href="http://www.miaopai.com/show/w34yyqWWJjBzlG49J6hfig__.htm">两个妹子模仿夏洛克和华生唱了首RAP，还原度100%，简直惊了</a></td></tr>
+		<tr><td>设计</td><td><a target="_blank" href="http://weibo.com/p/230444887147af6beaa07366650c5ef0844eef">【跪了！这个动效实在是6】设计师 Medy.H 的动效设计汇总，效果实在是帅炸。</a></td></tr>
+		<tr><td>自然</td><td><a target="_blank" href="http://v.youku.com/v_show/id_XMTI5NTU0MzEzMg==.html">209秒让你重新审视自己和整个宇宙</a></td></tr>
+		<tr><td>教程</td><td><a target="_blank" href="http://www.gogoup.com/course/GNQ==">[李涛] Photoshop高手之路基础篇 24课时</a></td></tr>
+		<tr><td>幽默</td><td><a target="_blank" href="http://www.miaopai.com/show/ozpW2hAgzP9ROCiixjUw2w__.htm">[黄西]一个极具幽默又带有讽刺的演讲！推荐！</a></td></tr>
+		<tr><td>科技</td><td><a target="_blank" href="http://v.youku.com/v_show/id_XNzkzMzgyMjY4.html">【从未公开的乔布斯采访】乔布斯：访谈1990</a></td></tr>
+		<tr><td>英语</td><td><a target="_blank" href="http://t.cn/RL4iPfl?u=1509460053">迪士尼公主贝儿与灰姑娘，女人间的撕逼太可怕了！</a></td></tr>
+		<tr><td>运动</td><td><a target="_blank" href="http://t.cn/RLG7M57?u=1509460053">太刺激了，这还是人玩的么！帅到没朋友！！</a></td></tr>
+	</tbody>
+</table>
+
+<script>
+(function(){ 
+	var $table1 = $('#storeTable'); 
+	var $headers = $table1.find('thead th').slice(-2,1); 
+	$headers.wrapInner('<a href="#"></a>');
+
+	$headers.on('click', function(event) { 
+		
+		event.preventDefault(); 
+		var column = $(this).index(); 
+		var rows = $table1.find('tbody > tr').get(); 
+		rows.sort(function(a, b) { 
+			var keyA = $(a).children('td').eq(column).text(); 
+			keyA = $.trim(keyA).toUpperCase(); 
+			var keyB = $(b).children('td').eq(column).text(); 
+			keyB = $.trim(keyB).toUpperCase(); 
+			if (keyA < keyB) return 1; 
+			if (keyA > keyB) return -1; 
+			return 0; 
+		}); 
+	 
+		$.each(rows, function(index, row) { 
+			$table1.children('tbody').append(row); 
+		}); 
+	}); 
+})();
+</script>
+
+
+
+
+
+
+
