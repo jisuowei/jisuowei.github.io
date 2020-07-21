@@ -1,0 +1,803 @@
+<pre><code class="js hljs ">
+<span class="hljs-comment">/*
+
+    JavaScript 编写高质量代码：改善JavaScript程序的188个建议 【成林】
+
+    2017-02-25
+    ~
+    2017-03-05 Noted by Chisw
+
+*/</span>
+
+
+<span class="hljs-number">137.</span>使用隐藏框架实现异步通信
+<span class="hljs-number">138.</span>使用iframe实现异步通信
+<span class="hljs-number">139.</span>使用script实现异步通信
+<span class="hljs-number">140.</span>正确理解JSONP异步通信协议
+<span class="hljs-number">141.</span>比较常用的服务器请求方法
+<span class="hljs-number">142.</span>比较常用的服务器发送数据方法
+<span class="hljs-number">143.</span>避免使用XML格式进行通信
+<span class="hljs-number">144.</span>推荐使用<span class="hljs-built_in">JSON</span>格式进行通信
+<span class="hljs-number">145.</span>慎重使用HTML格式进行通信
+<span class="hljs-number">146.</span>使用自定义的格式进行通信
+<span class="hljs-number">147.</span>AJAX性能向导
+<span class="hljs-number">148.</span>使用本地存储数据
+<span class="hljs-number">149.</span>警惕基于DOM的跨域侵入
+<span class="hljs-number">150.</span>优化AJAX开发的最佳实践
+<span class="hljs-number">151.</span>数据存储要考虑访问速度
+<span class="hljs-number">152.</span>使用局部变量存储数据
+<span class="hljs-number">153.</span>警惕人为改变作用域链
+<span class="hljs-number">154.</span>慎重使用动态作用域
+<span class="hljs-number">155.</span>小心闭包导致内存泄漏
+<span class="hljs-number">156.</span>灵活使用Cookie存储长信息
+<span class="hljs-number">157.</span>推荐封装Cookie应用接口
+
+
+<span class="hljs-comment">// 2017-02-25</span>
+<span class="hljs-number">137.</span>使用隐藏框架实现异步通信
+<span class="hljs-comment">// 纯文本和 HTML 是被高度限制的，但节省客户端的 CPU 周期</span>
+
+<span class="hljs-comment">// XML 广泛应用、普遍支持，但非常冗长、解析缓慢</span>
+
+<span class="hljs-comment">// JSON 是轻量级的，解析迅速，交互性与XML相当，</span>
+<span class="hljs-comment">// 字符分隔的自定义格式是非常轻量级的，在大量数据集解析时速度最快，</span>
+<span class="hljs-comment">// 但需要编写额外的程序在服务器端构造格式，并且需要在客户端解析</span>
+
+<span class="hljs-comment">// XMLHttpRequest 将所有传入数据视为一个字符串，方便控制，更具灵活性，可用 POST 方法发送大量数据</span>
+<span class="hljs-comment">// 但可能会降低解析速度，虽允许跨域请求和本地运行，但接口不够安全，且不能读取信息头或响应报文代码</span>
+<span class="hljs-comment">// 大部分 XHR 可减少请求的数量，可在一次响应中处理不同的文件类型，尽管不能缓存响应报文。</span>
+
+<span class="hljs-comment">// 隐藏框架只是异步交互的一个载体，仅负责信息的传输，</span>
+<span class="hljs-comment">// 而交互的核心是一种信息处理机制，这种处理机制就是回调函数</span>
+<span class="hljs-comment">// 回调函数就是客户端页面中的一个普通函数，该函数在服务器端被调用，并负责处理服务器端响应的信息</span>
+
+<span class="hljs-comment">// 1.构建一个框架集（回调处理.htm）</span>
+    <span class="hljs-comment">/*
+        &lt;frameset rows="*,0"&gt;
+            &lt;frame src="回调处理_main.htm" name="main" /&gt;
+            &lt;frame src="回调处理_black.htm" name="serve" /&gt;
+        &lt;/frameset&gt;
+    */</span>
+    <span class="hljs-comment">// 框架1（main），负责与用户进行信息交互</span>
+    <span class="hljs-comment">// 框架2（serve），负责与服务器进行信息交互</span>
+
+<span class="hljs-comment">// 2.在默认状态下，框架集中的框架2加载一个空白页面（回调处理_black.htm），</span>
+<span class="hljs-comment">// 框架1加载与客户进行交互的页面（回调处理_main.htm）</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">request</span><span class="hljs-params">()</span>{</span>  <span class="hljs-comment">// 异步请求函数</span>
+        <span class="hljs-keyword">var</span> user = document.getElementById(<span class="hljs-string">"user"</span>);
+        <span class="hljs-keyword">var</span> pass = document.getElementById(<span class="hljs-string">"pass"</span>);
+        <span class="hljs-keyword">var</span> s = <span class="hljs-string">"user="</span> + user.value + <span class="hljs-string">"&amp;pass="</span> + pass.value;
+        parent.frames[<span class="hljs-number">1</span>].location.href = <span class="hljs-string">"回调处理_serve.htm?"</span> + s;
+    }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">callback</span><span class="hljs-params">(b, n)</span>{</span>  <span class="hljs-comment">// 回调函数</span>
+        <span class="hljs-keyword">if</span>(b){  <span class="hljs-comment">// 信息正确</span>
+            <span class="hljs-keyword">var</span> e = document.getElementsByTagName(<span class="hljs-string">"body"</span>)[<span class="hljs-number">0</span>];
+                <span class="hljs-comment">// 获取框架1中body元素的引用指针，以实现向其中插入信息</span>
+            e.innerHTML = <span class="hljs-string">"&lt;h1&gt;"</span> + n + <span class="hljs-string">"&lt;/h1&gt;&lt;p&gt;您好，欢迎登录站点&lt;/p&gt;"</span>;
+            <span class="hljs-comment">// 在交互页面中插入新的交互信息</span>
+        } <span class="hljs-keyword">else</span> {  <span class="hljs-comment">// 信息不正确</span>
+            alert(<span class="hljs-string">"你输入的用户名或密码有误，请重新输入"</span>);
+            <span class="hljs-keyword">var</span> user = parent.frames[<span class="hljs-number">0</span>].document.getElementById(<span class="hljs-string">"user"</span>);
+            <span class="hljs-keyword">var</span> pass = parent.frames[<span class="hljs-number">0</span>].document.getElementById(<span class="hljs-string">"pass"</span>);
+            user.value = <span class="hljs-string">""</span>;
+            pass.value = <span class="hljs-string">""</span>;
+        }
+    }
+    window.onload = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> b = document.getElementById(<span class="hljs-string">"submit"</span>);
+        b.onclick = request;
+    }
+
+    <span class="hljs-comment">/*
+        用户名：&lt;input name="" id="user" type="text"&gt;&lt;br /&gt;
+        密　码：&lt;input name="" id="pass" type="password"&gt;
+        &lt;input name="submit" type="button" id="submit" value="提交" /&gt;
+    */</span>
+
+<span class="hljs-comment">// 3.在服务器端的文件中设计响应处理函数，该函数将分解HTTP传递过来的URL信息，</span>
+<span class="hljs-comment">// 获取查询字符串，根据查询字符串中来判断当前输入的信息是否正确，进而决定具体响应的信息</span>
+    window.onload = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        <span class="hljs-keyword">var</span> query = location.search.substring(<span class="hljs-number">1</span>);
+        <span class="hljs-keyword">var</span> a = query.split(<span class="hljs-string">"&amp;"</span>);
+        <span class="hljs-keyword">var</span> o ={};
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;a.length; i++){
+            <span class="hljs-keyword">var</span> pos = a[i].indexOf(<span class="hljs-string">"="</span>);
+            <span class="hljs-keyword">if</span>(pos == - <span class="hljs-number">1</span>) <span class="hljs-keyword">continue</span>;  <span class="hljs-comment">// 没有等号忽略</span>
+            <span class="hljs-keyword">var</span> name = a[i].substring(<span class="hljs-number">0</span>, pos);  <span class="hljs-comment">// 获取等号前面的字符串</span>
+            <span class="hljs-keyword">var</span> value = a[i].substring(pos + <span class="hljs-number">1</span>);  <span class="hljs-comment">// 获取等号后面的字符串</span>
+            o[name] = <span class="hljs-built_in">unescape</span>(value);  <span class="hljs-comment">// 把名 - 值对传递给对象</span>
+        }
+        <span class="hljs-keyword">var</span> n, b;
+        ((o[<span class="hljs-string">"user"</span>]) &amp;&amp; o[<span class="hljs-string">"user"</span>] == <span class="hljs-string">"admin"</span>) ? (n = o[<span class="hljs-string">"user"</span>]) : (n = <span class="hljs-literal">null</span> );
+        <span class="hljs-comment">// 如果用户名存在，且等于"admin"，则记录该信息，否则设置为null</span>
+        ((o[<span class="hljs-string">"pass"</span>]) &amp;&amp; o[<span class="hljs-string">"pass"</span>] == <span class="hljs-string">"123456"</span>) ? (b = <span class="hljs-literal">true</span> ) : (b = <span class="hljs-literal">false</span> );
+        <span class="hljs-comment">// 如果密码存在，且等于"123456"，则设置变量b为true，否则为false</span>
+        parent.frames[<span class="hljs-number">0</span>].callback(b, n);
+        <span class="hljs-comment">// 调用客户端框架集中框架1中的回调函数，并把处理的信息传递给它</span>
+    }
+
+<span class="hljs-comment">// 实际开发中，服务器端文件一般为动态服务器类型的文件，并且借助服务器端脚本来获取用户的信息，</span>
+<span class="hljs-comment">// 然后决定响应的内容，一般还会像查询数据库一样返回查询内容等</span>
+<span class="hljs-comment">// 本例以简化的形式演示这个异步通信的过程，因此没有采用服务器技术</span>
+<span class="hljs-comment">// 预览框架集，在客户交互页面中输入用户的登录信息，在向服务器提交请求之后，</span>
+<span class="hljs-comment">// 服务器首先接收从客户端传递过来的信息并进行处理，然后调用客户端的回调函数把处理后的信息响应回去</span>
+
+
+<span class="hljs-comment">// 2017-02-26</span>
+<span class="hljs-number">138.</span>使用iframe实现异步通信
+<span class="hljs-comment">// 使用框架集实施异步交互存的弊端：</span>
+    <span class="hljs-comment">// 页面被深深地打上框架的烙印，不利于结构优化，浏览器的支持也受到很多限制，需要更多的文件配合使用</span>
+    <span class="hljs-comment">// 框架集缺乏灵活性，要完全使用脚本控制异步请求与交互就非常不方便</span>
+
+<span class="hljs-comment">// iframe 与 frameset（框架集）都可以实现动态加载客户端或服务器端任何类型的网页文件，功能相同，形式各异</span>
+<span class="hljs-comment">// 前者定义为文档结构元素，完全与框架集无关；后者被定义为窗口元素，与基本元素平行使用；二者分属不同级别的元素</span>
+<span class="hljs-comment">// 因此，浮动框架可以插入到页面中的任意位置，与页面中其他元素能够很好地融合</span>
+<span class="hljs-comment">// 同时开发人员还可以在 JS 中动态创建 iframe 进行控制，这就给异步交互开发带来新的活力</span>
+
+<span class="hljs-comment">// 第1步，新建 hideIframe()，动态创建浮动框架，借其实现与服务器进行异步通信</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">hideIframe</span><span class="hljs-params">(url)</span>{</span>
+        <span class="hljs-keyword">var</span> hideFrame = <span class="hljs-literal">null</span>;
+        hideFrame = document.createElement(<span class="hljs-string">"iframe"</span>);
+        hideFrame.name = <span class="hljs-string">"hideFrame"</span>;
+        hideFrame.id = <span class="hljs-string">"hideFrame"</span>;
+        hideFrame.style.height = <span class="hljs-string">"0px"</span>;
+        hideFrame.style.width = <span class="hljs-string">"0px"</span>;
+        hideFrame.style.position = <span class="hljs-string">"absolute"</span>;
+        hideFrame.style.visibility = <span class="hljs-string">"hidden"</span>;
+        document.body.appendChild(hideFrame);
+        setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span> frames[<span class="hljs-string">"hideFrame"</span>].location.href = url;}, <span class="hljs-number">10</span>);
+    }
+
+<span class="hljs-comment">// 使用 DOM 创建 iframe 时应注意设置同名的 name、id，因为各浏览器在引用框架时会分别使用这两个属性值</span>
+<span class="hljs-comment">// 创建好 iframe 后，大部分浏览器（FF、O）会需要一点时间（约为几毫秒）来识别新框架并将其添加到帧集合中，</span>
+<span class="hljs-comment">// 因此，当加载地址准备向服务器进行请求时，应使用 setTimeout() 将发送请求的操作延迟</span>
+<span class="hljs-comment">// 如果多处需要调用函数，建议定义全局变量，专门存储浮动框架对象，避免每次请求时都创建新的 iframe</span>
+
+<span class="hljs-comment">// 第2步，修改客户端交互页面中 request() 请求内容，直接调用 hideIframe() 传递 URL</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">request</span><span class="hljs-params">()</span>{</span>  <span class="hljs-comment">// 异步请求函数</span>
+        <span class="hljs-keyword">var</span> user = document.getElementById(<span class="hljs-string">"user"</span>);
+        <span class="hljs-keyword">var</span> pass = document.getElementById(<span class="hljs-string">"pass"</span>);
+        <span class="hljs-keyword">var</span> s = <span class="hljs-string">"iframe_serve.html?user="</span> + user.value + <span class="hljs-string">"&amp;pass="</span> +pass.value;
+        hideIframe(s);
+    }
+
+<span class="hljs-comment">// 由于属于不同级别的作用域，浮动框架被包含在当前窗口中，所以应该使用 parent 而不是parent.frames[0]</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">callback</span><span class="hljs-params">(b, n)</span>{</span>
+        <span class="hljs-keyword">if</span>(b &amp;&amp; n){
+            <span class="hljs-keyword">var</span> e = document.getElementsByTagName(<span class="hljs-string">"body"</span>)[<span class="hljs-number">0</span>];
+            e.innerHTML = <span class="hljs-string">"&lt;h1&gt;"</span> + n + <span class="hljs-string">"&lt;/h1&gt;&lt;p&gt;您好，欢迎登录站点&lt;/p&gt;"</span>;
+        } <span class="hljs-keyword">else</span> {
+            alert(<span class="hljs-string">"你输入的用户名或密码有误，请重新输入"</span>);
+            <span class="hljs-keyword">var</span> user = parent.document.getElementById(<span class="hljs-string">"user"</span>);
+            <span class="hljs-keyword">var</span> pass = parent.document.getElementById(<span class="hljs-string">"pass"</span>);
+            user.value = <span class="hljs-string">""</span>;
+            pass.value = <span class="hljs-string">""</span>;
+        }
+    }
+
+<span class="hljs-comment">// 在服务器端响应页面中也应该修改引用客户端回调函数的路径</span>
+    window.onload = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        <span class="hljs-comment">//...</span>
+        parent.callback(b, n);
+    }
+
+<span class="hljs-comment">// 这样 iframe 框架只需要 客户端交互页面、服务器端响应页面 就可以完成异步信息交互的任务</span>
+
+
+<span class="hljs-number">139.</span>使用script实现异步通信
+<span class="hljs-comment">// 利用&lt;script&gt;能够动态加载外部 JS 文件，可以被执行，还可以传输数据</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">callback</span><span class="hljs-params">(info)</span>{</span> alert(info); }
+
+<span class="hljs-comment">// 服务端的 js 文件：</span>
+    callback(<span class="hljs-string">"Hi，大家好，我是从服务器端过来的信息使者。"</span>);
+
+<span class="hljs-comment">// 创建&lt;script&gt;标签</span>
+    <span class="hljs-comment">// 参数：URL表示要请求的服务器端文件路径</span>
+    <span class="hljs-comment">// 返回值：无</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">request</span><span class="hljs-params">(url)</span> {</span>
+        <span class="hljs-keyword">if</span>( ! document.script) {
+            document.script = document.createElement(<span class="hljs-string">"script"</span>);
+            document.script.setAttribute(<span class="hljs-string">"type"</span>, <span class="hljs-string">"text/javascript"</span>);
+            document.script.setAttribute(<span class="hljs-string">"src"</span>, url);
+            document.body.appendChild(document.script);
+        } <span class="hljs-keyword">else</span> {
+            document.script.setAttribute(<span class="hljs-string">"src"</span>, url);
+        }
+    }
+
+
+<span class="hljs-number">140.</span>正确理解JSONP异步通信协议
+<span class="hljs-comment">// 浏览器安全模型规定：XMLHttpRequest 和框架（frame）等只能够在同一个域内进行异步通信</span>
+<span class="hljs-comment">// 受同源策略的限制，不能够使用 Ajax 或框架实现跨域（即与外部服务器）通信</span>
+<span class="hljs-comment">// 从安全角度考虑，这个规定很合理，但给分布式 Web 开发带来麻烦，JSONP 可以绕过同源策略，</span>
+<span class="hljs-comment">// 从任何服务器端直接返回可执行的 JS 函数调用（即回调函数）或 JS 对象（JSON格式数据）</span>
+
+<span class="hljs-comment">// JSON with Padding 能够通过在客户端文档中生成&lt;script&gt;来调用跨域脚本（服务器端脚本文件）</span>
+<span class="hljs-comment">// JSONP 允许在服务器端集成脚本标记 Script Tags 即服务器动态生成的 JS 字符串，是非官方的协议</span>
+<span class="hljs-comment">// 并把这些脚本标记返回到客户端，通过 JS Callback 回调函数的形式实现跨域访问</span>
+
+<span class="hljs-comment">// 1.在客户端调用提供 JSONP 支持的 URL Service 获取数据</span>
+    <span class="hljs-comment">// http://jisuowei.com/jsonp/serve.ABP?jsonp=callback&amp;d=1</span>
+    <span class="hljs-comment">// JSONP 格式的数据就是 JSON 数据作为参数传递给回调函数并传回</span>
+        callback({<span class="hljs-string">"title"</span>:<span class="hljs-string">"json obj"</span>});
+
+<span class="hljs-comment">// 2.服务器端接受到请求后接受并处理参数信息，特别是要获取参数名，</span>
+<span class="hljs-comment">// 再根据参数信息生成 Script Tags 返回给客户端</span>
+
+<span class="hljs-comment">// 3.在客户端设计回调函数： function callback(){}</span>
+<span class="hljs-comment">// 4.设计交互页面与信息展示：点击按钮，发送请求，获取数据，回调处理，数据显示</span>
+
+
+<span class="hljs-comment">// 2017-02-28</span>
+<span class="hljs-number">141.</span>比较常用的服务器请求方法
+<span class="hljs-comment">// 1.XMLHttpRequest</span>
+    <span class="hljs-comment">// 提供了高级别控制，浏览器增加了一些限制，用户不能从当前运行的代码域之外请求数据</span>
+    <span class="hljs-comment">// 处理一个字符串或 XML 对象会相当缓慢，仍是首选</span>
+    <span class="hljs-comment">// 多次获取相同数据可用会缓存的 GET；参数字符超过2048个才使用 POST，IE 会截断</span>
+
+<span class="hljs-comment">// 2.Dynamic script tag insertion</span>
+    <span class="hljs-comment">// 克服了 XHR 的最大限制，可以从不同域的服务器上获取数据</span>
+    <span class="hljs-comment">// 这是一种黑客技术，而非实例化一个专用对象</span>
+    <span class="hljs-comment">// 利用 JS 创建新的脚本标签，并将源属性设置为一个指向不同域的 URL</span>
+        <span class="hljs-keyword">var</span> e = document.createElement(<span class="hljs-string">'script'</span>);
+        e.src = <span class="hljs-string">'http://jisuowei.com/js/jisuowei.js'</span>;
+        document.getElementsByTagName_r(<span class="hljs-string">'head'</span>)[<span class="hljs-number">0</span>].appendChild(e);
+
+    <span class="hljs-comment">// 与 XHR 相比只提供更少的控制，不能通过请求发送信息头，只能通过 GET</span>
+    <span class="hljs-comment">// 不能设置超时或重试，数据全部返回后才能访问，不能访问整个响应报文</span>
+    <span class="hljs-comment">// 因为响应报文被用作脚本标签的源码，所以必须是可执行的 JS</span>
+    <span class="hljs-comment">// 任何数据不论什么格式，必须在一个回调函数中组装起来</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">jsonCallback</span><span class="hljs-params">(jsonString)</span> {</span>
+            <span class="hljs-keyword">var</span> data = (<span class="hljs-string">'('</span>+ jsonString +<span class="hljs-string">')'</span>);
+        }
+
+    <span class="hljs-comment">// 尽管有这些限制，但数据传输仍然是非常迅速：响应结果是运行 JS 而非进一步处理字符串数据</span>
+    <span class="hljs-comment">// 由于 JS 没有权限、访问控制的概念，任何动态的脚本都能控制整个页面，所以使用要格外小心</span>
+
+<span class="hljs-comment">// 3.Multipart XHR</span>
+    <span class="hljs-comment">// 允许只用一个 HTTP 请求就可以从服务器端获取多个资源（HTML,CSS、JS、IMG）</span>
+    <span class="hljs-comment">// 将这些资源打包成由特定分隔符界定的长字符串，将其发送到客户端</span>
+    <span class="hljs-comment">// JS 根据媒体类型和其它“信息头”解析出每个资源</span>
+    <span class="hljs-comment">// 即使是100张图片也只是 1 次 http 请求</span>
+
+    <span class="hljs-comment">// 请求图像资源</span>
+        <span class="hljs-keyword">var</span> req = <span class="hljs-keyword">new</span> XMLHttpRequest();
+        req.open(<span class="hljs-string">'GET'</span>, <span class="hljs-string">'rollup_imgs.php'</span>, <span class="hljs-literal">true</span>);
+        req.onreadystatechange = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">if</span>(req.readyState == <span class="hljs-number">4</span>) {
+                splitImages(req.responseText);
+            }
+        };
+        req.send(<span class="hljs-literal">null</span>);
+
+    <span class="hljs-comment">// PHP 转换</span>
+        $images = array(<span class="hljs-string">'chisw.jpg'</span>, <span class="hljs-string">'chiue.jpg'</span>, <span class="hljs-string">'chien.jpg'</span>);
+        foreach ($images as $image) {
+            $image_fh = fopen($image, <span class="hljs-string">'r'</span>);
+            $image_data = fread($image_fh, filesize($image));
+            fclose($image_fh);
+            $payloads[] = base64_encode($image_data);
+        }
+        $newline = char(<span class="hljs-number">1</span>);
+        echo implode($newline, $payloads);
+
+    <span class="hljs-comment">// split 函数</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">splitImages</span><span class="hljs-params">(imageString)</span> {</span>
+            <span class="hljs-keyword">var</span> imageData = imageString.split(<span class="hljs-string">'\u0001'</span>);
+            <span class="hljs-keyword">var</span> imageElement;
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;imageData.length; i++) {
+                imageElement = document.createElement(<span class="hljs-string">'img'</span>);
+                imageElement.src = <span class="hljs-string">'data:image/jpeg;base64,'</span> + imageData[i];
+                document.getElementById(<span class="hljs-string">'container'</span>).appendChild(imageElement);
+            }
+        }
+
+    <span class="hljs-comment">// 封装</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">handleImagesData</span><span class="hljs-params">(data, mimeType)</span> {</span>
+            <span class="hljs-keyword">var</span> img = document.createElement(<span class="hljs-string">'img'</span>);
+            img.src = <span class="hljs-string">'data:'</span>+ mimeType +<span class="hljs-string">';base64,'</span> + data;
+            <span class="hljs-keyword">return</span> img;
+        }
+
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">handleCss</span><span class="hljs-params">(data)</span> {</span>
+            <span class="hljs-keyword">var</span> style = document.createElement(<span class="hljs-string">'style'</span>);
+            style.type = <span class="hljs-string">'text/css'</span>;
+            <span class="hljs-keyword">var</span> node = document.createTextNode(data);
+            style.appendChild(node);
+            document.getElementsByTagName_r(<span class="hljs-string">'head'</span>)[<span class="hljs-number">0</span>].appendChild(style);
+        }
+
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">handleJs</span><span class="hljs-params">(data)</span> {</span>(data);}
+
+    <span class="hljs-comment">// 由于 MXHR 响应报文越来越大，有必要在每个资源收到响应时立即处理</span>
+        <span class="hljs-keyword">var</span> req = <span class="hljs-keyword">new</span> XMLHttpRequest();
+        <span class="hljs-keyword">var</span> getLatestPacketInterval, lastLength = <span class="hljs-number">0</span>;
+        req.open(<span class="hljs-string">'GET'</span>, <span class="hljs-string">'somephp.php'</span>, <span class="hljs-literal">true</span>);
+        req.onreadystatechange = readyStateHandler;
+        req.send(<span class="hljs-literal">null</span>);
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">readyStateHandler</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">if</span>(req.readyState === <span class="hljs-number">3</span> &amp;&amp; getLatestPacketInterval === <span class="hljs-literal">null</span>) {
+                getLatestPacketInterval = window.setInterval(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+                    getLatestPacket();
+                }, <span class="hljs-number">15</span>);
+            }
+            <span class="hljs-keyword">if</span>(req.readyState === <span class="hljs-number">4</span>) {
+                clearInterval(getLatestPacketInterval);
+                getLatestPacket();
+            }
+        }
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getLatestPacket</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">var</span> length = req.responseText.length;
+            <span class="hljs-keyword">var</span> packet = req.responseText.substring(lastLength, length);
+            processPacket(packet);
+            lastLength = length;
+        }
+
+    <span class="hljs-comment">// IE 因不支持 readyState === 3 而无法使用此技术</span>
+    <span class="hljs-comment">// 此方式传输的数据不能被缓存</span>
+
+<span class="hljs-comment">// 4.iframe 5.Comet</span>
+
+
+<span class="hljs-comment">// 2017-03-01</span>
+<span class="hljs-number">142.</span>比较常用的服务器发送数据方法
+<span class="hljs-comment">// 有时候只需要发送而无需接收数据（获取用户非私有信息）时两种广泛使用的技术： XHR、灯标</span>
+
+<span class="hljs-comment">// XHR 失败时重试</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">xhrPost</span><span class="hljs-params">(url, params, callback)</span> {</span>
+        <span class="hljs-keyword">var</span> req = <span class="hljs-keyword">new</span> XMLHttpRequest();
+        req.onerror = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+                xhrPost(url, params, callback);
+            }, <span class="hljs-number">1000</span>);
+        }
+    };
+    req.onreadystatechange = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">if</span>(req.readyState == <span class="hljs-number">4</span>) {
+            <span class="hljs-keyword">if</span>(callback &amp;&amp; <span class="hljs-keyword">typeof</span> callback === <span class="hljs-string">'function'</span>) {
+                callback();
+            }
+        }
+    };
+    req.open(<span class="hljs-string">'POST'</span>, url, <span class="hljs-literal">true</span>);
+    req.setRequestHeader(<span class="hljs-string">'Content-Type'</span>, <span class="hljs-string">'application/x-www-form-urlencoded'</span>);
+    req.setRequestHeader(<span class="hljs-string">'Content-Length'</span>, params.length);
+    req.send(params.join(<span class="hljs-string">'&amp;'</span>));
+
+    <span class="hljs-comment">// 向服务器发送一个 GET 请求要占用一个单数的数据包</span>
+    <span class="hljs-comment">// 一个 POST 至少要发送两个数据包，用于信息头、POST 体</span>
+    <span class="hljs-comment">// POST 更适合发送大量数据，因为既不关心额外数据包量，又因为 IE 的 URL 长度限制</span>
+
+<span class="hljs-comment">// 灯标</span>
+    <span class="hljs-comment">// 与动态脚本标签插入类似：创建一个 Image 对象，将 src 设置为服务器上一个脚本文件的 URL</span>
+    <span class="hljs-comment">// 并不用将 img 插入到 DOM 中</span>
+        <span class="hljs-keyword">var</span> url = <span class="hljs-string">'/status_tracker.php'</span>;
+        <span class="hljs-keyword">var</span> params = [<span class="hljs-string">'step=2'</span>, <span class="hljs-string">'time=1248027314'</span>];
+        (<span class="hljs-keyword">new</span> Image()).src = url +<span class="hljs-string">'?'</span>+ params.join(<span class="hljs-string">'&amp;'</span>);
+
+    <span class="hljs-comment">// 服务器得到数据并保存，无需返回，因而没有实际图像显示</span>
+    <span class="hljs-comment">// 这是将信息发回服务器最有效方法，开销很小，且任何服务器错误不会影响客户端</span>
+
+    <span class="hljs-comment">// 由于简单的图像灯标不能发送 POST 数据，所以将 URL 长度限制在一个相当小的字符数量上</span>
+    <span class="hljs-comment">// 也可以通过非常有限的方法接受返回数据：监听 Img 对象 load 事件，判断服务器是否接收成功</span>
+    <span class="hljs-comment">// 检查服务器返回的图片高度（如果有），1 表示成功，以此类推</span>
+        <span class="hljs-keyword">var</span> beacon = <span class="hljs-keyword">new</span> Image();
+        beacon.src = url +<span class="hljs-string">'?'</span>+ params.join(<span class="hljs-string">'&amp;'</span>);
+        beacon.onload = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">if</span>(<span class="hljs-keyword">this</span>.width == <span class="hljs-number">1</span>) {..}
+        }
+        beacon.onerror = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>..}
+
+
+<span class="hljs-number">143.</span>避免使用XML格式进行通信
+<span class="hljs-comment">// 数据传输中需要考虑：功能性、兼容性、其它性能、方向</span>
+<span class="hljs-comment">// 在考虑数据格式时，唯一需要关注的就是：速度</span>
+<span class="hljs-comment">// 没有最好的，只有最合适的数据格式！</span>
+
+<span class="hljs-comment">// XML 极其冗长：每个离散的数据片断需要大量的 XML 结构，有效率低，且语法轻微模糊</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">parseXML</span><span class="hljs-params">(str)</span> {</span>
+        <span class="hljs-keyword">var</span> users = [];
+        <span class="hljs-keyword">var</span> userNodes = str.getElementsByTagName_r(<span class="hljs-string">'users'</span>);
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;userNodes.length; i++) {
+            user[i] = {
+                id: userNodes[i].getAttribute(<span class="hljs-string">'id'</span>);
+                username: userNodes.getAttribute(<span class="hljs-string">'username'</span>);
+            }
+        }
+        <span class="hljs-keyword">return</span> users;
+    }
+
+
+<span class="hljs-number">144.</span>推荐使用<span class="hljs-built_in">JSON</span>格式进行通信
+<span class="hljs-comment">// 一种轻量级、易解析的格式，按照 JS 对象和数组字面语法来编写</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">parseJSON</span><span class="hljs-params">(str)</span> {</span>
+        <span class="hljs-keyword">return</span> (<span class="hljs-string">'('</span>+ str +<span class="hljs-string">')'</span>);
+    }
+
+    <span class="hljs-comment">// () 将字符串转换为一个本地数组，再转换为一个对象数组</span>
+
+<span class="hljs-comment">// JSONP 文件大小和下载时间与 XHR 测试基本相同，而解析时间快了近 10 倍</span>
+<span class="hljs-comment">// JSONP 解析时间为 0，因为根本用不着解析；数组的 JSONP 效果最好</span>
+
+<span class="hljs-comment">// 需要避免使用 JSONP 还有一个与性能无关的原因：JSONP 必须是可执行的 JS，而 JSON 不必</span>
+
+
+<span class="hljs-number">145.</span>慎重使用HTML格式进行通信
+<span class="hljs-comment">// JS 能很快的将一个较大数据结构转化为简单的 HTML，但放在服务端更快</span>
+<span class="hljs-comment">// 一种技术考虑就是在服务端构建整个 HTML，然后再传送给客户端</span>
+<span class="hljs-comment">// 作为数据格式，HTML 缓慢且臃肿</span>
+
+<span class="hljs-comment">// HTML 是一种更详细的数据格式，比 XML 还要冗长，每个标签都具有ID、类和其它属性</span>
+<span class="hljs-comment">// 只有当客户端 CPU 比带宽更受限制时才使用 HTML 传输</span>
+
+<span class="hljs-comment">// 一种极端情况：少量的数据结构，下载很快，却需要引擎花费更多的时间转换，很多的字符串操作</span>
+<span class="hljs-comment">// 另一种极端：服务器创建的传输数据量大，下载时间长，不过一旦下载完，一个操作就可以显示</span>
+
+
+<span class="hljs-number">146.</span>使用自定义的格式进行通信
+<span class="hljs-comment">// 理想的数据格式只包含必要的结构、且能分解出每个字段，只简单的用一个分隔符连接数据</span>
+    d;Tyler;John
+
+<span class="hljs-comment">// 利用不同的分隔符可以创建多维数组，在 JS 里面 split() 是非常高效的</span>
+
+<span class="hljs-comment">// PHP 中使用 ASCII 码</span>
+    $row_delimiter = chr(<span class="hljs-number">1</span>);  <span class="hljs-comment">// \u0001 in JS</span>
+
+
+<span class="hljs-number">147.</span>AJAX性能向导
+<span class="hljs-comment">// 两种方式避免发出同一个请求：</span>
+    <span class="hljs-comment">// 服务器端设置 HTTP 头，确保返回报文将被缓存在浏览器中</span>
+    <span class="hljs-comment">// 在客户端，对于本地缓存已获取的数据不要多次请求</span>
+
+<span class="hljs-comment">// 想要 AJAX 响应报文能够被浏览器所缓存，必须使用 GET ，必须在响应报文中发送正确的 HTTP 头</span>
+
+
+<span class="hljs-number">148.</span>使用本地存储数据
+<span class="hljs-comment">// 除了以来浏览器处理缓存数据，还可以手工存储报文到一个对象中，以 URL 为键值对进行索引</span>
+    <span class="hljs-keyword">var</span> localCache = {};
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">xhrRequest</span><span class="hljs-params">(url, callback)</span> {</span>
+        <span class="hljs-keyword">if</span>(localCache[url]) {
+            callback.success(localCache[url]);
+            <span class="hljs-keyword">return</span>;
+        }
+        <span class="hljs-keyword">var</span> req = createXhrObject();
+        req.onerror = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            callback.error();
+        };
+        req.onreadystatechange = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">if</span>(req.readyState == <span class="hljs-number">4</span>) {
+                <span class="hljs-keyword">if</span>(req.responseText === <span class="hljs-string">''</span> || req.status == <span class="hljs-string">'404'</span>) {
+                    callback.error();
+                    <span class="hljs-keyword">return</span>;
+                }
+                localCache[url] = req.responseText;
+                callback.success(req.responseText);
+            }
+        };
+        req.open(<span class="hljs-string">'GET'</span>, url, <span class="hljs-literal">true</span>);
+        req.send(<span class="hljs-literal">null</span>);
+    }
+
+<span class="hljs-comment">// 设置一个 Expires 头是更好的解决方案，容易实现，且缓存可以跨页面、跨域对话</span>
+<span class="hljs-comment">// 而一个手工缓存可以利用程序废止缓存内容并获取新的数据</span>
+<span class="hljs-comment">// 手工缓存中删除一个报文：</span>
+    <span class="hljs-keyword">delete</span> localCache[<span class="hljs-string">'/user/friendlist'</span>];
+
+<span class="hljs-comment">// 本地缓存可以很好的工作在移动端上，此类设备的浏览器缓存小或根本不存在，可以考虑手工缓存</span>
+
+<span class="hljs-comment">// 注大部分 XHR 技术中要使用流功能，通过监听 readyState=3，可以在一个大的响应报文接收完之前开始解析，</span>
+<span class="hljs-comment">// 可以实时处理报文片段，这也是 MXHR 能够大幅提高性能的原因之一</span>
+<span class="hljs-comment">// 不过大部分 JS 库不允许直接访问 readystatechange 事件，意味着必须等待整个响应结束才能使用它</span>
+
+
+<span class="hljs-number">149.</span>警惕基于DOM的跨域侵入
+<span class="hljs-comment">// 随着 Web2.0 的发展以及 AJAX 的普及，富客户端 Web 应用（Rich Internet Application，RIA）日益增多</span>
+<span class="hljs-comment">// 越来越多的逻辑已经开始从服务端转移到客户端，通常使用 JS 编写的，遗憾的是，开发者普遍不太关注代码安全性</span>
+<span class="hljs-comment">// 根据 IBM X-Force 2011年中期趋势报告显示，世界500强的网站及常见知名网站中有 40% 存在 JS 安全漏洞</span>
+
+<span class="hljs-comment">// 1.基于DOM的跨域脚本编制</span>
+    <span class="hljs-comment">// XSS（Cross Site Script）又称跨站脚本攻击</span>
+    <span class="hljs-comment">// 攻击者向页面插入恶意脚本代码提交给服务器，随机向服务器响应页面植入恶意代码，进行会话劫持等攻击</span>
+
+    <span class="hljs-comment">// 反射型：请求数据在服务器响应页面中呈现为未编码和未过滤</span>
+    <span class="hljs-comment">// 持久型：包含恶意代码的请求数据被保存在 Web 应用的服务器上，用户访问某个页面时恶意代码会被自动执行</span>
+
+    <span class="hljs-comment">// 应对方法：</span>
+        <span class="hljs-comment">// 不要信任用户的任何输入，尽量采用白名单技术来验证输入参数</span>
+        <span class="hljs-comment">// 输出的时候对用户提供的内容进行转义处理</span>
+
+    <span class="hljs-comment">// 鲜为人知的是还存在第三种跨域脚本编制漏洞</span>
+        <span class="hljs-comment">// 如果在 HTML 页面使用了 document.location、document.URL、document.referer 等 DOM 元素的属性</span>
+        <span class="hljs-comment">// 攻击者可以利用这些属性植入恶意脚本实施基于 DOM 的跨域脚本编制攻击</span>
+
+        <span class="hljs-comment">// 漏洞：代码接受 URL 中传入的 name 参数并进行展示</span>
+            <span class="hljs-keyword">var</span> pos = document.URL.indexOf(<span class="hljs-string">'name='</span>)+<span class="hljs-number">5</span>;
+            document.write(document.URL.substring(pos, document.URL.length));
+
+        <span class="hljs-comment">// 攻击代码：</span>
+            <span class="hljs-comment">// http://jisuowei.com/welcome.html?name=&lt;script&gt;alert(document.cookie);&lt;/script&gt;</span>
+
+        <span class="hljs-comment">// 服务器会正常返回 HTML 页面，将其解析成 DOM，script 被注入执行</span>
+
+        <span class="hljs-comment">// 即使主流浏览器会自动转义尖括号，注入的脚本就不会被执行，</span>
+        <span class="hljs-comment">// 但攻击者可以利用“#”锚点来绕过 URL 转义，浏览器会认为后面都是片段信息将不做任何处理</span>
+
+<span class="hljs-comment">// 2.通过 URL 重定向钓鱼</span>
+    <span class="hljs-comment">// 网络钓鱼是一个通称：通过欺骗手段窃取用户私人信息</span>
+    <span class="hljs-comment">// 通过 URL 重定向钓鱼是指 Web 页面采用 HTTP 参数来保存 URL 值，脚本会将请求重定向到该保存的 URL 上，</span>
+    <span class="hljs-comment">// 攻击者可以将 HTTP 参数中的 URL 值改为指向恶意站点，从而实施钓鱼</span>
+
+    <span class="hljs-comment">// 常见通过 URL 重定向钓鱼的方式：</span>
+        <span class="hljs-keyword">var</span> data = document.location.search.substring(<span class="hljs-number">1</span>);
+        <span class="hljs-keyword">var</span> spos = data.indexOf(<span class="hljs-string">'url='</span>)+<span class="hljs-number">4</span>;
+        <span class="hljs-keyword">var</span> epos = data.indexOf(<span class="hljs-string">'&amp;'</span>， spos);
+        <span class="hljs-keyword">var</span> newURL;
+        <span class="hljs-keyword">if</span>(epos &lt;<span class="hljs-number">0</span>) {
+            newURL = data.substring(spos);
+        } <span class="hljs-keyword">else</span> {
+            newURL = data.substring(spos, epos);
+        }
+        window.location.href = newURL;
+
+        <span class="hljs-comment">// 可能被执行的 URL： http://jisuowei.com/hi.html?url=http://mi.com</span>
+        <span class="hljs-comment">// 通过 URL 重定向的钓鱼站点网址并不会被服务器拦截，因而更具有隐蔽性</span>
+
+<span class="hljs-comment">// 3.客户端 JS Cookie 引用</span>
+    <span class="hljs-comment">// Cookie 通常由服务器创建并存储在客户端浏览器中，用来保存用户身份、Session、授权</span>
+    <span class="hljs-comment">// JS 可以操作 Cookie，如果在客户端使用 JS 操作站点的 Cookie，攻击者就可以看到这些代码</span>
+    <span class="hljs-comment">// 通过阅读和了解逻辑，修改 Cookie，如：包含了权限信息，攻击者可以利用漏洞进行特权升级等攻击</span>
+
+<span class="hljs-comment">// 4.JS 劫持</span>
+    <span class="hljs-comment">// 利用 JSON 作为 AJAX 数据传输机制的 Web 应用容易受到 JS 劫持攻击，传统的反而不易受到攻击</span>
+
+    <span class="hljs-comment">// 攻击者在其恶意站点的页面中通过 script 标签调用被攻击站点的一个 JSON 动态数据接口，</span>
+    <span class="hljs-comment">// 并通过 JS Function Hook 等技术取得数据；如果用户登录被攻击站点（认证信息基于 Session Cookie）</span>
+    <span class="hljs-comment">// 又被攻击者诱引至恶意页面，那么，恶意站点会发送 JSON 数据获取请求至被攻击站点，合法请求数据，</span>
+    <span class="hljs-comment">// 从而导致用户数据泄密，因为 script 标签请求会带上 Cookie 信息</span>
+    <span class="hljs-comment">// 整个过程相当于一个站外类型的跨站点请求伪造攻击（CSRF）</span>
+
+
+<span class="hljs-comment">// 2017-03-04</span>
+<span class="hljs-number">150.</span>优化AJAX开发的最佳实践
+<span class="hljs-comment">//  1.最小化调用</span>
+    <span class="hljs-comment">// 将大量调用合并成少量调用，如果数据量小，主要问题在于延迟，延迟是浏览器真正获取服务器之间连接所需的时间，</span>
+    <span class="hljs-comment">// 它会占据大部分连接时间，包括：缓存设置、DNS 客户端、物理连接</span>
+
+    <span class="hljs-comment">// 存储调用过的数据</span>
+    <span class="hljs-keyword">var</span> choice = [];
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fillChoiceBoxes</span><span class="hljs-params">(year)</span> {</span>
+        <span class="hljs-keyword">if</span>(dojo.indexOf(choice, year) == -<span class="hljs-number">1</span>) {
+            <span class="hljs-comment">// start</span>
+        } <span class="hljs-keyword">else</span> {
+            choice[year] = res;
+            <span class="hljs-comment">// ajax</span>
+        }
+        fillSelect(dojo.byId(<span class="hljs-string">'makes'</span>), choice[year]);
+    }
+
+<span class="hljs-comment">// 2.让数组变小：使用JSON</span>
+<span class="hljs-comment">// 3.预加载组件：提前下载文件，只适合少量资源时使用；script 标签的 async 属性</span>
+<span class="hljs-comment">// 4.轻松处理错误：每个函数都要防止恶意输入，检测参数</span>
+    
+
+<span class="hljs-number">151.</span>数据存储要考虑访问速度
+<span class="hljs-comment">// 计算机科学的一个经典问题：数据应当存放在何处以实现最佳读写效率</span>
+
+<span class="hljs-comment">// 1.直接量：仅仅代表自己，而不存储于特定位置；包括所有的 JS 数据类型</span>
+<span class="hljs-comment">// 2.变量：使用 var 关键字创建用于存储的数据值</span>
+<span class="hljs-comment">// 3.数组项：具有数字索引，存储一个 JS 数组对象</span>
+<span class="hljs-comment">// 4.对象成员：具有字符串索引，存储一个 JS 对象</span>
+
+<span class="hljs-comment">// 直接量、变量的访问代价要比数组项、对象成员低一些</span>
+<span class="hljs-comment">// 访问局部变量比外部变量快；变量（包括属性、方法）在作用域链中越深访问时间越长；全局变量是最慢的</span>
+<span class="hljs-comment">// 避免使用 with 表达式，会改变运行期上下文作用域，catch 有相同效果</span>
+<span class="hljs-comment">// 对象嵌套也会有很大影响</span>
+
+<span class="hljs-comment">// 将经常使用的对象成员、数组项、域外变量存入局部变量，提高性能</span>
+
+
+<span class="hljs-comment">// 2017-03-05</span>
+<span class="hljs-number">152.</span>使用局部变量存储数据
+<span class="hljs-comment">// 性能、功能上，作用域都是理解 JS 的关键；从确定变量的可访问性，到确定 this 值，作用域都影响 JS</span>
+
+<span class="hljs-comment">// 1.作用域链和标识符解析</span>
+    <span class="hljs-comment">// 每个 JS 函数都被表示为对象，拥有可以编程访问的属性和一系列只能被 JS 引擎访问的内部属性</span>
+
+    <span class="hljs-comment">// 内部属性包含一个函数被创建的作用域中的对象的集合，称作函数作用域链，决定函数可以访问那些数据</span>
+    <span class="hljs-comment">// 此函数作用域链中的每个对象被称为一个可变对象，以键值对形式存在</span>
+    <span class="hljs-comment">// 在一个函数被创建后，作用域链被对象填充，这些对象代表了可访问的数据</span>
+
+    <span class="hljs-comment">// add 函数被定义后，作用域链中填入一个单独可变的对象，此全局对象代表了所有在全局范围内定义的变量，</span>
+    <span class="hljs-comment">// 包含诸如 窗口、浏览器、文档 之类的访问接口</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">add</span><span class="hljs-params">(num1, num2)</span> {</span>
+            <span class="hljs-keyword">var</span> sum = num1 + num2;
+            <span class="hljs-keyword">return</span> sum;
+        }
+
+    <span class="hljs-comment">// add 被运行时将建立一个内部对象，称为运行期上下文，它定义了一个函数运行时的环境</span>
+    <span class="hljs-comment">// 所以多次调用同一个函数就会导致多次创建运行期上下文，函数执行完时被销毁</span>
+
+    <span class="hljs-comment">// 一个运行期上下文有它自己的作用域链，用于标识符解析</span>
+    <span class="hljs-comment">// 运行期上下文被创建时，其作用域链被初始化，连同运行函数的 scope 属性中包含的对象也被初始化</span>
+
+    <span class="hljs-comment">// scope 属性值按照它们出现的顺序被复制到运行期上下文的作用域链中，</span>
+    <span class="hljs-comment">// 此工作一旦完成，一个“激活对象”的新对象就为运行期上下文创建好了，</span>
+    <span class="hljs-comment">// 激活对象作为函数执行期的一个可变对象，包含所有 局部变量、命名参数、参数集合、this 的接口，</span>
+    <span class="hljs-comment">// 然后，此对象被推入作用域链的前端，会同作用域链一同销毁</span>
+
+    <span class="hljs-comment">// 在函数运行过程中，每遇到一个变量，标识符识别过程要决定从哪里获得或存储数据，不断往外围搜索</span>
+
+<span class="hljs-comment">// 2.标识符的识别性能</span>
+    <span class="hljs-comment">// 标识符不是免费的，它所处的位置越深，读写越慢；全局变量总是出于运行期上下文作用域链的最后一个位置</span>
+    <span class="hljs-comment">// 没有优化的 JS 引擎中，尽可能使用局部变量</span>
+    <span class="hljs-comment">// 用局部变量存储本地范围之外的变量值，如果它们在函数中多于一次的使用</span>
+
+<span class="hljs-comment">// 改写</span>
+    <span class="hljs-keyword">var</span> bd = document.body;
+    <span class="hljs-keyword">var</span> doc = document,bd = doc.body;
+
+
+<span class="hljs-number">153.</span>警惕人为改变作用域链
+<span class="hljs-comment">// 1.with</span>
+    <span class="hljs-comment">// with 表达式为所有对象属性创建一个默认操作变量；在其它语言中，类似的功能用来避免书写一些重复的代码</span>
+    <span class="hljs-comment">// 虽然避免了多次书写 document，却产生了一个性能问题</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">initUI</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">with</span>(document) {
+            <span class="hljs-keyword">var</span> bd = body;
+        }
+    }
+
+    <span class="hljs-comment">// 当执行到 with 时，运行期上下文的作用域链被临时改变了，一个新的可变对象将被创建，包含指定对象的所有属性</span>
+    <span class="hljs-comment">// 此对象被插入到作用域链的前端，意味着现在函数的所有局部变量都被推入第二个作用域链对象中，访问代价更高了</span>
+
+<span class="hljs-comment">// catch</span>
+    <span class="hljs-comment">// 当 try 块发生错误时，程序流程自动转入 catch 块，并将异常对象推入作用域链接前端的一个可变对象中</span>
+    <span class="hljs-comment">// catch 块中，函数所有的局部变量现在被放入第二个作用域链对象中</span>
+    <span class="hljs-keyword">try</span>(
+        methodThatMightCauseAnError();
+    ) <span class="hljs-keyword">catch</span>(ex) {
+        alert(ex.message);
+    }
+
+    <span class="hljs-comment">// 只要 catch 子语句执行完毕，作用域链就会返回到原来的状态；最好的将错误交给一个函数处理，而不是 alert</span>
+
+
+<span class="hljs-number">154.</span>慎重使用动态作用域
+<span class="hljs-comment">// 无论是 with 还是 try catch 抑或是包含 () 的函数，都被认为是动态作用域</span>
+<span class="hljs-comment">// 一个动态作用域只因代码运行而存在，因此无法通过静态分析（代码结构）来确定是否存在静态作用域</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">execute</span><span class="hljs-params">(code)</span> {</span>
+        (code);
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">subroutine</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> window;
+        }
+        <span class="hljs-keyword">var</span> w = subroutine();
+    }
+
+    <span class="hljs-comment">// 此函数看似一个动态作用域链，因为使用了 ()，w 变量的值与 code 有关，不出意外，w 将等价于全局 window</span>
+
+    <span class="hljs-comment">// 但此时特殊：</span>
+        execute(<span class="hljs-string">'var window = {};'</span>)
+
+    <span class="hljs-comment">// 这种情况下，由于 () 在 execute() 函数中创建了一个局部的 window 变量，w 将等价于这个局部的</span>
+
+<span class="hljs-comment">// 只在绝对必要时才使用动态作用域</span>
+
+
+<span class="hljs-number">155.</span>小心闭包导致内存泄漏
+<span class="hljs-comment">// 闭包是 JS 最强大的一个方面，允许函数访问局部范围之外的数据，复杂的网页中闭包无处不在</span>
+
+<span class="hljs-comment">// 有一种性能影响闭包：</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">assignEvents</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> id = <span class="hljs-string">'xdi9592'</span>;
+        document.getElementById(<span class="hljs-string">'save-btn'</span>).onlick = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(event)</span> {</span>
+            saveDoc(id);
+        };
+    }
+
+<span class="hljs-comment">// 由于闭包的 scope 属性包含与运行期上下文作用域链相同的对象引用</span>
+<span class="hljs-comment">// 通常激活对象会同运行期上下文一同销毁，涉及闭包时，激活对象就无法被销毁了</span>
+<span class="hljs-comment">// 这意味着与脚本中的非闭包函数相比，闭包需要更多的内存开销</span>
+
+
+<span class="hljs-number">156.</span>灵活使用Cookie存储长信息
+<span class="hljs-comment">// Cookie 适合存储用户的简单个人信息，因为 Cookie 不是通用的通信机制、数据传输机制</span>
+<span class="hljs-comment">// Cookie 总数不能超过 300 个，同一域名不能超过 20 个，单个不能超过 4KB</span>
+<span class="hljs-comment">// Cookie 用来存储需要长期保存的大量数据，一般用来保存用户状态信息、访问足迹等小数据</span>
+
+<span class="hljs-comment">// 由于限制，可以合并 Cookie 存储，4KB 4096 个字符，完全满足各种用户信息了</span>
+
+<span class="hljs-comment">// 推荐写法：</span>
+    name = name1:val1, name2:val2, name3:val3;
+
+<span class="hljs-comment">// 确保子名值对不引发歧义，使用 escape() 先编码，读取时再使用 unescape() 转码</span>
+    <span class="hljs-keyword">var</span> d = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>();
+    d.setMonth(d.getMonth()+<span class="hljs-number">1</span>);
+    d = d.toGMTString();
+
+    <span class="hljs-keyword">var</span> a = <span class="hljs-string">'name:chisw,age:26'</span>;
+    <span class="hljs-keyword">var</span> c = <span class="hljs-string">'user='</span> + <span class="hljs-built_in">escape</span>(a);
+    c += <span class="hljs-string">';'</span>+ <span class="hljs-string">'expires='</span>+ d;
+    document.Cookie = c;
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getSubCookie</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> a = document.Cookie.split(<span class="hljs-string">';'</span>);
+        <span class="hljs-keyword">var</span> o = {};
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;a.length; i++) {
+            a[i] &amp;&amp; (a[i].replace(<span class="hljs-regexp">/^\s+|\s+$/</span>, <span class="hljs-string">''</span>)); <span class="hljs-comment">// 清除空格符</span>
+            <span class="hljs-keyword">var</span> b = a[i].split(<span class="hljs-string">'='</span>);
+            <span class="hljs-keyword">var</span> c = b[<span class="hljs-number">1</span>];
+            c &amp;&amp; (c = c.replace(<span class="hljs-regexp">/^\s+|\s+$/</span>, <span class="hljs-string">''</span>)); <span class="hljs-comment">// 清除空格符</span>
+            c = <span class="hljs-built_in">unescape</span>(c);
+            <span class="hljs-keyword">if</span>(!<span class="hljs-regexp">/\,/gi</span>.test(c)) {
+                o[b[<span class="hljs-number">0</span>]] = b[<span class="hljs-number">1</span>];
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-keyword">var</span> d = c.split(<span class="hljs-string">','</span>);
+                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> j=<span class="hljs-number">0</span>; j&lt;d.length; j++) {
+                    <span class="hljs-keyword">var</span> e = d[j].split(<span class="hljs-string">':'</span>);
+                    o[e[<span class="hljs-number">0</span>]] = e[<span class="hljs-number">1</span>];  <span class="hljs-comment">// 子 cookie 写入返回对象</span>
+                }
+            }
+        }
+        <span class="hljs-keyword">return</span> o;
+    }
+
+<span class="hljs-comment">// 检测是否支持 Cookie</span>
+    <span class="hljs-keyword">if</span>(navigator.CookieEnabled) {}
+
+
+<span class="hljs-number">157.</span>推荐封装Cookie应用接口
+<span class="hljs-comment">// 默认的，读写 Cookie 是比较麻烦的；其通过字符串来读写，还需要一定的转换操作</span>
+<span class="hljs-comment">// 繁琐的构造和解析让我应当对其进行封装，原则：接口高度统一，参数自由、灵活</span>
+
+<span class="hljs-comment">// 1 个参数读取，2 个写入，3 个传递选项信息</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Cookie</span><span class="hljs-params">(name, value, options)</span> {</span>
+        <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> value != <span class="hljs-string">'undefined'</span>) {  <span class="hljs-comment">// 写 | 删</span>
+            options = options || {};
+            <span class="hljs-keyword">if</span>(value == <span class="hljs-literal">null</span>) {
+                options.expires = -<span class="hljs-number">1</span>;  <span class="hljs-comment">// 设置失效</span>
+            }
+            <span class="hljs-keyword">var</span> expires = <span class="hljs-string">''</span>;
+            <span class="hljs-keyword">if</span>(options.expires &amp;&amp; (<span class="hljs-keyword">typeof</span> options.expires == <span class="hljs-string">'number'</span> || options.expires.toUTCString)) {
+                <span class="hljs-keyword">var</span> date;
+                <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> options.expires == <span class="hljs-string">'number'</span>) {
+                    date = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>();
+                    date.setTime(date.getTime() + (options.expires *<span class="hljs-number">24</span>*<span class="hljs-number">60</span>*<span class="hljs-number">60</span>*<span class="hljs-number">1000</span> ));
+                } <span class="hljs-keyword">else</span> {
+                    date = options.expires;
+                }
+                expires = <span class="hljs-string">'; expires='</span>+ date.toUTCString();
+            }
+            <span class="hljs-keyword">var</span> path = options.path ? <span class="hljs-string">'; path='</span>+ options.path : <span class="hljs-string">''</span>;
+            <span class="hljs-keyword">var</span> domian = options.domian ? <span class="hljs-string">'; domain='</span>+ options.domain : <span class="hljs-string">''</span>;
+            <span class="hljs-keyword">var</span> secure = options.secure ? <span class="hljs-string">'; secure'</span> : <span class="hljs-string">''</span>;  <span class="hljs-comment">// boolean</span>
+            document.Cookie = [name, <span class="hljs-string">'='</span>, <span class="hljs-built_in">encodeURIComponent</span>(value), expires, path, domain, secure].join(<span class="hljs-string">''</span>);
+        } <span class="hljs-keyword">else</span> {  <span class="hljs-comment">// 读</span>
+            <span class="hljs-keyword">var</span> CookieValue = <span class="hljs-literal">null</span>;
+            <span class="hljs-keyword">if</span>(document.Cookie &amp;&amp; document.Cookie != <span class="hljs-string">''</span>) {
+                <span class="hljs-keyword">var</span> Cookies = document.Cookie.split(<span class="hljs-string">';'</span>);
+                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;Cookies.length; i++) {
+                    <span class="hljs-keyword">var</span> Cookie = (Cookies[i] || <span class="hljs-string">''</span>).replace(<span class="hljs-regexp">/^\s+|\s+$/g</span>, <span class="hljs-string">''</span>);
+                    <span class="hljs-keyword">if</span>(Cookie.substring(<span class="hljs-number">0</span>, name.length + <span class="hljs-number">1</span>) == (name + <span class="hljs-string">'='</span>)) {
+                        CookieValue = <span class="hljs-built_in">decodeURIComponent</span>(Cookie.substring(name.length + <span class="hljs-number">1</span>));
+                        <span class="hljs-keyword">break</span>;
+                    }
+                }
+            }
+            <span class="hljs-keyword">return</span> CookieValue;
+        }
+    }
+
+<span class="hljs-comment">// 使用</span>
+    Cookie(<span class="hljs-string">'user'</span>, <span class="hljs-string">'jisuowei'</span>);  <span class="hljs-comment">// 写</span>
+
+    Cookie(<span class="hljs-string">'user'</span>, <span class="hljs-string">'chisw'</span>, {
+        expires:<span class="hljs-number">10</span>,  <span class="hljs-comment">// 10 天</span>
+        path:<span class="hljs-string">'/'</span>,  <span class="hljs-comment">// 整站有效</span>
+        domain:<span class="hljs-string">'jisuowei.com'</span>,  <span class="hljs-comment">// 有效域名</span>
+        secure:<span class="hljs-literal">true</span>  <span class="hljs-comment">// 加密数据传输</span>
+    });
+
+    Cookie(<span class="hljs-string">'user'</span>);  <span class="hljs-comment">// 读</span>
+    Cookie(<span class="hljs-string">'user'</span>, <span class="hljs-literal">null</span>);  <span class="hljs-comment">// 删</span>
+
+</code></pre>

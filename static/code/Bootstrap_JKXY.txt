@@ -1,0 +1,825 @@
+<pre><code class="js hljs ">
+<span class="hljs-comment">/*
+
+    Bootstrap 入门【极客学院】
+
+    2017-04-09
+    ~
+    2017-04-13 Noted by Chisw
+
+*/</span>
+
+
+<span class="hljs-number">001.</span>起步
+<span class="hljs-number">002.</span>栅格 置换和偏移
+<span class="hljs-number">003.</span>导航
+<span class="hljs-number">004.</span>文字排版
+<span class="hljs-number">005.</span>语义格式化样式
+<span class="hljs-number">006.</span>表格
+<span class="hljs-number">007.</span>表单
+<span class="hljs-number">008.</span>按钮和图片
+<span class="hljs-number">009.</span>下拉菜单
+<span class="hljs-number">010.</span>按钮组
+<span class="hljs-number">011.</span>分裂使按钮下拉菜单
+<span class="hljs-number">012.</span>输入框组
+<span class="hljs-number">013.</span>面包屑导航
+<span class="hljs-number">014.</span>媒体对象
+<span class="hljs-number">015.</span>面板组件
+<span class="hljs-number">016.</span>Responsive embed &amp; well
+<span class="hljs-number">017.</span>分页与标签
+<span class="hljs-number">018.</span>徽章与巨幕
+<span class="hljs-number">019.</span>页头与缩略图
+<span class="hljs-number">020.</span>警告框
+<span class="hljs-number">021.</span>进度条
+<span class="hljs-number">022.</span>列表组
+<span class="hljs-number">023.</span>模态框
+<span class="hljs-number">024.</span>关闭 data-api
+<span class="hljs-number">025.</span>滚动监听
+<span class="hljs-number">026.</span>tooltip
+<span class="hljs-number">027.</span>弹出框
+<span class="hljs-number">028.</span>collapse
+<span class="hljs-number">029.</span>carousel
+<span class="hljs-number">030.</span>affix
+
+
+<span class="hljs-comment">// 2017-04-09</span>
+<span class="hljs-number">001.</span>起步
+<span class="hljs-comment">// 官网： getbootstrap.com</span>
+<span class="hljs-comment">// 中文网： bootcss.com</span>
+
+
+<span class="hljs-number">002.</span>栅格 置换和偏移
+<span class="hljs-comment">// 最多12列，必须包含在 .container 中</span>
+    <span class="hljs-comment">// .col-xs-  &lt; 768px</span>
+    <span class="hljs-comment">// .col-sm-  &gt;=768px</span>
+    <span class="hljs-comment">// .col-md-  &gt;=992px</span>
+    <span class="hljs-comment">// .col-lg-  &gt;=1200px</span>
+
+<span class="hljs-comment">/*
+    &lt;div class="row"&gt;
+        &lt;div class="col-md-1"&gt;1&lt;/div&gt;
+        &lt;div class="col-md-1"&gt;2&lt;/div&gt;
+        &lt;div class="col-md-1 col-md-push-8""&gt;3&lt;/div&gt;
+        &lt;div class="col-md-1"&gt;4&lt;/div&gt;
+        &lt;div class="col-md-1"&gt;5&lt;/div&gt;
+        &lt;div class="col-md-1"&gt;6&lt;/div&gt;
+        &lt;div class="col-md-1"&gt;7&lt;/div&gt;
+        &lt;div class="col-md-1"&gt;8&lt;/div&gt;
+        &lt;div class="col-md-1"&gt;9&lt;/div&gt;
+        &lt;div class="col-md-1"&gt;10&lt;/div&gt;
+        &lt;div class="col-md-1 col-md-pull-8"&gt;11&lt;/div&gt;
+        &lt;div class="col-md-1"&gt;12&lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class="row"&gt;
+        &lt;div class="col-md-3"&gt;a&lt;/div&gt;
+        &lt;div class="col-md-3"&gt;a&lt;/div&gt;
+        &lt;div class="col-md-3"&gt;a&lt;/div&gt;
+        &lt;div class="col-md-3"&gt;a&lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class="row"&gt;
+        &lt;div class="col-md-1 col-md-offset-2"&gt;a&lt;/div&gt;
+    &lt;/div&gt;
+*/</span>
+
+
+<span class="hljs-number">003.</span>导航
+<span class="hljs-comment">/*
+    &lt;nav class="navbar navbar-inverse navbar-fixed-top"&gt;
+        &lt;div class="container"&gt;
+            &lt;div class="navbar-header"&gt;
+                &lt;a href="#" class="navbar-brand"&gt;Project Name&lt;/a&gt;
+            &lt;/div&gt;
+            &lt;div id="navbar" class="collapse navbar-collapse"&gt;
+                &lt;ul class="nav navbar-nav"&gt;
+                    &lt;li class="active"&gt;&lt;a href="#"&gt;Home&lt;/a&gt;&lt;/li&gt;
+                    &lt;li&gt;&lt;a href="#"&gt;About&lt;/a&gt;&lt;/li&gt;
+                    &lt;li&gt;&lt;a href="#"&gt;Contact&lt;/a&gt;&lt;/li&gt;
+                &lt;/ul&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/nav&gt;
+
+    &lt;div class="container"&gt;
+        &lt;div class="starter"&gt;  // 居中
+            &lt;h1&gt;Bootstrap&lt;/h1&gt;
+            &lt;p class="lead"&gt;Welcome to bootstrap&lt;/p&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+*/</span>
+
+
+<span class="hljs-number">004.</span>文字排版
+<span class="hljs-comment">/*
+    &lt;h1&gt;Boot &lt;small&gt;Welcome&lt;/small&gt;&lt;/h1&gt;
+    &lt;h2&gt;Boot &lt;small&gt;Welcome&lt;/small&gt;&lt;/h2&gt;
+
+    &lt;p&gt;This is a &lt;mark&gt;paragraph&lt;/mark&gt;&lt;/p&gt;
+    &lt;p class="lead"&gt;This is a paragraph&lt;/p&gt;
+
+    &lt;p class="text-left"&gt;This is a paragraph&lt;/p&gt;
+    &lt;p class="text-center"&gt;This is a paragraph&lt;/p&gt;
+    &lt;p class="text-right"&gt;This is a paragraph&lt;/p&gt;
+    &lt;p class="text-lowercase"&gt;This is a paragraph&lt;/p&gt;
+    &lt;p class="text-uppercase"&gt;This is a paragraph&lt;/p&gt;
+    &lt;p class="text-capitalize"&gt;Thisis a paragraph&lt;/p&gt;
+
+    &lt;p&gt;Thisis a &lt;abbr title="sometext here"&gt;paragraph&lt;/abbr&gt;&lt;/p&gt;
+
+    &lt;ul class="list-unstyled"&gt;
+        &lt;li&gt;1&lt;/li&gt;
+        &lt;li&gt;2&lt;/li&gt;
+        &lt;li&gt;3&lt;/li&gt;
+    &lt;/ul&gt;
+*/</span>
+
+
+<span class="hljs-number">005.</span>语义格式化样式
+<span class="hljs-comment">/*
+    &lt;code&gt;&lt;section&gt;&lt;/code&gt;  // 代码
+
+    &lt;kbd&gt;cmd&lt;/kbd&gt;                // cmd
+
+    &lt;pre&gt;
+        some code here
+    &lt;/pre&gt;
+
+    &lt;var&gt;x&lt;/var&gt;=&lt;var&gt;y&lt;/var&gt;+&lt;var&gt;z&lt;/var&gt;  // 斜体变量
+
+    &lt;samp&gt;hello world&lt;/samp&gt;  // 样品
+*/</span>
+
+
+<span class="hljs-number">006.</span>表格
+<span class="hljs-comment">/*
+    &lt;div class="table-responsive"&gt;
+        &lt;table class="table table-striped table-bordered table-hover table-condensed"&gt;
+            &lt;thead&gt;
+                &lt;tr&gt; &lt;th&gt;标题1&lt;/th&gt;&lt;th&gt;标题2&lt;/th&gt;&lt;th&gt;标题3&lt;/th&gt; &lt;/tr&gt;
+            &lt;/thead&gt;
+            &lt;tbody&gt;
+                &lt;tr&gt; &lt;td&gt;unit1&lt;/td&gt;&lt;td&gt;unit2&lt;/td&gt;&lt;td&gt;unit3&lt;/td&gt; &lt;/tr&gt;
+                &lt;tr&gt; &lt;td&gt;unit1&lt;/td&gt;&lt;td&gt;unit2&lt;/td&gt;&lt;td&gt;unit3&lt;/td&gt; &lt;/tr&gt;
+                &lt;tr&gt;
+                    &lt;td class="active"&gt;active&lt;/td&gt;
+                    &lt;td class="success"&gt;success&lt;/td&gt;
+                    &lt;td class="info"&gt;info&lt;/td&gt;
+                    &lt;td class="warning"&gt;warning&lt;/td&gt;
+                    &lt;td class="danger"&gt;danger&lt;/td&gt;
+                &lt;/tr&gt;
+            &lt;/tbody&gt;
+        &lt;/table&gt;
+    &lt;/div&gt;
+*/</span>
+
+
+<span class="hljs-number">007.</span>表单
+<span class="hljs-comment">/*
+    &lt;form role="form" class="form-inline"&gt;
+
+        &lt;div class="form-group"&gt;
+            &lt;label&gt;用户名&lt;/label&gt;
+            &lt;input type="text" name="" class="form-control" placeholder="username"&gt;
+        &lt;/div&gt;
+
+        &lt;div class="form-group"&gt;
+            &lt;label&gt;密码&lt;/label&gt;
+            &lt;input type="password" name="" class="form-control" placeholder="password"&gt;
+        &lt;/div&gt;
+
+        &lt;div class="form-group"&gt;
+            &lt;label class="sr-only"&gt;选择文件&lt;/label&gt;
+            &lt;input type="file"&gt;
+            &lt;p class="help-block"&gt;选择你的文件&lt;/p&gt;
+        &lt;/div&gt;
+        
+    &lt;/form&gt;
+*/</span>
+<span class="hljs-comment">/*
+    &lt;form role="form" class="form-horizontal"&gt;
+
+        &lt;div class="form-group"&gt;
+            &lt;label class="col-sm-2 control-label"&gt;用户名&lt;/label&gt;
+            &lt;div class="col-sm-10"&gt;
+                &lt;input type="text" class="form-control" placeholder="username"&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class="form-group"&gt;
+            &lt;label class="col-sm-2 control-label"&gt;密码&lt;/label&gt;
+            &lt;div class="col-sm-10"&gt;
+                &lt;input type="password" class="form-control"  placeholder="password"&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class="form-group"&gt;
+            &lt;div class="col-sm-10 col-sm-offset-2"&gt;
+                &lt;div class="checkbox"&gt;
+                    &lt;label&gt;
+                        &lt;input type="checkbox" name=""&gt;记住密码
+                    &lt;/label&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class="form-group"&gt;
+            &lt;div class="col-sm-10 col-sm-offset-2"&gt;
+                &lt;input type="button" class="btn btn-default" value="登录"&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+    &lt;/form&gt;
+*/</span>
+<span class="hljs-comment">/*
+    &lt;form role="form"&gt;
+    
+&lt;fieldset disabled&gt;
+...
+&lt;/fieldset&gt;
+&lt;!-- readonly --&gt;
+        &lt;input type="text" class="form-control" name="" disabled&gt;
+
+        &lt;textarea class="form-control" rows="5"&gt;hello&lt;/textarea&gt;
+
+        &lt;div class="checkbox"&gt;
+            &lt;label&gt;
+                &lt;input type="checkbox" name=""&gt;编程
+            &lt;/label&gt;
+        &lt;/div&gt;
+
+        &lt;div class="checkbox"&gt;
+            &lt;label&gt;
+                &lt;input type="checkbox" name=""&gt;骑行
+            &lt;/label&gt;
+        &lt;/div&gt;
+
+        &lt;div class="radio"&gt;
+            &lt;label&gt;
+                &lt;input type="radio" name="sex" checked&gt;boy
+            &lt;/label&gt;
+        &lt;/div&gt;
+
+        &lt;div class="radio"&gt;
+            &lt;label&gt;
+                &lt;input type="radio" name="sex"&gt;girl
+            &lt;/label&gt;
+        &lt;/div&gt;
+
+        &lt;select class="form-control" multiple&gt;
+            &lt;option&gt;1&lt;/option&gt;
+            &lt;option&gt;2&lt;/option&gt;
+            &lt;option&gt;3&lt;/option&gt;
+        &lt;/select&gt;
+
+        &lt;p class="form-control-static"&gt;格式：i@jisuowei.com&lt;/p&gt;
+
+        &lt;div class="form-group has-warning"&gt;
+            &lt;input type="text" class="form-control has-error" name="" &gt;
+        &lt;/div&gt;
+
+        &lt;div class="form-group has-success"&gt;
+            &lt;input type="text" class="form-control has-error" name="" &gt;
+        &lt;/div&gt;
+
+        &lt;div class="form-group has-error"&gt;
+            &lt;input type="text" class="form-control has-error" name="" &gt;
+        &lt;/div&gt;
+
+        &lt;div class="form-group has-feedback col-md-5"&gt;
+            &lt;input type="text" class="form-control has-error" name="" &gt;
+            &lt;span class="glyphicon glyphicon-ok form-control-feedback"&gt;&lt;/span&gt;
+        &lt;/div&gt;
+
+    &lt;/form&gt;
+*/</span>
+
+
+<span class="hljs-number">008.</span>按钮和图片
+<span class="hljs-comment">/*
+    &lt;a href="#" class="btn btn-default"&gt;default&lt;/a&gt;
+    &lt;a href="#" class="btn btn-success"&gt;success&lt;/a&gt;
+    &lt;a href="#" class="btn btn-info"&gt;info&lt;/a&gt;
+    &lt;a href="#" class="btn btn-warning"&gt;warning&lt;/a&gt;
+    &lt;a href="#" class="btn btn-link"&gt;link&lt;/a&gt;
+    &lt;a href="#" class="btn btn-primary"&gt;primary&lt;/a&gt;
+    &lt;a href="#" class="btn btn-danger"&gt;danger&lt;/a&gt;
+
+    &lt;br&gt;&lt;br&gt;
+
+    &lt;a href="#" class="btn btn-danger btn-lg"&gt;danger&lt;/a&gt;
+    &lt;a href="#" class="btn btn-danger btn-md"&gt;danger&lt;/a&gt;
+    &lt;a href="#" class="btn btn-danger btn-sm"&gt;danger&lt;/a&gt;
+    &lt;a href="#" class="btn btn-danger btn-xs"&gt;danger&lt;/a&gt;
+    &lt;a href="#" class="btn btn-danger btn-xs active"&gt;danger&lt;/a&gt;
+    &lt;a href="#" class="btn btn-danger btn-xs active" disabled&gt;danger&lt;/a&gt;
+
+    &lt;br&gt;&lt;br&gt;
+
+    &lt;a href="#" class="btn btn-default btn-block"&gt;default&lt;/a&gt;
+
+    &lt;br&gt;&lt;br&gt;
+
+    &lt;img src="a.jpg" class="img-circle"&gt;
+    &lt;img src="a.jpg" class="img-rounded"&gt;
+    &lt;img src="a.jpg" class="img-thumbnail"&gt;
+*/</span>
+
+
+<span class="hljs-comment">// 2017-04-11</span>
+<span class="hljs-number">009.</span>下拉菜单
+<span class="hljs-comment">/*
+    &lt;div class="dropdown pull-right"&gt;
+        &lt;button class="btn btn-default dropdown-toggle" data-toggle="dropdown"&gt;
+            下拉菜单
+            &lt;span class="caret"&gt;&lt;/span&gt;
+        &lt;/button&gt;
+        &lt;ul class="dropdown-menu dropdown-menu-right" role="menu" aria-expanded="true"&gt;
+            &lt;li class="dropdown-header"&gt;请选择&lt;/li&gt;
+            &lt;li&gt;&lt;a href="#" role="menuitem"&gt;选项1&lt;/a&gt;&lt;/li&gt;
+            &lt;li class="disabled"&gt;&lt;a href="#" role="menuitem"&gt;禁用项&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a href="#" role="menuitem"&gt;选项2&lt;/a&gt;&lt;/li&gt;
+            &lt;li class="divider"&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a href="#" role="menuitem"&gt;选项3&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a href="#" role="menuitem"&gt;选项4&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/div&gt;
+*/</span>
+
+
+<span class="hljs-number">010.</span>按钮组
+<span class="hljs-comment">/*
+    &lt;div class="btn-toolbar"&gt;
+        &lt;div class="btn-group btn-group-lg"&gt;
+            &lt;button class="btn btn-default"&gt;Left&lt;/button&gt;
+            &lt;button class="btn btn-default"&gt;Right&lt;/button&gt;
+        &lt;/div&gt;
+
+        &lt;div class="btn-group-vertical"&gt;
+            &lt;button class="btn btn-default"&gt;Left&lt;/button&gt;
+            &lt;button class="btn btn-default"&gt;Middle&lt;/button&gt;
+            &lt;button class="btn btn-default"&gt;Right&lt;/button&gt;
+        &lt;/div&gt;
+
+        &lt;div class="btn-group btn-group-sm"&gt;
+            &lt;button class="btn btn-default"&gt;Left&lt;/button&gt;
+            &lt;button class="btn btn-default"&gt;Middle&lt;/button&gt;
+            &lt;button class="btn btn-default"&gt;Right&lt;/button&gt;
+        &lt;/div&gt;
+
+        &lt;div class="btn-group btn-group-xs"&gt;
+            &lt;button class="btn btn-default"&gt;Left&lt;/button&gt;
+            &lt;button class="btn btn-default"&gt;Middle&lt;/button&gt;
+            &lt;button class="btn btn-default"&gt;Middle&lt;/button&gt;
+            &lt;button class="btn btn-default"&gt;Right&lt;/button&gt;
+        &lt;/div&gt;
+
+    &lt;/div&gt;
+*/</span>
+
+
+<span class="hljs-number">011.</span>分裂使按钮下拉菜单
+<span class="hljs-comment">/*
+    &lt;div class="btn-group dropup"&gt;
+        &lt;button class="btn btn-info btn-sm" &gt;分裂使按钮下拉菜单&lt;/button&gt;
+        &lt;button class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown"&gt;
+            &lt;span class="caret"&gt;&lt;/span&gt;
+        &lt;/button&gt;
+        &lt;ul class="dropdown-menu"&gt;
+            &lt;li&gt;&lt;a href="#"&gt;1&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/div&gt;
+*/</span>
+
+
+<span class="hljs-number">012.</span>输入框组
+<span class="hljs-comment">/*
+    &lt;div class="input-group input-group-lg"&gt;
+        &lt;span class="input-group-addon"&gt;@&lt;/span&gt;
+        &lt;input type="text" name="" class="form-control" placeholder="enter some word"&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="input-group"&gt;
+        &lt;span class="input-group-addon"&gt;www.&lt;/span&gt;
+        &lt;input type="text" name="" class="form-control" placeholder="enter some word"&gt;
+        &lt;span class="input-group-addon"&gt;.com&lt;/span&gt;
+    &lt;/div&gt;
+
+    &lt;div class="row"&gt;
+        &lt;div class="col-lg-6"&gt;
+            &lt;div class="input-group"&gt;
+
+                &lt;span class="input-group-addon"&gt;
+                    &lt;input type="checkbox" name=""&gt;
+                &lt;/span&gt;
+
+                &lt;input type="text" name="" class="form-control"&gt;
+                
+                &lt;span class="input-group-btn"&gt;
+                    &lt;button class="btn btn-default"&gt;GO&lt;/button&gt;
+                &lt;/span&gt;
+
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+*/</span>
+
+
+<span class="hljs-number">013.</span>面包屑导航
+<span class="hljs-comment">/*
+    &lt;ol class="breadcrumb"&gt;
+        &lt;li&gt;&lt;a href="#"&gt;1&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#"&gt;2&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#"&gt;3&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+*/</span>
+
+
+<span class="hljs-comment">// 2017-04-12</span>
+<span class="hljs-number">014.</span>媒体对象
+<span class="hljs-comment">/*
+    &lt;div class="container"&gt;
+        &lt;div class="media"&gt;
+            &lt;a href="#" class="media-left"&gt;&lt;img width="64" src="a.jpg"&gt;&lt;/a&gt;
+            &lt;div class="media-body"&gt;
+                &lt;h4 class="media-heading"&gt;Welcome&lt;/h4&gt;
+                &lt;p&gt;awegfrgregha&lt;br&gt;rga&lt;/p&gt;
+
+                &lt;div class="media"&gt;
+                    &lt;div class="media-body"&gt;
+                        &lt;h4 class="media-heading"&gt;Welcome&lt;/h4&gt;
+                        &lt;p&gt;awegfrgregha&lt;br&gt;rga&lt;/p&gt;
+                    &lt;/div&gt;
+                    &lt;a href="#" class="media-right"&gt;&lt;img width="64" src="a.jpg"&gt;&lt;/a&gt;
+                &lt;/div&gt;
+
+            &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="media"&gt;
+            &lt;a href="#" class="media-left"&gt;&lt;img width="64" src="a.jpg"&gt;&lt;/a&gt;
+            &lt;div class="media-body"&gt;
+                &lt;h4 class="media-heading"&gt;Welcome&lt;/h4&gt;
+                &lt;p&gt;awegfrgregha&lt;br&gt;rga&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="media"&gt;
+            &lt;a href="#" class="media-left media-middle"&gt;&lt;img width="64" src="a.jpg"&gt;&lt;/a&gt;
+            &lt;div class="media-body"&gt;
+                &lt;h4 class="media-heading"&gt;Welcome&lt;/h4&gt;
+                &lt;p&gt;awegfrgregha&lt;br&gt;rga&lt;/p&gt;
+                &lt;p&gt;awegfrgregha&lt;br&gt;rga&lt;/p&gt;
+                &lt;p&gt;awegfrgregha&lt;br&gt;rga&lt;/p&gt;
+                &lt;p&gt;awegfrgregha&lt;br&gt;rga&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+*/</span>
+
+
+<span class="hljs-number">015.</span>面板组件
+<span class="hljs-comment">/*
+    &lt;div class="panel panel-default panel-success"&gt;
+        &lt;div class="panel-heading"&gt;
+            head
+        &lt;/div&gt;
+        &lt;div class="panel-body"&gt;
+            body
+        &lt;/div&gt;
+        &lt;div class="panel-footer"&gt;
+            jisuowei.com
+        &lt;/div&gt;
+    &lt;/div&gt;
+*/</span>
+
+
+<span class="hljs-number">016.</span>Responsive embed &amp; well
+<span class="hljs-comment">/*
+    &lt;div class="container"&gt;
+    
+        &lt;div class="embed-responsive embed-responsive-16by9"&gt;
+            &lt;iframe src="a" class="embed-responsive-item"&gt;&lt;/iframe&gt;
+        &lt;/div&gt;
+
+        &lt;div class="well"&gt;
+            Look, I'm pretty fucking cool!
+        &lt;/div&gt;
+
+    &lt;/div&gt;
+*/</span>
+
+
+<span class="hljs-number">017.</span>分页与标签
+<span class="hljs-comment">/*
+    &lt;nav&gt;
+        &lt;ul class="pagination"&gt;
+            &lt;li&gt;&lt;a href="#"&gt;«&lt;/a&gt;&lt;/li&gt;
+            &lt;li class="active"&gt;&lt;a href="#"&gt;1&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a href="#"&gt;2&lt;/a&gt;&lt;/li&gt;
+            &lt;li class="disabled"&gt;&lt;a href="#"&gt;3&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a href="#"&gt;»&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/nav&gt;
+
+    &lt;nav&gt;
+        &lt;ul class="pager"&gt;
+            &lt;li class="previous"&gt;&lt;a href="#"&gt;Prev&lt;/a&gt;&lt;/li&gt;
+            &lt;li class="next"&gt;&lt;a href="#"&gt;Next&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/nav&gt;
+
+    &lt;label class="label label-default"&gt;default&lt;/label&gt;
+    &lt;label class="label label-primary"&gt;primary&lt;/label&gt;
+    &lt;label class="label label-success"&gt;success&lt;/label&gt;
+    &lt;label class="label label-info"&gt;info&lt;/label&gt;
+    &lt;label class="label label-warning"&gt;warning&lt;/label&gt;
+    &lt;label class="label label-danger"&gt;danger&lt;/label&gt;
+*/</span>
+
+
+<span class="hljs-number">018.</span>徽章与巨幕
+<span class="hljs-comment">/*
+    &lt;div class="container"&gt;
+        &lt;div class="jumbotron"&gt;
+            &lt;h1&gt;Hellow&lt;/h1&gt;
+            &lt;p&gt;bitch&lt;/p&gt;
+            &lt;a href="#" class="btn btn-success"&gt;Msg &lt;span class="badge"&gt;3&lt;/span&gt;&lt;/a&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+*/</span>
+
+
+<span class="hljs-number">019.</span>页头与缩略图
+<span class="hljs-comment">/*
+    &lt;div class="page-header"&gt;
+        &lt;h1&gt;Jisuowei &lt;small&gt;Chisw&lt;/small&gt;&lt;/h1&gt;
+    &lt;/div&gt;
+
+    &lt;div class="row"&gt;
+        &lt;div class="col-xs-6 col-md-3"&gt;
+            &lt;a href="#" class="thumbnail"&gt;
+                &lt;img src="a.jpg"&gt;
+            &lt;/a&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class="row"&gt;
+        &lt;div class="col-xs-6 col-md-3"&gt;
+            &lt;div class="thumbnail"&gt;
+                &lt;img src="a.jpg"&gt;
+                &lt;div class="caption"&gt;
+                    &lt;h3&gt;Chisw&lt;/h3&gt;
+                    &lt;p&gt;Jisuowei&lt;/p&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+*/</span>
+
+
+<span class="hljs-number">020.</span>警告框
+<span class="hljs-comment">/*
+    &lt;div class="alert alert-success" role="alert"&gt;
+        jisuowei
+        &lt;a href="#" class="alert-link"&gt;jisuowei.com&lt;/a&gt;
+        &lt;button class="close" data-dismiss="alert"&gt;&lt;span aria-disabled="true"&gt;×&lt;/span&gt;&lt;/button&gt;
+    &lt;/div&gt;
+*/</span>
+
+
+<span class="hljs-number">021.</span>进度条
+<span class="hljs-comment">/*
+    &lt;div class="progress"&gt;
+        &lt;div class="progress-bar progress-bar-warning progress-bar-striped active" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" style="width:50%;"&gt;
+            &lt;span class="sr-only"&gt;60%&lt;/span&gt;
+            50%
+        &lt;/div&gt;
+
+        &lt;div class="progress-bar progress-bar-danger progress-bar-striped active" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" style="width:20%;"&gt;
+            20%
+        &lt;/div&gt;
+    &lt;/div&gt;
+*/</span>
+
+
+<span class="hljs-number">022.</span>列表组
+<span class="hljs-comment">/*
+    &lt;ul class="list-group"&gt;
+        &lt;li class="list-group-item"&gt;1&lt;span class="badge"&gt;new&lt;/span&gt;&lt;/li&gt;
+        &lt;li class="list-group-item"&gt;2&lt;/li&gt;
+        &lt;li class="list-group-item"&gt;3&lt;/li&gt;
+    &lt;/ul&gt;
+
+    &lt;div class="list-group"&gt;
+        &lt;a href="#" class="list-group-item active"&gt;1&lt;/a&gt;
+        &lt;a href="#" class="list-group-item list-group-item-danger"&gt;2&lt;/a&gt;
+        &lt;a href="#" class="list-group-item"&gt;3&lt;/a&gt;
+        &lt;a href="#" class="list-group-item"&gt;4&lt;/a&gt;
+        &lt;a href="#" class="list-group-item"&gt;
+            &lt;h4 class="list-group-item-heading"&gt;嵇所伟&lt;/h4&gt;
+            &lt;p class="list-group-item-text"&gt;jisuowei&lt;/p&gt;
+        &lt;/a&gt;
+    &lt;/div&gt;
+*/</span>
+
+
+<span class="hljs-comment">// 2017-04-13</span>
+<span class="hljs-number">023.</span>模态框
+<span class="hljs-comment">/*
+    &lt;a href="#" class="btn btn-default" data-toggle="modal" data-target="#modal_1" data-whatever="@mdo" &gt;Click&lt;/a&gt;
+
+    &lt;div class="modal fade" id="modal_1" tabindex="-1" role="dialog" aria-labelledby="modal_1"&gt;
+
+        &lt;div class="modal-dialog modal-lg"&gt;
+            &lt;div class="modal-content"&gt;
+                &lt;div class="modal-header"&gt;
+                    &lt;button class="close" data-dismiss="modal"&gt;
+                        &lt;span aira-hidden="true"&gt;×&lt;/span&gt;
+                    &lt;/button&gt;
+                    &lt;h4 class="modal-title" &gt;Title&lt;/h4&gt;
+                &lt;/div&gt;
+                &lt;div class="modal-body"&gt;
+                    &lt;form&gt;
+                        &lt;div class="form-group"&gt;
+                            &lt;label for="recipient-name" class="control-label"&gt;Recipient&lt;/label&gt;
+                            &lt;input type="text" name="" class="form-control" id="recipient-name" &gt;
+                        &lt;/div&gt;
+                    &lt;/form&gt;
+                &lt;/div&gt;
+                &lt;div class="modal-footer"&gt;
+                    &lt;button class="btn btn-info" data-dismiss="modal"&gt;Save&lt;/button&gt;
+                    &lt;button class="btn btn-default" data-dismiss="modal"&gt;Close&lt;/button&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+    &lt;/div&gt;
+*/</span>
+
+    $(<span class="hljs-string">'#modal_1'</span>).on(<span class="hljs-string">'show.bs.modal'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(event)</span>{</span>
+        <span class="hljs-keyword">var</span> btn = $(event.relatedTarget);
+        <span class="hljs-keyword">var</span> recipient = btn.data(<span class="hljs-string">'whatever'</span>);
+        <span class="hljs-keyword">var</span> modal = $(<span class="hljs-keyword">this</span>);
+        modal.find(<span class="hljs-string">'.modal-title'</span>).text(<span class="hljs-string">'New Message to'</span>+ recipient);
+        modal.find(<span class="hljs-string">'.modal-body input'</span>).val(recipient);
+    });
+
+    $(<span class="hljs-string">'#modal_1'</span>).modal({
+        backdrop: <span class="hljs-literal">false</span>
+    })
+
+
+<span class="hljs-number">024.</span>关闭 data-api
+    $(document).off(<span class="hljs-string">'.data-api'</span>);
+    $(document).off(<span class="hljs-string">'.dropdown.data-api'</span>);
+
+    <span class="hljs-comment">// 过渡结束事件</span>
+    document.getElementById(<span class="hljs-string">'test'</span>).addEventListener(<span class="hljs-string">'transitioned'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span>{</span>..});
+
+
+<span class="hljs-number">025.</span>滚动监听
+<span class="hljs-comment">/*
+    &lt;body data-spy="scroll" data-target=".navbar" data-offset="70"&gt;
+
+        &lt;div class="container"&gt;
+            &lt;nav class="navbar navbar-default navbar-fixed-top" role="navigation"&gt;
+                &lt;div class="container-fluid"&gt;
+                    &lt;div class="collapse navbar-collapse js-navbar-scrollspy" id="test"&gt;
+                        &lt;ul class="nav navbar-nav"&gt;
+                            &lt;li&gt;&lt;a href="#a1"&gt;1&lt;/a&gt;&lt;/li&gt;
+                            &lt;li&gt;&lt;a href="#a2"&gt;2&lt;/a&gt;&lt;/li&gt;
+                            &lt;li&gt;&lt;a href="#a3"&gt;3&lt;/a&gt;&lt;/li&gt;
+                        &lt;/ul&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/nav&gt;
+
+            &lt;h2 id="a1"&gt;a1&lt;/h2&gt;
+                &lt;p&gt;a&lt;/p&gt;&lt;p&gt;a&lt;/p&gt;&lt;p&gt;a&lt;/p&gt;&lt;p&gt;a&lt;/p&gt;&lt;p&gt;a&lt;/p&gt;
+            &lt;h2 id="a2"&gt;a2&lt;/h2&gt;
+                &lt;p&gt;a&lt;/p&gt;&lt;p&gt;a&lt;/p&gt;&lt;p&gt;a&lt;/p&gt;&lt;p&gt;a&lt;/p&gt;&lt;p&gt;a&lt;/p&gt;
+            &lt;h2 id="a3"&gt;a3&lt;/h2&gt;
+                &lt;p&gt;a&lt;/p&gt;&lt;p&gt;a&lt;/p&gt;&lt;p&gt;a&lt;/p&gt;&lt;p&gt;a&lt;/p&gt;&lt;p&gt;a&lt;/p&gt;
+        &lt;/div&gt;
+
+    &lt;/body&gt;
+*/</span>
+
+
+<span class="hljs-number">026.</span>tooltip
+<span class="hljs-comment">/*
+    &lt;p class="muted"&gt;
+        &lt;a href="#" id="test" data-toggle="tooltip" title="personal website" data-placement="bottom" data-origin-title="haha"&gt;
+            Jisuowei.com
+        &lt;/a&gt;
+    &lt;/p&gt;
+*/</span>
+
+    <span class="hljs-comment">// $('#test').tooltip('show');</span>
+    $(<span class="hljs-string">'[data-toggle="tooltip"]'</span>).tooltip();
+
+
+<span class="hljs-number">027.</span>弹出框
+<span class="hljs-comment">/*
+    &lt;a href="#" class="btn btn-default js-popover" data-trigger="focus" data-placement="bottom" title="title" data-content="content"&gt;click&lt;/a&gt;
+*/</span>
+
+    $(<span class="hljs-string">'.js-popover'</span>).popover();
+
+
+<span class="hljs-number">028.</span>collapse
+<span class="hljs-comment">/*
+    &lt;a  class="btn btn-default" data-toggle="collapse" href="#test"&gt;Click&lt;/a&gt;
+    &lt;div class="collapse" id="test"&gt;
+        &lt;div class="well"&gt;ha&lt;/div&gt;
+    &lt;/div&gt;
+*/</span>
+
+
+<span class="hljs-number">029.</span>carousel
+<span class="hljs-comment">/*
+    &lt;div class="container"&gt;
+
+        &lt;div class="carousel slide" id="testCarousel"&gt;
+            &lt;ol class="carousel-indicators"&gt;
+                &lt;li data-target="#testCarousel" data-slide-to="0" class="active" &gt;&lt;/li&gt;
+                &lt;li data-target="#testCarousel" data-slide-to="1"  &gt;&lt;/li&gt;
+                &lt;li data-target="#testCarousel" data-slide-to="2"  &gt;&lt;/li&gt;
+            &lt;/ol&gt;
+            &lt;div class="carousel-inner"&gt;
+                &lt;div class="item active"&gt;
+                    &lt;img src="a.jpg"&gt;
+                    &lt;div class="carousel-caption"&gt;
+                        &lt;h3&gt;Chisw&lt;/h3&gt;
+                        &lt;p&gt;Jisuowei&lt;/p&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div class="item "&gt;
+                    &lt;img src="a.jpg"&gt;
+                &lt;/div&gt;
+                &lt;div class="item "&gt;
+                    &lt;img src="a.jpg"&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;a href="#testCarousel" class="left carousel-control" data-slide="prev"&gt;&lt;&lt;/a&gt;
+            &lt;a href="#testCarousel" class="right carousel-control" data-slide="next"&gt;&gt;&lt;/a&gt;
+        &lt;/div&gt;
+
+    &lt;/div&gt;
+*/</span>
+
+
+<span class="hljs-number">030.</span>affix
+<span class="hljs-comment">/*
+    .affix-element-top.affix {
+        top:50px;
+    }
+    .affix-element-top.affix-bottom {
+        position: relative;
+    }
+    .affix-element-bottom.affix {
+        bottom:20px;
+    }
+    .affix-element-bottom.affix-bottom {
+        position: relative;
+    }
+
+    &lt;div class="container" id="test"&gt;
+
+        &lt;div class="col-md-3"&gt;
+            &lt;ul class="list-group affix-element-top js-affix-element-top"&gt;
+                &lt;li class="list-group-item"&gt;jisuowei&lt;/li&gt;
+                &lt;li class="list-group-item"&gt;jisuowei&lt;/li&gt;
+                &lt;li class="list-group-item"&gt;jisuowei&lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/div&gt;
+
+        &lt;div class="col-md-6 js-content"&gt;
+            awefewg&lt;br&gt;awefewg&lt;br&gt;awefewg&lt;br&gt;
+            awefewg&lt;br&gt;awefewg&lt;br&gt;awefewg&lt;br&gt;
+            awefewg&lt;br&gt;awefewg&lt;br&gt;awefewg&lt;br&gt;
+            awefewg&lt;br&gt;awefewg&lt;br&gt;awefewg&lt;br&gt;
+            awefewg&lt;br&gt;awefewg&lt;br&gt;awefewg&lt;br&gt;
+        &lt;/div&gt;
+        &lt;div class="col-md-3"&gt;
+            &lt;ul class="list-group affix-element-bottom js-affix-element-bottom"&gt;
+                &lt;li class="list-group-item"&gt;jisuowei&lt;/li&gt;
+                &lt;li class="list-group-item"&gt;jisuowei&lt;/li&gt;
+                &lt;li class="list-group-item"&gt;jisuowei&lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+*/</span>
+
+    $(<span class="hljs-string">'.js-affix-element-top'</span>).affix({
+        offset: {
+            top:<span class="hljs-number">100</span>
+        }
+    });
+
+    $(<span class="hljs-string">'.js-affix-element-bottom'</span>).affix({
+        offset: {
+            bottom: <span class="hljs-number">200</span>
+        }
+    });
+
+</code></pre>

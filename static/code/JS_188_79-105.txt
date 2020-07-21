@@ -1,0 +1,1945 @@
+<pre><code class="js hljs ">
+<span class="hljs-comment">/*
+
+    JavaScript 编写高质量代码：改善JavaScript程序的188个建议 【成林】
+
+    2016-11-28
+    ~
+    2017-02-21 Noted by Chisw
+
+*/</span>
+
+
+<span class="hljs-number">079.</span>参照<span class="hljs-built_in">Object</span>构造体系分析prototype机制
+<span class="hljs-number">080.</span>合理使用原型
+<span class="hljs-number">081.</span>原型域链不是作用域链
+<span class="hljs-number">082.</span>不要直接检索对象的属性值
+<span class="hljs-number">083.</span>使用原型委托
+<span class="hljs-number">084.</span>防止原型反射
+<span class="hljs-number">085.</span>谨慎处理对象的 scope
+<span class="hljs-number">086.</span>使用面向对象模拟继承
+<span class="hljs-number">087.</span>分辨<span class="hljs-keyword">this</span>和<span class="hljs-function"><span class="hljs-keyword">function</span>调用关系
+088.<span class="hljs-title">this</span>是动态指针不是静态引用
+089.正确应用<span class="hljs-title">this</span>
+090.预防<span class="hljs-title">this</span>误用的策略
+091.推荐使用构造函数原型模式定义类
+092.不建议使用原型继承
+093.推荐使用类继承
+094.建议使用封装类继承
+095.慎重使用实例继承
+096.避免使用复制继承
+097.推荐使用混合继承
+098.比较使用 <span class="hljs-title">JS</span> 多态、重载和覆盖
+099.建议主动封装类
+100.谨慎使用类的静态成员
+101.比较类的构造和析构特性
+102.使用享元类
+103.使用掺元类
+104.谨慎使用伪类
+105.比较单例的两种模式
+
+
+// 2016-11-28
+
+// 在面向对象语言中，类是面向对象的基础，有着明显的层次概念和继承关系
+// 每个类都有一个超类，从中继承属性和方法，类还可以被扩展
+// 这就构建了一个多层、复杂的对象继承关系
+// <span class="hljs-title">JS</span> 是基于对象的弱类型语言，以对象为基础、函数为模型、原型为继承机制的开发模式
+
+// 继承是代码重用的一种形式，可以显著较少开发成本
+// 继承包括了一套类型系统规范，无需编写显式类型转换的代码
+
+079.参照<span class="hljs-title">Object</span>构造体系分析<span class="hljs-title">prototype</span>机制
+// 原型是 <span class="hljs-title">JS</span> 核心特性之一，通过<span class="hljs-title">prototype</span>属性 表现出来
+// <span class="hljs-title">JS</span> 中，对象（<span class="hljs-title">Object</span>）是没有原型的，只有构造函数有，
+// 而构造类的实例对象都能通过 <span class="hljs-title">prototypes</span>属性 访问原型对象
+
+// <span class="hljs-title">prototype</span> 不仅是 <span class="hljs-title">JS</span> 实现、管理继承的一种机制，更是一种 <span class="hljs-title">OO</span> 的设计思想
+// 语义上， <span class="hljs-title">prototype</span> 表示原型，就是构造类拥有的原始成员
+// 构造函数的 <span class="hljs-title">prototype</span>属性 存储着一个引用对象的指针，指向一个原型对象，
+// 一个特殊的对象，相当于一个数据集合，存储着构造函数的原始属性和方法
+
+// 借助 <span class="hljs-title">prototype</span>属性 可以访问原型对象内部成员，
+// 如果在原型对象中声明一个成员，则所有实例对象都可以共享它
+
+// 原型具有普通对象的结构，可以将任何普通对象实例设置为原型对象，
+// 在默认状态下原型对象继承于 <span class="hljs-title">Object</span> 抽象类，由 <span class="hljs-title">JS</span> 原生并依附与每个构造函数器上，
+// 从而实现构造类的原型属性和原型方法能够被所有实例对象继承
+
+// 在 <span class="hljs-title">JS</span> 中，对象应该是类（<span class="hljs-title">class</span>）和实例（<span class="hljs-title">instance</span>）的关系演化
+// 类是对象的模型化，实例则是对象的具体化
+// 类包含很多概念和类型，如 元类、超类、泛类和类型
+    
+    <span class="hljs-title">function</span> <span class="hljs-title">Class</span><span class="hljs-params">(type)</span> {</span>  <span class="hljs-comment">// 构造函数</span>
+        <span class="hljs-keyword">this</span>.type = type;
+    }
+    <span class="hljs-keyword">var</span> instance1 = <span class="hljs-keyword">new</span> Class(<span class="hljs-string">'instance1'</span>);  <span class="hljs-comment">// 实例化</span>
+
+    <span class="hljs-comment">// 验证</span>
+    instance1 <span class="hljs-keyword">instanceof</span> Class;  <span class="hljs-comment">// true</span>
+    instance1 <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Object</span>;  <span class="hljs-comment">// true  Class不是唯一类型，Object也是</span>
+    Class <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Object</span>;  <span class="hljs-comment">// true  O比C更加抽象，属于一种继承关系</span>
+
+    instance1 <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Function</span>;  <span class="hljs-comment">// false</span>
+
+    <span class="hljs-comment">// 关系微妙，高度抽象，互为实例</span>
+    <span class="hljs-built_in">Object</span> <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Function</span>;  <span class="hljs-comment">// true</span>
+    <span class="hljs-built_in">Function</span> <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Object</span>;  <span class="hljs-comment">// true</span>
+
+    <span class="hljs-comment">// 不同类型的构造器</span>
+    <span class="hljs-keyword">var</span> f = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Function</span>();
+    <span class="hljs-keyword">var</span> o = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Object</span>();
+    f <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Function</span>;  <span class="hljs-comment">// true</span>
+    f <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Object</span>;    <span class="hljs-comment">// true</span>
+    o <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Function</span>;  <span class="hljs-comment">// false</span>
+    o <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Object</span>;    <span class="hljs-comment">// true</span>
+
+<span class="hljs-comment">// prototype 是属于 Function 的成员，而 p 对象又是 Obejct 的一个实例</span>
+<span class="hljs-comment">// 构造函数通过点语法访问 p，再通过 p 访问原型对象成员</span>
+<span class="hljs-comment">// Object 和 Function 都可以定义原型，Object 被视为 Function 的子类</span>
+
+
+<span class="hljs-comment">// 2017-02-12</span>
+<span class="hljs-number">080.</span>合理使用原型
+<span class="hljs-comment">// 设置默认值</span>
+    <span class="hljs-comment">// 程序中可以根据需要设置原型值，从而影响所有实例对象</span>
+    <span class="hljs-comment">// 如果构造函数定义的 本地属性 会覆盖 同名的 原型属性</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">p</span><span class="hljs-params">(x)</span> {</span>
+        <span class="hljs-keyword">this</span>.x = x;
+    }
+    p.prototype.x = <span class="hljs-number">1</span>;
+    <span class="hljs-keyword">var</span> p1 = <span class="hljs-keyword">new</span> p(<span class="hljs-number">10</span>);
+    p1.x  <span class="hljs-comment">// 10</span>
+
+    <span class="hljs-comment">// 使用 delete 运算符删除本地属性后，原型属性依然会显示出来</span>
+    <span class="hljs-comment">// 二者同时存在时会出现交流现象，利用此现象为对象初始化默认值                           </span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">p</span><span class="hljs-params">(x)</span> {</span>
+        <span class="hljs-keyword">if</span>(x) {
+            <span class="hljs-keyword">this</span>.x = x;
+        }
+    }
+    p.prototype.x = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">var</span> p1 = <span class="hljs-keyword">new</span> p();
+    <span class="hljs-keyword">var</span> p2 = <span class="hljs-keyword">new</span> p(<span class="hljs-number">1</span>);
+    p1.x  <span class="hljs-comment">// 0</span>
+    p2.x  <span class="hljs-comment">// 1</span>
+
+<span class="hljs-comment">// 实现数据备份</span>
+    <span class="hljs-comment">// 把 本地对象 的数据完全赋值给 原型对象 相当于给对象定义了一个副本</span>
+    <span class="hljs-comment">// 当对象属性被修改时，可以通过原型对象来恢复本地对象的初始值</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">p</span><span class="hljs-params">(x)</span> {</span>
+        <span class="hljs-keyword">this</span>.x = x;
+    }
+    p.prototype.backup = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span>) {
+            p.prototype[i] = <span class="hljs-keyword">this</span>[i];
+        }
+    }
+    <span class="hljs-keyword">var</span> p1 = <span class="hljs-keyword">new</span> p(<span class="hljs-number">1</span>);
+    p1.backup();
+    p1.x = <span class="hljs-number">10</span>;
+    p1.x  <span class="hljs-comment">// 10</span>
+    p1 = p.prototype;
+    p1.x  <span class="hljs-comment">// 1</span>
+
+<span class="hljs-comment">// 设置只读属性</span>
+    <span class="hljs-comment">// 利用原型实现“只读”特性，避免对象内部数据被任意篡改</span>
+    <span class="hljs-comment">// “只读”只是表象，并非禁止修改对象属性，而是借助闭包体存储属性值</span>
+
+    <span class="hljs-comment">// 示例：计算两点间距离</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">p</span><span class="hljs-params">(x,y)</span> {</span>
+        <span class="hljs-keyword">if</span>(x) <span class="hljs-keyword">this</span>.x = x;
+        <span class="hljs-keyword">if</span>(y) <span class="hljs-keyword">this</span>.y = y;
+        p.prototype.x = <span class="hljs-number">0</span>;
+        p.prototype.y = <span class="hljs-number">0</span>;
+    }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">l</span><span class="hljs-params">(a,b)</span> {</span>
+        <span class="hljs-keyword">var</span> a = a;
+        <span class="hljs-keyword">var</span> b = b;
+        <span class="hljs-keyword">var</span> w = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span><span class="hljs-keyword">return</span> <span class="hljs-built_in">Math</span>.abs(a.x - b.x);}
+        <span class="hljs-keyword">var</span> h = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span><span class="hljs-keyword">return</span> <span class="hljs-built_in">Math</span>.abs(a.y - b.y);}
+        <span class="hljs-keyword">this</span>.length = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span><span class="hljs-keyword">return</span> <span class="hljs-built_in">Math</span>.sqrt(w()*w() + h()*h())};
+        <span class="hljs-keyword">this</span>.b = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span><span class="hljs-keyword">return</span> a;}  <span class="hljs-comment">// begin</span>
+        <span class="hljs-keyword">this</span>.e = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span><span class="hljs-keyword">return</span> b;}  <span class="hljs-comment">// end</span>
+    }
+    <span class="hljs-keyword">var</span> p1 = <span class="hljs-keyword">new</span> p(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>);
+    <span class="hljs-keyword">var</span> p2 = <span class="hljs-keyword">new</span> p(<span class="hljs-number">10</span>,<span class="hljs-number">20</span>);
+    <span class="hljs-keyword">var</span> l1 = <span class="hljs-keyword">new</span> l(p1,p2);
+    l1.length()  <span class="hljs-comment">// 20.1246..</span>
+    l1.b().x = <span class="hljs-number">50</span>;
+    l1.length()  <span class="hljs-comment">// 43.8634.. 说明产生了改动影响</span>
+
+    <span class="hljs-comment">// 在 b() 和 e() 中新建一个临时的构造类，设置原型为 a，实例化构造类并返回</span>
+    <span class="hljs-comment">// 这样就阻断了方法 b() 与私有变量 a 的直接联系，仅是值的传递，而非对象的引用</span>
+    <span class="hljs-keyword">this</span>.b = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">temp</span><span class="hljs-params">()</span>{</span>};  <span class="hljs-comment">// 临时构造类</span>
+        temp.prototype = a;  <span class="hljs-comment">// 把私有对象传递给临时构造类的原型对象</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> temp();  <span class="hljs-comment">// 实例化后的对象，阻断直接返回给 a 所出现的引用关系</span>
+    }
+    <span class="hljs-comment">// this.e 同</span>
+
+    <span class="hljs-comment">// 另，在为私有变量 w，h 赋值时，不向函数赋值，而是函数调用表达式</span>
+    <span class="hljs-comment">// 如此 w，h 存储的是值类型数据，而非对函数结构的引用</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">l</span><span class="hljs-params">(a,b)</span> {</span>
+        <span class="hljs-keyword">var</span> a = a;
+        <span class="hljs-keyword">var</span> b = b;
+        <span class="hljs-keyword">var</span> w = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span> <span class="hljs-keyword">return</span> <span class="hljs-built_in">Math</span>.abs(a.x - b.x); }();
+        <span class="hljs-keyword">var</span> h = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span> <span class="hljs-keyword">return</span> <span class="hljs-built_in">Math</span>.abs(a.y - b.y); }();
+        <span class="hljs-keyword">this</span>.length = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span><span class="hljs-keyword">return</span> <span class="hljs-built_in">Math</span>.sqrt(w()*w() + h()*h())};
+        <span class="hljs-keyword">this</span>.b = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span><span class="hljs-keyword">return</span> a;}
+        <span class="hljs-keyword">this</span>.e = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span><span class="hljs-keyword">return</span> b;}    
+    }
+
+<span class="hljs-comment">// 进行批量复制</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">(x)</span> {</span> <span class="hljs-keyword">this</span>.x = x; }
+    <span class="hljs-keyword">var</span> a = [];
+
+    <span class="hljs-comment">// 批量复制同一个实例，后期修改每个实例对象十分麻烦</span>
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;<span class="hljs-number">100</span>; i++) {
+        a[i] = <span class="hljs-keyword">new</span> f(<span class="hljs-number">10</span>);
+    }
+
+    <span class="hljs-comment">// 使用原型来批量复制，将构造类f的实例存储在临时构造类的原型对象中</span>
+    <span class="hljs-comment">// 然后通过临时构造类 temp 实例来传递复制的值</span>
+    <span class="hljs-comment">// 只需修改 类 f 的原型即可修改数组的值</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">temp</span><span class="hljs-params">()</span> {</span>};
+    temp.prototype = <span class="hljs-keyword">new</span> f(<span class="hljs-number">10</span>);
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;<span class="hljs-number">100</span>; i++) {
+        a[i] = <span class="hljs-keyword">new</span> temp();
+    }
+
+
+<span class="hljs-number">081.</span>原型域链不是作用域链
+<span class="hljs-comment">// prototype 是一种模拟面向对象的机制，通过原型实现类与实例之间的继承关系进行管理</span>
+<span class="hljs-comment">// prototype 机制 模拟 继承机制 是一种原型继承，是 JS 核心功能之一</span>
+<span class="hljs-comment">// prototype 真正的价值在于能够以对象结构为载体创建大量实例，这些实例能在构造类下实现共享</span>
+<span class="hljs-comment">// prototype 原型域可以允许原型属性引用任何类型的对象</span>
+<span class="hljs-comment">// 如果在原型域中没有找到指定属性，JS将会根据引用关系继续向外查找所指对象的 prototype 原型域</span>
+<span class="hljs-comment">// 直至找到 或出现循环为止</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">a</span><span class="hljs-params">(x)</span> {</span><span class="hljs-keyword">this</span>.x = x;}
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">b</span><span class="hljs-params">(x)</span> {</span><span class="hljs-keyword">this</span>.x = x;}
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">c</span><span class="hljs-params">(x)</span> {</span><span class="hljs-keyword">this</span>.x = x;}
+    a.prototype.x = <span class="hljs-number">0</span>;
+    b.prototype = <span class="hljs-keyword">new</span> a(<span class="hljs-number">1</span>);
+    c.prototype = <span class="hljs-keyword">new</span> b(<span class="hljs-number">2</span>);
+    <span class="hljs-keyword">var</span> d = <span class="hljs-keyword">new</span> c(<span class="hljs-number">3</span>);
+    d.x  <span class="hljs-comment">// 3</span>
+    <span class="hljs-keyword">delete</span> d.x;
+    d.x  <span class="hljs-comment">// 2</span>
+    <span class="hljs-keyword">delete</span> c.prototype.x;
+    d.x  <span class="hljs-comment">// 1</span>
+    <span class="hljs-keyword">delete</span> b.prototype.x;
+    d.x  <span class="hljs-comment">// 0</span>
+    <span class="hljs-keyword">delete</span> a.prototype.x;
+    d.x  <span class="hljs-comment">// undefined</span>
+
+    <span class="hljs-comment">// 原型链让我们认识 JS 面向对象的继承关系，每个实例都可以访问它的构造器的原型</span>
+    <span class="hljs-comment">// 这种层层指向父原型的关系成为原型链（prototype chain）</span>
+
+    <span class="hljs-comment">// 在 JS 中一切都是对象，函数是第一型，Function 和 Object 都是函数的实例</span>
+    <span class="hljs-comment">// 构造函数的父原指向 Function.prototype</span>
+    <span class="hljs-comment">// Function.prototype 相互指向 Object.prototype</span>
+    <span class="hljs-comment">// Object.prototype 是所有父原的顶层</span>
+
+    <span class="hljs-comment">// 原型的引用关系副作用：改变某个原型上的引用类型的属性值，会影响该原型作用的所有实例对象</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">a</span><span class="hljs-params">()</span> {</span><span class="hljs-keyword">this</span>.x = [];}
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">b</span><span class="hljs-params">()</span>{</span>}
+    b.prototype = <span class="hljs-keyword">new</span> a();
+    <span class="hljs-keyword">var</span> f1 = <span class="hljs-keyword">new</span> b();
+    <span class="hljs-keyword">var</span> f2 = <span class="hljs-keyword">new</span> b();
+    f1.x.push(<span class="hljs-number">1</span>);
+    alert(f2.x);  <span class="hljs-comment">// 1</span>
+
+
+<span class="hljs-number">082.</span>不要直接检索对象的属性值
+<span class="hljs-comment">// 两种方式检索对象包含值，不存在则返回 undefined</span>
+    <span class="hljs-comment">// 属性名为任意字符，或无法确定属性名 使用 [] 中带字符串</span>
+    obj[<span class="hljs-string">'name'</span>]
+
+    <span class="hljs-comment">// 属性名为常数，且是合法 JS 标识符而非保留字，则用点代替，紧凑且可读性好</span>
+    obj.obj_1
+
+<span class="hljs-comment">// 使用“||”设置默认值</span>
+    <span class="hljs-keyword">var</span> name = jisuowei[<span class="hljs-string">'name'</span>] || <span class="hljs-string">'jisuowei'</span>;
+
+<span class="hljs-comment">// JS 在检索一个 undefined 值时会导致 TypeError 异常，所以不要直接检索，使用 &amp;&amp;</span>
+    jisuowei.name &amp;&amp; jisuowei.name.firstName
+
+
+<span class="hljs-number">083.</span>使用原型委托
+<span class="hljs-comment">// 所有对象都连接到一个原型对象，并可从中继承属性</span>
+<span class="hljs-comment">// 通过字面量创建的对象都可以连接到 Object.prototype 这个基本原型对象</span>
+    <span class="hljs-keyword">var</span> obj = {};
+    <span class="hljs-built_in">Object</span>.prototype.name = <span class="hljs-string">'prototype'</span>;
+    obj.name  <span class="hljs-comment">// 'prototype'</span>
+
+<span class="hljs-comment">// 当然也可以选择某个对象作为一个新对象的原型</span>
+<span class="hljs-comment">// JS 提供的机制比较繁琐，设计一个中间件：创建一个使用参数对象作为其原型的新对象</span>
+    <span class="hljs-keyword">if</span>( <span class="hljs-keyword">typeof</span> <span class="hljs-built_in">Object</span>.create !== <span class="hljs-string">'function'</span> ) {
+        <span class="hljs-built_in">Object</span>.create = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(o)</span> {</span>
+            <span class="hljs-keyword">var</span> F = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>};
+            F.prototype = o;
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> F();
+        }
+    }
+
+    <span class="hljs-keyword">var</span> obj1 = {
+        name: <span class="hljs-string">'jisuowei'</span>
+    }
+    <span class="hljs-keyword">var</span> obj2 = <span class="hljs-built_in">Object</span>.create(obj1);
+    obj2.name  <span class="hljs-comment">// 'jisuowei'</span>
+
+<span class="hljs-comment">// 原型链只有检索时才会用到；获取对象某个没有的属性，JS 会试着从原型对象中再次获取，</span>
+<span class="hljs-comment">// 如果还没有，再往原型的原型获取，直到 Object.prototype 还没有，就返回 undefined</span>
+<span class="hljs-comment">// 这个检索的过程就叫：原型委托</span>
+
+<span class="hljs-comment">// 原型关系是一种动态的关系：添加一个新的属性到原型中，会立即被所有基于该原型创建的对象继承</span>
+
+
+<span class="hljs-number">084.</span>防止原型反射
+<span class="hljs-comment">// 检查并确定对象有什么属性，使用 typeof 操作符</span>
+    <span class="hljs-keyword">typeof</span> obj.name  <span class="hljs-comment">// 'string' || 'undefined'</span>
+
+<span class="hljs-comment">// 但是根据原型继承的关系，原型链中所有的属性也会产生反射：原型反射</span>
+
+<span class="hljs-comment">// 两种方法来处理这些不需要的属性</span>
+    <span class="hljs-comment">// 编写时进行检查并剔除函数值</span>
+        <span class="hljs-comment">// 一般来说，对象反射的目标是读取对象包含的数据，当对象成员值为函数时，一般不是需要的</span>
+
+    <span class="hljs-comment">// 使用 hasOwnProperty 方法</span>
+        <span class="hljs-comment">// 如果对象拥有独有的属性，此方法将返回 true，且不会检查原型链</span>
+
+<span class="hljs-comment">// 快速枚举对象的所有属性：使用 for in 语句</span>
+    <span class="hljs-comment">// 该语句会遍历对象中所有属性名，枚举过程将会列出所有的属性，包括方法和原型属性</span>
+
+    <span class="hljs-keyword">var</span> name;
+    <span class="hljs-keyword">for</span>(name <span class="hljs-keyword">in</span> obj) {
+        <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> obj[name] !== <span class="hljs-string">'function'</span> ) {
+            document.writeln(name + <span class="hljs-string">': '</span> + obj[name]);
+        }
+    }
+
+<span class="hljs-comment">// 使用 for in 枚举对象时，由于属性名出现的顺序不确定，因此要对任何可能出现的顺序有所准备</span>
+<span class="hljs-comment">// 要确保 属性以特定的顺序出现，最好的办法就是避免使用 for in 语句</span>
+<span class="hljs-comment">// 创建一个数组，在其中以正确的顺序包含属性名</span>
+    <span class="hljs-keyword">var</span> i;
+    <span class="hljs-keyword">var</span> properties = [<span class="hljs-string">'one'</span>, <span class="hljs-string">'two'</span>, <span class="hljs-string">'three'</span>, <span class="hljs-string">'four'</span>];
+    <span class="hljs-keyword">for</span>( i=<span class="hljs-number">0</span>; i&lt;properties.length; i+= <span class="hljs-number">1</span>) {
+        document.writeln(properties[i] + <span class="hljs-string">': '</span> + obj[properties[i]]);
+    }
+
+    <span class="hljs-comment">// 使用 for 可以枚举需要的属性，而不用担心可能反射到原型链中的属性，且可以保证顺序</span>
+
+
+<span class="hljs-comment">// 2017-02-13</span>
+<span class="hljs-number">085.</span>谨慎处理对象的 scope
+<span class="hljs-comment">// JS 中包装继承了大量对象，对象之间还有复杂的引用关系，使得调用很多 function 时 scope 超出预期</span>
+<span class="hljs-comment">// function 是作用于词法范围（声明范围） 而非动态运行范围（执行范围）</span>
+
+<span class="hljs-comment">// function 只有在被 JS 引擎调用时，其 scope 才会起作用，并被加到 Scope 链中</span>
+<span class="hljs-comment">// 然后将一个名为 Call Object 的调用（运行）对象加到 Scope 的最前面</span>
+<span class="hljs-comment">// 这个调用对象初始化时会加入一个 argu    ments 属性，用来引用 function 调用时的参数</span>
+<span class="hljs-comment">// 如果 func 显式的定义了调用参数，那么这些参数也会被加入到这个对象中</span>
+<span class="hljs-comment">// 这就是为什么 func 体内部既可以通过 args 数组 又可以直接通过显式定义参数名来引用调用时传入参数</span>
+
+<span class="hljs-comment">// 调用的对象：是在 func 运行时的 scope，其中包含了 func 在运行时的全部参数和局部变量</span>
+<span class="hljs-comment">// this 引用的对象：是当 func 作为一个对象的方法运行时对这个对象进行引用</span>
+    <span class="hljs-keyword">var</span> hello = <span class="hljs-string">'Jisuowei'</span>;
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sayHello</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> hello = <span class="hljs-string">'Chisw'</span>;
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">anotherFun</span><span class="hljs-params">()</span> {</span>
+            alert(hello);
+        }
+        anotherFun();
+    }
+    sayHello();  <span class="hljs-comment">// Chisw</span>
+
+<span class="hljs-comment">// 在 JS 中，允许定义匿名 func 和 在 func 中嵌套定义另一个 func</span>
+<span class="hljs-comment">// 由于 Scope 的作用，func 内部总是可以访问外部变量，外部却不能访问内部变量</span>
+<span class="hljs-comment">// 另，由于 Call Object 机制，可以用 func 嵌套做 闭包（Closure）:</span>
+
+<span class="hljs-comment">// 生成唯一ID</span>
+    uniqueID = (<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> id = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> id++;
+        }
+    })();
+    uniqueID();  <span class="hljs-comment">// 0</span>
+    uniqueID();  <span class="hljs-comment">// 1</span>
+    uniqueID();  <span class="hljs-comment">// 2</span>
+
+<span class="hljs-comment">// 保存数据</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">makefunc</span><span class="hljs-params">(x)</span> {</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> x;
+        }
+    }
+    <span class="hljs-keyword">var</span> a = [makefunc(<span class="hljs-string">'Chisw'</span>), makefunc(<span class="hljs-string">'Chiue'</span>), makefunc(<span class="hljs-string">'Chien'</span>)];
+    a[<span class="hljs-number">0</span>]();  <span class="hljs-comment">// 'Chisw'</span>
+
+<span class="hljs-comment">// eval 相关：执行效率低，避免使用</span>
+    <span class="hljs-comment">// 允许动态生成变量、表达式、函数调用、语句段得到执行</span>
+    <span class="hljs-comment">// 通过 AJAX 获得 JSON 脚本字符串，使用 eval 转化为 JSON 对象</span>
+
+    <span class="hljs-comment">// 一对括号可以迫使 eval 方法在评估 JS 代码时强制将原最外层括号内的内容作为表达式来执行</span>
+    <span class="hljs-comment">// 只有用新的小括号括起来才能转换出 JSON 对象执行，而非作为语句执行</span>
+        JSONObj = <span class="hljs-built_in">eval</span>(<span class="hljs-string">'('</span>+ JSONStr +<span class="hljs-string">')'</span>);
+
+    <span class="hljs-comment">// 使用 window.eval 变为全局</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">test</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-built_in">eval</span>(<span class="hljs-string">'var m = 1'</span>);
+            alert(m);
+        }
+        test();  <span class="hljs-comment">// 1</span>
+        alert(<span class="hljs-keyword">typeof</span> m);  <span class="hljs-comment">// undefined</span>
+
+<span class="hljs-comment">// 巧用闭包：利用内层访问外层特点，将外层 this 实例赋给一个变量，内层通过变量访问外层 this 实例</span>
+    switchAds: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(index)</span> {</span>
+        <span class="hljs-keyword">var</span> _this = <span class="hljs-keyword">this</span>;
+        dojo.fadeOut({
+            node: _this.adBack,
+            duration: <span class="hljs-number">500</span>,
+            onEnd: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                dojo.fadeIn({
+                    node: _this.adBack,
+                    duration: <span class="hljs-number">500</span>,
+                    onEnd: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                        _this.currentAd = index;
+                    }
+                }).play();
+            }
+        }).play();
+    }
+
+<span class="hljs-comment">// 使用 call 和 apply 指定 func 调用时的 scope：dojo 事件机制</span>
+    dojo.connect(node, <span class="hljs-string">'onclick'</span>, <span class="hljs-keyword">this</span>, <span class="hljs-keyword">this</span>._collapse);
+
+
+<span class="hljs-comment">// 2017-02-15</span>
+<span class="hljs-number">086.</span>使用面向对象模拟继承
+<span class="hljs-comment">// JS 是一种弱类型解释运行的脚本语言，就语言本身并不是面向对象的</span>
+<span class="hljs-comment">// 但利用一些语言特性来模拟面向对象编程和继承机制</span>
+
+<span class="hljs-comment">// func 不仅是一种语法结构，还可以作为一种数据（可以被赋值给变量）</span>
+<span class="hljs-comment">// 在对象或数组中作为元素的属性存储，或者作为函数参数传递</span>
+
+<span class="hljs-comment">// 在 obj 中定义和调用的一个 func 被称作该 obj 的一个方法</span>
+<span class="hljs-comment">// 当该 func 被调用时，obj 会以 隐含参数 的形式传入到 func 中</span>
+<span class="hljs-comment">// func 内部可以通过 this 来引用这个 obj 属性</span>
+    <span class="hljs-keyword">var</span> calculator = {
+        operand1: <span class="hljs-number">1</span>,
+        operand2: <span class="hljs-number">2</span>,
+        compute: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">this</span>.result = <span class="hljs-keyword">this</span>.operand1 + <span class="hljs-keyword">this</span>.operand2;
+        }
+    }
+    calculator.compute();
+    calculator.result;  <span class="hljs-comment">// 3</span>
+
+<span class="hljs-comment">// JS 中对象的创建通常是通过 new 运算符来完成，new 关键字后面必须是一个可执行的 func</span>
+<span class="hljs-comment">// 首先会创建一个空的对象赋给前面的变量，然后调用紧跟的 func</span>
+<span class="hljs-comment">// 并将这个空对象作为隐含参数传入到 func 内部，就可以通过 this 引用该对象做初始化工作</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Rectangle</span><span class="hljs-params">(w, h)</span> {</span>
+        <span class="hljs-keyword">this</span>.width = w;
+        <span class="hljs-keyword">this</span>.height = h;
+        <span class="hljs-keyword">this</span>.area = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.width * <span class="hljs-keyword">this</span>.height;
+        }
+    }
+    <span class="hljs-keyword">var</span> rect1 = <span class="hljs-keyword">new</span> Rectangle(<span class="hljs-number">2</span>, <span class="hljs-number">4</span>);
+    rect1.area();  <span class="hljs-comment">// 8</span>
+
+<span class="hljs-comment">// 抽象和继承</span>
+    <span class="hljs-comment">// JS 中每一个 obj 都有一个 prototype 属性引用了另一个 obj 对象</span>
+    <span class="hljs-comment">// 当读取一个 obj 的某个属性时，JS 引擎先查找该 obj 是否拥有该属性</span>
+    <span class="hljs-comment">// 有则返回，无则前往 prototype 中查找</span>
+
+    <span class="hljs-comment">// 一是在每个类中可以抽象出共有的属性和方法定义在 prototype 中，减少内存占用量</span>
+    <span class="hljs-comment">// 二是新创建的对象的属性是在创建对象时由 prototype 对象带来的，实现了属性和方法的继承</span>
+
+    <span class="hljs-comment">// new 除了在创建一个空对象赋给变量并调用构造函数后，还会为这个对象设置 prototype 属性</span>
+    <span class="hljs-comment">// 这个属性值等于它的构造函数的 prototype 属性值</span>
+
+    <span class="hljs-comment">// 所有的函数在其定义时就已经自动创建和初始化好了 prototype 属性</span>
+    <span class="hljs-comment">// 该 prototype 指向另一个只包含一个 constructor 属性的对象</span>
+    <span class="hljs-comment">// constructor 指向这个 func 自身，所以每个 obj 都有一个 constructor 属性</span>
+        <span class="hljs-keyword">var</span> obj = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Object</span>();
+        obj.constructor;  <span class="hljs-comment">// function Object([native code])</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Rectangle</span><span class="hljs-params">(w, h)</span> {</span>
+        <span class="hljs-keyword">this</span>.width = w;
+        <span class="hljs-keyword">this</span>.height = h;
+    }
+    Rectangle.prototype.area = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.width * <span class="hljs-keyword">this</span>.height;
+    };
+
+
+<span class="hljs-comment">// 2017-02-16</span>
+<span class="hljs-number">087.</span>分辨<span class="hljs-keyword">this</span>和<span class="hljs-function"><span class="hljs-keyword">function</span>调用关系
+// <span class="hljs-title">this</span> 的值取决于被调用的方式
+    // 1.如果 <span class="hljs-title">func</span> 是一个对象的属性，<span class="hljs-title">this</span> 值是这个对象
+    // 2.如果 <span class="hljs-title">func</span> 调用的表达式包含 . 或 []，<span class="hljs-title">this</span> 值是 . 或 [] 之前的对象
+    // 3.如果 <span class="hljs-title">func</span> 不是作为对象的属性，<span class="hljs-title">this</span> 值是全局对象
+    // 4.如果 <span class="hljs-title">func</span> 之前使用了 <span class="hljs-title">new</span>，则会创建一个新对象，<span class="hljs-title">this</span> 值是新创建的那个对象
+    // 5.如果 <span class="hljs-title">func</span> 是通过 <span class="hljs-title">apply</span> 和 <span class="hljs-title">call</span> 来指定被调用时的 <span class="hljs-title">this</span> 值
+    //   那么 <span class="hljs-title">apply</span> 和 <span class="hljs-title">call</span> 的参一都是要指定的 <span class="hljs-title">this</span> 值，不同的是
+    //   <span class="hljs-title">apply</span> 的实参是以数组的形式作为参二传入
+    //   <span class="hljs-title">call</span> 除了参一外都是实参
+
+// <span class="hljs-title">JS</span> 中并没有 <span class="hljs-title">Java</span> 或 <span class="hljs-title">C</span>++ 中类的概念，采用的是构造器的方式来创建对象
+// 在 <span class="hljs-title">new</span> 表达式中使用构造器就可以创建新对象，此对象有一个隐含的引用指向构造器的 <span class="hljs-title">prototype</span>
+
+// 所有的构造器都是对象，但并非所有对象都能成为构造器
+// 能作为构造器的对象必须实现隐含的 <span class="hljs-title">Construct</span> 方法
+// 如果 <span class="hljs-title">new</span> 操作符后面的对象并不是构造器，会抛出 <span class="hljs-title">TypeError</span> 异常
+
+// <span class="hljs-title">new</span> 会影响 <span class="hljs-title">func</span> 调用中 <span class="hljs-title">return</span> 语句的行为，调用有 <span class="hljs-title">new</span> 前缀的 <span class="hljs-title">func</span> 时
+// 如果返回的结果不是一个对象，那新创建的对象将会被返回
+    <span class="hljs-title">function</span> <span class="hljs-title">user</span><span class="hljs-params">(name)</span> {</span>
+        <span class="hljs-keyword">this</span>.name = name;
+    }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">anotherUser</span><span class="hljs-params">(name)</span> {</span>
+        <span class="hljs-keyword">this</span>.name = name;
+        <span class="hljs-keyword">return</span> {
+            <span class="hljs-string">"badName"</span>: name
+        };
+    }
+    <span class="hljs-keyword">var</span> u1 = <span class="hljs-keyword">new</span> User(<span class="hljs-string">'Chisw'</span>);  <span class="hljs-comment">// 引用了新创建的对象</span>
+    <span class="hljs-keyword">var</span> u2 = <span class="hljs-keyword">new</span> anotherUser(<span class="hljs-string">'Jisuowei'</span>);  <span class="hljs-comment">// 引用了 return 返回的对象</span>
+    <span class="hljs-keyword">typeof</span> u1.name;  <span class="hljs-comment">// string</span>
+    <span class="hljs-keyword">typeof</span> u2.name;  <span class="hljs-comment">// undefined</span>
+    <span class="hljs-keyword">typeof</span> u2.badName;  <span class="hljs-comment">// string</span>
+
+
+<span class="hljs-number">088.</span><span class="hljs-keyword">this</span>是动态指针不是静态引用
+<span class="hljs-comment">// this 是一个动态指针，在 JS 中类似指针特性的标识符还有3个</span>
+    <span class="hljs-comment">// callee: 函数的参数集合包含的一个静态指针，始终指向参数集合所属的函数</span>
+    <span class="hljs-comment">// prototype: 函数包含的一个 半静态指针，默认指向函数附带的原型对象，但可以改变</span>
+    <span class="hljs-comment">// constructor: 对象包含的一个指针，始终指向创建该对象的构造函数</span>
+
+<span class="hljs-comment">// JS 中的函数可以在多个地方被引用，且这种引用是在执行时才确定的</span>
+<span class="hljs-comment">// 因此，JS 方法的灵活性决定了 this 指针只能在运行环境中动态确定</span>
+<span class="hljs-comment">// 直到最后被执行时才能确定它所指代的对象</span>
+
+<span class="hljs-comment">// JS 中闭包非常重要，它能改变 this 指向</span>
+    <span class="hljs-keyword">var</span> name = <span class="hljs-string">'this = window'</span>;
+    <span class="hljs-keyword">var</span> o = {
+        name: <span class="hljs-string">'this = o'</span>,
+        f: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+        }
+    };
+    <span class="hljs-keyword">var</span> o1 = {
+        name: <span class="hljs-string">'this = o1'</span>,
+        f: o.f;  <span class="hljs-comment">// 引用对象 o 中的方法 f()</span>
+    }
+    <span class="hljs-keyword">var</span> a = o1.f();
+    a.name  <span class="hljs-comment">// 实际指向 o1</span>
+
+<span class="hljs-comment">// 把 o 的 f() 封装在闭包中再引用</span>
+    <span class="hljs-keyword">var</span> o1 = {
+        name: <span class="hljs-string">'this = o1'</span>,
+        f: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> o.f;
+        }
+    }
+    <span class="hljs-keyword">var</span> a = o1.f()();
+    a.name  <span class="hljs-comment">// this 指向 Window</span>
+
+<span class="hljs-comment">// call 和 apply 能够强制改变函数的作用域，破环函数引用和调用的一般规律</span>
+<span class="hljs-comment">// 使用这个两个方法可以强制的指定 this 指代的对象，异步调用也会破坏 this 指针应用的规律</span>
+<span class="hljs-comment">// 这是因为函数在被传递给定时器或时间处理函数时才被调用，破坏了上下文运行环境</span>
+    <span class="hljs-comment">// 1.指向当前 DOM 对象 input</span>
+        <span class="hljs-comment">/*
+            &lt;input type="button" value="主人是谁" onclick="this.value='我啊';" /&gt;
+        */</span>            
+
+    <span class="hljs-comment">// 2.指向构造函数的实例对象</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">F</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">this</span>.name = <span class="hljs-string">'I am Chisw.'</span>;
+        }
+        <span class="hljs-keyword">var</span> f = <span class="hljs-keyword">new</span> F();
+
+    <span class="hljs-comment">// 3.指向对象直接量</span>
+        <span class="hljs-keyword">var</span> o = {
+            name: <span class="hljs-string">'Jisuowei'</span>,
+            me: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+            }
+        }
+        <span class="hljs-keyword">var</span> who = o.me();
+        who.name  <span class="hljs-comment">// 'Jisuowei'</span>
+
+    <span class="hljs-comment">// 4.指向全局对象</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">this</span>.name = <span class="hljs-string">'Who am i?'</span>;
+        }
+        f();
+        alert(name);  <span class="hljs-comment">// 直接读取 name；该函数等价于 window.f = function(){..}</span>
+
+    <span class="hljs-comment">// 5.指向当前作用域对象</span>
+        <span class="hljs-comment">// 第二个按钮的 this 就代表 Window 对象</span>
+        <span class="hljs-comment">/*
+            &lt;input type="button" value="你好" onclick="this.value='你也好';" /&gt;
+            &lt;input type="button" value="你好" onlick="f();" /&gt;
+        */</span>
+            <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">()</span> {</span> <span class="hljs-keyword">this</span>.value=<span class="hljs-string">'好好好'</span>; }
+
+        <span class="hljs-comment">// 先在脚本中获取第二个按钮对象的引用，再将 f() 作为一个值传递给对象 onclick 属性</span>
+        <span class="hljs-comment">// 此时 this 就表示按钮对象本身</span>
+        <span class="hljs-comment">// 虽然定义作用域没有发生变化，但执行作用域已经从全局作用域变成对象作用域</span>
+        <span class="hljs-comment">/*
+            &lt;input type="button" value="你好" /&gt;
+        */</span>
+            <span class="hljs-keyword">var</span> btn2 = document.getElementsByTagName(<span class="hljs-string">'input'</span>)[<span class="hljs-number">1</span>];
+            btn2.onclick = f;
+            <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">()</span> {</span>
+                <span class="hljs-keyword">this</span>.value = <span class="hljs-string">'我回来了'</span>;
+            }
+
+<span class="hljs-comment">// 作用域对于 this 的影响</span>
+    <span class="hljs-comment">// 如果不是以值的方式传递函数 f() 而是直接调用，则 this 都指向 Window 对象</span>
+    <span class="hljs-comment">// this 执行作用域并没有发生变化，仍然根据定义它的作用域来确定，即全局作用域</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    }
+    <span class="hljs-keyword">var</span> o = {
+        name: <span class="hljs-string">'o'</span>,
+        me: f,
+        o1: {
+            name: <span class="hljs-string">'o1'</span>,
+            me: f,
+            o2: {
+                name: <span class="hljs-string">'o2'</span>,
+                me: f
+            }
+        }
+    }
+    <span class="hljs-keyword">var</span> who1 = o.o1.o2.me();
+    <span class="hljs-keyword">var</span> who2 = o.o1.me();
+    <span class="hljs-keyword">var</span> who3 = o.me();
+    who1.name  <span class="hljs-comment">// o2</span>
+    who2.name  <span class="hljs-comment">// o1</span>
+    who3.name  <span class="hljs-comment">// o</span>
+
+
+<span class="hljs-comment">// 2017-02-21</span>
+<span class="hljs-number">089.</span>正确应用<span class="hljs-keyword">this</span>
+<span class="hljs-comment">// this 总是指向当前作用域对象，如果当前定义对象的作用域没有发生变化，则 this 会指向当前对象</span>
+<span class="hljs-comment">// this 可以存在于任何位置：方法内、全局域内、函数内、特殊上下文中</span>
+
+<span class="hljs-comment">// 1.函数的引用和调用分别表示不同的概念，虽然都无法改变函数的定义作用域</span>
+<span class="hljs-comment">//   但引用函数能改变函数的执行作用域，而调用不能</span>
+    <span class="hljs-keyword">var</span> o = {
+        name: <span class="hljs-string">'o'</span>,
+        f: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+        }
+    }
+
+    <span class="hljs-comment">// 引用调用，this 指向 o1：</span>
+    o.o1 = {
+        name: <span class="hljs-string">'o1'</span>,
+        me: o.f
+    }
+    <span class="hljs-keyword">var</span> who = o.o1.me();
+    who.name  <span class="hljs-comment">// 'o1'</span>
+
+    <span class="hljs-comment">// 函数调用，this 指向 o：</span>
+    o.o1 = {
+        name: <span class="hljs-string">'o1'</span>,
+        me: o.f()
+    }
+    <span class="hljs-keyword">var</span> who = o.o1.me;
+    who.name  <span class="hljs-comment">// 'o'</span>
+
+<span class="hljs-comment">// 2.call 和 apply 可以直接改变执行函数的作用域，使其作用域指向所传递参数对象</span>
+<span class="hljs-comment">//   因此，函数中包含的 this 关键字也指向参数对象</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-comment">// 如果当前执行域对象的构造函数等于当前函数，则 this 为实例对象</span>
+        <span class="hljs-keyword">if</span>(<span class="hljs-keyword">this</span>.constructor == <span class="hljs-built_in">arguments</span>.callee) {
+            alert(<span class="hljs-string">'this = 实例对象'</span>);
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span> == window) {  <span class="hljs-comment">// 则 this 为 window 对象</span>
+            alert(<span class="hljs-string">'this = window'</span>);
+        } <span class="hljs-keyword">else</span> {  <span class="hljs-comment">// 则 this 为 其它对象</span>
+            alert(<span class="hljs-string">'this = 其它对象，this.constructor = '</span> + <span class="hljs-keyword">this</span>.constructor);
+        }
+    }
+    f();  <span class="hljs-comment">// Window</span>
+    <span class="hljs-keyword">new</span> f();  <span class="hljs-comment">// 实例</span>
+    f.call(<span class="hljs-number">1</span>);  <span class="hljs-comment">// 其它；JS 解释器会强制把 1 转换为数值对象</span>
+
+    <span class="hljs-comment">// call() 将 f() 强制转换为对象 o 的一个方法并执行</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">()</span> {</span>
+        alert(<span class="hljs-keyword">this</span>.x + <span class="hljs-keyword">this</span>.y);
+    }
+    <span class="hljs-keyword">var</span> o = {
+        x: <span class="hljs-number">1</span>,
+        y: <span class="hljs-number">2</span>
+    }
+    f.call(o);  <span class="hljs-comment">// 3</span>
+
+<span class="hljs-comment">// 3.原型继承</span>
+<span class="hljs-comment">//   一般而言，子类继承父类的方法后，this 可能指向子类的实例对象，或子类原型对象，而非子类实例对象</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Base</span><span class="hljs-params">()</span> {</span>  <span class="hljs-comment">// 基类</span>
+        <span class="hljs-keyword">this</span>.m = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>  <span class="hljs-comment">// 基类的方法 m()</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-string">'Base'</span>;
+        };
+        <span class="hljs-keyword">this</span>.a = <span class="hljs-keyword">this</span>.m();  <span class="hljs-comment">// 基类的属性 a，调用当前作用域的 m() 方法</span>
+        <span class="hljs-keyword">this</span>.b = <span class="hljs-keyword">this</span>.m();  <span class="hljs-comment">// 基类的方法 b，引用当前作用域中的 m() 方法</span>
+        <span class="hljs-keyword">this</span>.c = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>  <span class="hljs-comment">// 基类的方法 c()，以闭包结构调用当前作用域中 m() 方法</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.m();
+        }
+    }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">F</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">this</span>.m = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-string">'F'</span>;
+        }
+    }
+    F.prototype = <span class="hljs-keyword">new</span> Base();  <span class="hljs-comment">// 继承基类</span>
+    <span class="hljs-keyword">var</span> f = <span class="hljs-keyword">new</span> F();  <span class="hljs-comment">// 实例化子类</span>
+    f.a  <span class="hljs-comment">// 'Base'</span>
+    f.b()  <span class="hljs-comment">// 'Base'</span>
+    f.c()  <span class="hljs-comment">// 'F'</span>
+
+    <span class="hljs-comment">// 上例中，基类 Base 包含4个成员，b、c以不同方式引用当前作用域内 m()</span>
+    <span class="hljs-comment">// a 存储着当前作用域内的方法 m() 的调用值</span>
+    <span class="hljs-comment">// 将这些成员继承给子类 F 后，其中 m、b、c 成为原型对象的方法，a 成为原型对象属性</span>
+    <span class="hljs-comment">// 但 c 的值为一个闭包体，当子类的实例中调用时，返回值已经成为实例对象的成员</span>
+    <span class="hljs-comment">// 也就是说闭包体在哪里被调用，this 就会指向哪里</span>
+
+    <span class="hljs-comment">// 为了避免因继承关系而影响父类中 this 所代表的对象，</span>
+    <span class="hljs-comment">// 除了把函数的引用传递给父类的成员外，还可以为父类定义私有函数，</span>
+    <span class="hljs-comment">// 然后再把它的引用传递给其它父类成员，就避免了由于函数闭包而改变 this 的值</span>
+
+    <span class="hljs-comment">// 基类的私有函数 _m() 就具有完全隐私属性，外界其它任何对象都无法直接访问私有函数</span>
+    <span class="hljs-comment">// 因此，一般在定义方法时，对于相互依赖的方法，可以把它定义为私有函数</span>
+    <span class="hljs-comment">// 并以引用函数的方式对外公开，从而规避外界对于依赖方法的影响</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Base</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">var</span> _m = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                <span class="hljs-keyword">return</span> <span class="hljs-string">'Base'</span>;
+            }
+            <span class="hljs-keyword">this</span>.a = _m;
+            <span class="hljs-keyword">this</span>.b = _m();
+        }
+
+<span class="hljs-comment">// 4.异步调用：通过事件机制或计时器来延迟调整函数的调用时间和时机</span>
+<span class="hljs-comment">//   因为调用函数的执行作用域不再是原来定义的作用域，所以函数中的 this 总是指向引该发事件的对象</span>
+    <span class="hljs-comment">/*
+        &lt;input type="button" value="Button" /&gt;
+    */</span>
+        <span class="hljs-keyword">var</span> button = document.getElementsByTagName(<span class="hljs-string">'input'</span>)[<span class="hljs-number">0</span>];
+        <span class="hljs-keyword">var</span> o = {};
+        o.f = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">if</span>(<span class="hljs-keyword">this</span> == o) { alert(<span class="hljs-string">'this = o'</span>); }
+            <span class="hljs-keyword">if</span>(<span class="hljs-keyword">this</span> == Window) { alert(<span class="hljs-string">'this = Window'</span>); }
+            <span class="hljs-keyword">if</span>(<span class="hljs-keyword">this</span> == button) { alert(<span class="hljs-string">'this = button'</span>); }
+        }
+        button.onclick = o.f;
+
+    <span class="hljs-comment">// 这里的方法 f() 所包含的 this 不再是指向对象 o，而是指向按钮 button，</span>
+    <span class="hljs-comment">// 因为它是被传递给按钮的事件处理函数之后调用的，</span>
+    <span class="hljs-comment">// 由于函数的执行作用域发生了变化，所以不再指向定义方法时所指定的对象</span>
+
+    <span class="hljs-comment">// 使用 DOM 2级标准为按钮注册事件处理函数：</span>
+    <span class="hljs-comment">// 在 IE 中 this 同时指向 window 和 button，而其它仅指向 button，</span>
+    <span class="hljs-comment">// 因为 attachEvent() 是 Window 对象的方法</span>
+        <span class="hljs-keyword">if</span>(window.attachEvent) {  <span class="hljs-comment">// IE</span>
+            button.attachEvent(<span class="hljs-string">'onclick'</span>, o.f);
+        } <span class="hljs-keyword">else</span> {
+            button.addEventListener(<span class="hljs-string">'click'</span>, o.f, <span class="hljs-literal">true</span>);
+        }
+
+    <span class="hljs-comment">// 借助 call 或 apply 强制在对象 o 上执行 f()，</span>
+    <span class="hljs-comment">// 强制改变 f() 的执行作用域，避免因为环境的不同而影响函数作用域的变化，</span>
+    <span class="hljs-comment">// 执行作用域始终与定义作用域保持一致</span>
+        <span class="hljs-keyword">if</span>(window.attachEvent) {
+            button.attachEvent(<span class="hljs-string">'onclick'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                o.f.call(o);
+            });
+        } <span class="hljs-keyword">else</span> {
+            button.addEventListener(<span class="hljs-string">'click'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                o.f.call(o);
+            }, <span class="hljs-literal">true</span>);
+        }
+
+<span class="hljs-comment">// 5.定时器：通过 Window 对象的 setTimeout() 或 setInterval() 延期调用函数</span>
+    <span class="hljs-keyword">var</span> o = {};
+    o.f = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">if</span>(<span class="hljs-keyword">this</span> == o) { alert(<span class="hljs-string">'this = o'</span>); }
+        <span class="hljs-keyword">if</span>(<span class="hljs-keyword">this</span> == Window) { alert(<span class="hljs-string">'this = Window'</span>); }
+        <span class="hljs-keyword">if</span>(<span class="hljs-keyword">this</span> == button) { alert(<span class="hljs-string">'this = button'</span>); }
+    }
+    setTimeout(o.f, <span class="hljs-number">100</span>);
+
+    <span class="hljs-comment">// IE 中 this 指向 window 和 button，原因同上；</span>
+    <span class="hljs-comment">// 其它中 this 指向 window 而非 button；</span>
+    <span class="hljs-comment">// 因为 setTimeout() 是在全局作用域中被执行的，可通过 call、apply 实现：</span>
+        setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            o.f.call(o);
+        }, <span class="hljs-number">100</span>);
+
+
+<span class="hljs-number">090.</span>预防<span class="hljs-keyword">this</span>误用的策略
+<span class="hljs-comment">// this 用法灵活、容易出错，复杂的应用环境会变得很不确定</span>
+<span class="hljs-comment">// 确保在同一作用域中操作 this，避免把包含 this 的全局函数动态用于局部作用域中，</span>
+<span class="hljs-comment">// 同时应该避免在不同作用域的对象之间相互引用包含 this 的方法</span>
+
+<span class="hljs-comment">// 如果把 this 作为参数值来调用函数，可以避免多变的问题（this 始终与当前对象保持一致）</span>
+    <span class="hljs-comment">/* 正确
+        &lt;input type="button" value="Btn" onclick="f(this)" /&gt;
+    */</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">(o)</span> {</span> alert(o.value); }
+
+    <span class="hljs-comment">/* 错误
+        &lt;input type="button" value="Btn" onclick="f()" /&gt;
+    */</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">()</span> {</span> alert(<span class="hljs-keyword">this</span>.value); }
+
+<span class="hljs-comment">// 要确保构造函数的方法在初始化之后其中所包含的 this 不再发生变化，</span>
+<span class="hljs-comment">// 在构造函数中把 this 指针存储在私有变量中，再在方法中使用私有变量来引用 this</span>
+<span class="hljs-comment">// 这样所引用的对象始终都是初始化的实例对象，而不会在类型继承中发生变化</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Base</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> _this = <span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">this</span>.m = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> _this;
+        };
+        <span class="hljs-keyword">this</span>.name = <span class="hljs-string">'Base'</span>;
+    }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">F</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">this</span>.name = <span class="hljs-string">'F'</span>;
+    }
+    F.prototype = <span class="hljs-keyword">new</span> Base();
+    <span class="hljs-keyword">var</span> f = <span class="hljs-keyword">new</span> F();
+    <span class="hljs-keyword">var</span> n = f.m();
+    n.name  <span class="hljs-comment">// this 始终指向原型对象</span>
+
+<span class="hljs-comment">// this 作为动态指针也是可以被转换为静态指针的</span>
+    <span class="hljs-built_in">Function</span>.prototype.pointTo = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(o)</span> {</span>
+        <span class="hljs-keyword">var</span> _this = <span class="hljs-keyword">this</span>;  <span class="hljs-comment">// 存储当前函数对象</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>  <span class="hljs-comment">// 一个闭包函数</span>
+            <span class="hljs-comment">// 执行当前函数并把当前函数的作用域强制设置为指定对象</span>
+            <span class="hljs-keyword">return</span> _this.apply(o, <span class="hljs-built_in">arguments</span>);
+        }
+    }
+
+    <span class="hljs-keyword">var</span> o = {
+        name: <span class="hljs-string">'o'</span>
+    }
+    o.b = (<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    }).pointTo(o);  <span class="hljs-comment">// 把 this 绑定到对象 o 身上</span>
+    <span class="hljs-keyword">var</span> o1 = {
+        name: <span class="hljs-string">'o1'</span>,
+        b: o.b
+    }
+    <span class="hljs-keyword">var</span> a = o1.b();
+    a.name  <span class="hljs-comment">// 'o'</span>
+
+
+<span class="hljs-number">091.</span>推荐使用构造函数原型模式定义类
+<span class="hljs-comment">// JS 中定义类型的方法有很多种，从而形成了不同的类型模式</span>
+<span class="hljs-comment">// 1.工厂模式：通过函数把一个类型实例包装起来，通过调用函数来实现类的实例化</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">wrap</span><span class="hljs-params">(title, pages)</span> {</span>
+        <span class="hljs-keyword">var</span> book = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Object</span>();
+        book.title = title;
+        book.pages = pages;
+        book.what = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            alert(<span class="hljs-keyword">this</span>.title + <span class="hljs-keyword">this</span>.pages)
+        }
+        <span class="hljs-keyword">return</span> book;  <span class="hljs-comment">// 初始化后的对象</span>
+    }
+
+    <span class="hljs-comment">// 优化：消除重复创建相同函数的弊端，节省大量资源</span>
+    what = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        alert(<span class="hljs-keyword">this</span>.title + <span class="hljs-keyword">this</span>.pages)
+    }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">wrap</span><span class="hljs-params">(title, pages)</span> {</span>
+        <span class="hljs-keyword">var</span> book = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Object</span>();
+        book.title = title;
+        book.pages = pages;
+        book.what = what;
+        <span class="hljs-keyword">return</span> book;
+    }
+
+    <span class="hljs-comment">// 工厂模式只是一种伪装的构造函数，不推荐使用</span>
+
+<span class="hljs-comment">// 2.构造函数模式</span>
+    <span class="hljs-comment">// 构造函数具有如下特性：</span>
+        <span class="hljs-comment">// 使用 new 运算符调用</span>
+        <span class="hljs-comment">// 内部 this 指代当前实例对象</span>
+        <span class="hljs-comment">// 内部必须通过点运算符来声明和引用成员，结构体内可以包含一般函数的执行语句</span>
+
+    <span class="hljs-comment">// 通过传递参数来初始化这个对象的属性值</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Box</span><span class="hljs-params">(w, h)</span> {</span>
+            <span class="hljs-keyword">this</span>.w = w;
+            <span class="hljs-keyword">this</span>.h = h;
+        }
+        <span class="hljs-keyword">var</span> box1 = <span class="hljs-keyword">new</span> Box(<span class="hljs-number">4</span>, <span class="hljs-number">5</span>);
+
+    <span class="hljs-comment">// 由于每一个构造函数代表一种类型，为与普通函数区分，函数名应该直观（首字母大写）</span>
+    <span class="hljs-comment">// 如果构造函数返回对象，那被返回的对象将覆盖 this 的值</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Box</span><span class="hljs-params">(w, h)</span> {</span>
+            <span class="hljs-keyword">this</span>.w = w;
+            <span class="hljs-keyword">this</span>.h = h;
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+        }
+
+<span class="hljs-comment">// 3.原型模式：先声明一个构造函数，并利用其 prototype 属性为其定义原型属性、方法</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Book</span><span class="hljs-params">()</span> {</span>}
+    Book.prototype.title = <span class="hljs-string">'JS 188'</span>;
+    Book.prototype.pages = <span class="hljs-number">188</span>;
+    Book.prototype.what = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        alert(<span class="hljs-keyword">this</span>.title + <span class="hljs-keyword">this</span>.pages);
+    };
+
+    <span class="hljs-comment">// 从语义上分析，通过原型继承的方式，实现了在前面两种模式中将对象与方法分离的设计思想</span>
+    <span class="hljs-comment">// 使用 instanceof 运算符能够方便的检测对象实例的类型</span>
+
+    <span class="hljs-comment">// 存在问题1：由于构造函数已被事先声明，原型属性在类结构声明之后才被定义，</span>
+    <span class="hljs-comment">// 因此无法通过构造函数想原型属性动态传递值：由该类实例化的所有对象都是一个“模样”，</span>
+    <span class="hljs-comment">// 没有“个性”。如果改变原有属性值，那所有实例都会受到干扰</span>
+
+    <span class="hljs-comment">// 存在问题2：当原型属性值为引用类型数据时，如果在一个对象实例中修改该属性值，</span>
+    <span class="hljs-comment">// 将会影响到所有的实例。</span>
+
+<span class="hljs-comment">// 4.构造函数原型模式：一种混合模式</span>
+    <span class="hljs-comment">// 对于可能会相互影响且希望动态传递参数的属性，将其拆分出来使用构造函数模式进行设计</span>
+    <span class="hljs-comment">// 对于不需要个性，希望共享且又不会相互影响的方法、属性单独使用原型模式来设计</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Book</span><span class="hljs-params">(title, pages)</span> {</span>  <span class="hljs-comment">// 构造函数模式设计</span>
+            <span class="hljs-keyword">this</span>.title = title;
+            <span class="hljs-keyword">this</span>.pages = pages;
+        }
+        Book.prototype.what = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>  <span class="hljs-comment">// 原型模式设计</span>
+            alert(<span class="hljs-keyword">this</span>.title + <span class="hljs-keyword">this</span>.pages);
+        }
+
+    <span class="hljs-comment">// 这种模式是 ECMAScript 定义类的推荐标准，有前3种模式的优点且去除了副作用</span>
+
+    <span class="hljs-comment">// 遵循面向对象的设计原则，类的所有成员都应该封装在类结构体内</span>
+    <span class="hljs-comment">// 进一步优化构造函数原型模式：动态原型模式</span>
+    <span class="hljs-comment">// 优化思路：使用条件结构封装该原型方法，判断原型方法是否存在，如否方则创建该方法</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Book</span><span class="hljs-params">(title, pages)</span> {</span>
+            <span class="hljs-keyword">this</span>.title = title;
+            <span class="hljs-keyword">this</span>.pages = pages;
+            <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> Book.isLock == <span class="hljs-string">'undefined'</span>) {
+                Book.prototype.what = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                    alert(<span class="hljs-keyword">this</span>.title + <span class="hljs-keyword">this</span>.pages);
+                };
+                Book.isLock = <span class="hljs-literal">true</span>;
+            }
+        }
+
+
+<span class="hljs-number">092.</span>不建议使用原型继承
+<span class="hljs-comment">// 原型继承是一种简化的继承机制，也是目前最流行的一种JS继承方式</span>
+<span class="hljs-comment">// JS 就是一种基于原型的语言，在原型继承中，类和实例概念被淡化了，都从对象的角度来考虑</span>
+
+<span class="hljs-comment">// 但是原型继承就不再需要使用类来定义对象的结构，直接定义对象，</span>
+<span class="hljs-comment">// 该对象被其它对象引用，这样就形成了一种继承关系</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">A</span><span class="hljs-params">(x)</span> {</span>
+        <span class="hljs-keyword">this</span>.x1 = x;
+        <span class="hljs-keyword">this</span>.get1 = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.x1;
+        }
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">B</span><span class="hljs-params">(x)</span> {</span>
+        <span class="hljs-keyword">this</span>.x2 = x;
+        <span class="hljs-keyword">this</span>.get2 = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.x2 + <span class="hljs-keyword">this</span>.x2;
+        }
+    }
+    B.prototype = <span class="hljs-keyword">new</span> A(<span class="hljs-number">1</span>);
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">C</span><span class="hljs-params">(x)</span> {</span>
+        <span class="hljs-keyword">this</span>.x3 = x;
+        <span class="hljs-keyword">this</span>.get3 = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.x2 * <span class="hljs-keyword">this</span>.x2;
+        }
+    }
+    C.prototype = <span class="hljs-keyword">new</span> B(<span class="hljs-number">2</span>);
+
+    <span class="hljs-keyword">var</span> b = <span class="hljs-keyword">new</span> B(<span class="hljs-number">2</span>);
+    <span class="hljs-keyword">var</span> c = <span class="hljs-keyword">new</span> C(<span class="hljs-number">3</span>);
+    b.x1  <span class="hljs-comment">// 1</span>
+    c.x1  <span class="hljs-comment">// 1</span>
+    c.get3()  <span class="hljs-comment">// 9</span>
+    c.get2()  <span class="hljs-comment">// 4</span>
+
+<span class="hljs-comment">// 不需要声明静态类，通过复制已存在的原型对象来实现继承关系</span>
+<span class="hljs-comment">// 因此基于原型的模型没有类的概念，仅是一种模拟</span>
+
+<span class="hljs-comment">// 优点：结构简单，不需要每次构造函数都调用父类构造函数，不需要通过复制属性的方式就能快速实现继承</span>
+<span class="hljs-comment">// 缺点：</span>
+<span class="hljs-comment">//   每个类型只有一个原型，因而不能实现多重继承；</span>
+<span class="hljs-comment">//   不能很好的支持多参数或动态参数的父类。用户还不能在原型继承阶段决定以什么参数来实例化构造函数；</span>
+<span class="hljs-comment">//   不够灵活，用户需要在原型声明阶段实例化父类对象，且将其作为当前类型的原型，</span>
+<span class="hljs-comment">//   这会限制父类实例化的灵活性，很多时候无法确定父类对象实例化的时机和场合</span>
+
+
+<span class="hljs-number">093.</span>推荐使用类继承
+<span class="hljs-comment">// 类继承也称为构造函数继承（对象模拟法）</span>
+<span class="hljs-comment">// 表现形式：在子类中执行父类的构造函数</span>
+<span class="hljs-comment">// 实现本质：构造函数只是一种结构较特殊的函数</span>
+
+<span class="hljs-comment">// 将一个构造A赋给构造B，然后调用该方法，使A在B内部被执行，此时B就拥有在A中定义的属性和方法</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">A</span><span class="hljs-params">(x)</span> {</span>
+        <span class="hljs-keyword">this</span>.x = x;
+        <span class="hljs-keyword">this</span>.say = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            alert(<span class="hljs-keyword">this</span>.x);
+        }
+    }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">B</span><span class="hljs-params">(x,y)</span> {</span>
+        <span class="hljs-keyword">this</span>.m = A;  <span class="hljs-comment">// 将A作为普通函数引用给临时方法 m()</span>
+        <span class="hljs-keyword">this</span>.m(x);  <span class="hljs-comment">// 把当前构造函数参数x作为值传递给A并执行</span>
+        <span class="hljs-keyword">delete</span> <span class="hljs-keyword">this</span>.m;  <span class="hljs-comment">// 清除临时方法</span>
+        <span class="hljs-keyword">this</span>.y = y;
+        <span class="hljs-keyword">this</span>.call = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            alert(<span class="hljs-keyword">this</span>.y);
+        }
+    }
+    <span class="hljs-keyword">var</span> a = <span class="hljs-keyword">new</span> A(<span class="hljs-number">1</span>);
+    <span class="hljs-keyword">var</span> b = <span class="hljs-keyword">new</span> B(<span class="hljs-number">2</span>,<span class="hljs-number">3</span>);
+    a.say();  <span class="hljs-comment">// 1</span>
+    b.say();  <span class="hljs-comment">// 2</span>
+    b.call();  <span class="hljs-comment">// 3</span>
+
+    <span class="hljs-comment">// 构造函数能够使用 this 为所有属性、方法赋值，this 默认引用的是构造函数当前创建的对象</span>
+    <span class="hljs-comment">// 不过在这个方法中，this 而是调用构造函数的方法所属的对象，即B，此时A已被视为一个普通函数</span>
+
+<span class="hljs-comment">// 严谨的设计模式应该考虑各种可能存在的情况和继承关系中的相互耦合性</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">A</span><span class="hljs-params">(x)</span> {</span> <span class="hljs-keyword">this</span>.x = x; }
+    A.prototype.getx = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span> <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.x; }
+    <span class="hljs-keyword">var</span> a1 = <span class="hljs-keyword">new</span> A(<span class="hljs-number">1</span>);
+    a1.x
+    a1.getx()
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">B</span><span class="hljs-params">(x,y)</span> {</span>
+        <span class="hljs-keyword">this</span>.y = y;
+        A.call(<span class="hljs-keyword">this</span>.x);  <span class="hljs-comment">// 在构造函数B中调用超类A，实现绑定</span>
+    }
+    B.prototype = <span class="hljs-keyword">new</span> A();  <span class="hljs-comment">// 设置原型链，建立继承关系</span>
+    B.prototype.constructor = B;  <span class="hljs-comment">// 恢复B的原型对象的构造函数为B</span>
+    B.prototype.gety = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span> <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.y }
+
+    <span class="hljs-comment">// 在构造函数B结构内，使用函数call()调用A，把B的参数x传递给调用函数</span>
+    <span class="hljs-comment">// 当定义构造函数时，其原型对象默认是一个Object类型的一个实例，</span>
+    <span class="hljs-comment">// 其构造器会被默认设置为该构造函数本身</span>
+    <span class="hljs-comment">// 如果改动 prototype 属性值使其指向另一个对象，新</span>
+    <span class="hljs-comment">// 对象不会拥有原来的 constructor 属性，必须重置</span>
+
+    <span class="hljs-comment">// 此时就可以在子类B的实例对象中调用超类A的属性和方法了</span>
+    <span class="hljs-keyword">var</span> f2 = <span class="hljs-keyword">new</span> B(<span class="hljs-number">10</span>,<span class="hljs-number">20</span>);
+    f2.getx();  <span class="hljs-comment">// 10</span>
+    f2.gety();  <span class="hljs-comment">// 20</span>
+
+
+<span class="hljs-number">094.</span>建议使用封装类继承
+<span class="hljs-comment">// 在面向对象编程中，语言自身都有一套严格的封装机制，开发者员只是按惯性思维开发项目很少关心封装问题</span>
+<span class="hljs-comment">// 因为语言会自动完成基本的功能封装，具体应用的功能还需要开发者自己去封装</span>
+<span class="hljs-comment">// 但是 JS 没有提供良好的封装机制，只能依靠开发人员的方法来实现部分功能封装</span>
+<span class="hljs-comment">// 类继承是在 JS 开发中应用比较广泛的继承模式，对这种模式进行规范和封装可以提高代码利用率</span>
+
+<span class="hljs-comment">// 首先，定义一个封装函数。设计入口为子类和超类对象，子类能继承超类所有原型成员，不设计出口</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">extend</span><span class="hljs-params">(sub, sup)</span> {</span>}
+
+<span class="hljs-comment">// 在函数体内定义一个空函数F来实现功能中转</span>
+<span class="hljs-comment">// 设计F的原型为超类的原型，然后把空函数的实例传递给子类的原型，</span>
+<span class="hljs-comment">// 避免了直接实例化超类可能带来的系统负荷（实际开发中超类规模会很大占用大量内存）</span>
+<span class="hljs-comment">// 恢复子类原型的构造器子类，同时检测超类原型构造器是否与 Object 原型构造器发生耦合</span>
+<span class="hljs-comment">// 如果耦合则恢复它的构造器为超类自身</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">extend</span><span class="hljs-params">(sub, sup)</span> {</span>
+        <span class="hljs-keyword">var</span> F = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>};
+        F.prototype = sup.prototype;
+        sub.prototype = <span class="hljs-keyword">new</span> F();
+        sub.prototype.constructor = sub;
+        sub.sup = sup.prototype;
+        <span class="hljs-keyword">if</span>(sup.prototype.constructor == <span class="hljs-built_in">Object</span>.prototype.constructor) {
+            sup.prototype.constructor = sup;
+        }
+    }
+
+<span class="hljs-comment">// 定义两个类，尝试把它们绑定为继承关系</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">A</span><span class="hljs-params">(x)</span> {</span>
+        <span class="hljs-keyword">this</span>.x = x;
+        <span class="hljs-keyword">this</span>.get = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.x;
+        }
+    }
+    A.prototype.add = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.x + <span class="hljs-keyword">this</span>.x;
+    }
+    A.prototype.mul = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        reutrn <span class="hljs-keyword">this</span>.x * <span class="hljs-keyword">this</span>.x;
+    }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">B</span><span class="hljs-params">(x)</span> {</span>
+        A.call(<span class="hljs-keyword">this</span>,x);  <span class="hljs-comment">// 实现内部数据绑定</span>
+    }
+    extend(B,A);
+    <span class="hljs-keyword">var</span> f = <span class="hljs-keyword">new</span> B(<span class="hljs-number">5</span>);
+    f.get();  <span class="hljs-comment">// 5</span>
+    f.add();  <span class="hljs-comment">// 10</span>
+    f.mul();  <span class="hljs-comment">// 25</span>
+
+<span class="hljs-comment">// 在类继封装函数中， sub.sup = sup.prototype 语句在上面并没有提现，先看如下：</span>
+    extend(B,A);
+    B.prototype.add = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.x + <span class="hljs-string">' '</span> + <span class="hljs-keyword">this</span>.x;
+    }
+
+    <span class="hljs-comment">// 上面的代码是在调用封装函数之后再为B类定义了一个原型方法，</span>
+    <span class="hljs-comment">// 该方法名与A类的原型方法 add() 将会覆盖超类A的原型方法 add()</span>
+        f.add();  <span class="hljs-comment">// '55' not 10</span>
+
+    <span class="hljs-comment">// 在B类的原型方法 add() 中调用超类的原型方法 add()，从而避免代码耦合现象</span>
+        B.prototype.add = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> B.sup.add.call(<span class="hljs-keyword">this</span>);  <span class="hljs-comment">// 函数内部调用超类方法 add()</span>
+        }
+
+
+<span class="hljs-number">095.</span>慎重使用实例继承
+<span class="hljs-comment">// 对类进行实例化操作就会产生一个新对象，这个实例对象将继承类的所有特性和成员，</span>
+<span class="hljs-comment">// 而实例继承正是对于这种实例化过程的一种概括</span>
+
+<span class="hljs-comment">// 类继承和原型继承在客户端是无法继承DOM对象的，同时它们也不支持继承系统静态的对象和方法</span>
+
+<span class="hljs-comment">// 1.使用类继承法继承 Date 对象</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">D</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-built_in">Date</span>.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);  <span class="hljs-comment">// 调用 Date 对象，对其进行引用实现继承目的</span>
+    }
+    <span class="hljs-keyword">var</span> d = <span class="hljs-keyword">new</span> D();  <span class="hljs-comment">// 实例化自定义构造函数</span>
+    d.toLocaleString();  <span class="hljs-comment">// [object Object]</span>
+
+    <span class="hljs-comment">// 上例说明使用类继承无法实现对静态对象的继承，因为系统对象结构特殊：</span>
+    <span class="hljs-comment">// 不是简单的函数体结构，对声明、赋值和初始化等操作都进行了独立的封装</span>
+
+<span class="hljs-comment">// 2.使用原型继承法继承 Date 对象</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">D</span><span class="hljs-params">()</span> {</span>}
+    D.prototype = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>();
+    <span class="hljs-keyword">var</span> d = <span class="hljs-keyword">new</span> D();
+    d.toLocaleString();  <span class="hljs-comment">// 错误提示</span>
+
+    <span class="hljs-comment">// 上例说明使用原型继承也无法实现对静态对象继承</span>
+
+<span class="hljs-comment">// 不过实例继承法可以实现对所有 JS 核心对象的继承</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">D</span><span class="hljs-params">()</span> {</span>  <span class="hljs-comment">// 封装函数</span>
+        <span class="hljs-keyword">var</span> d = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>();  <span class="hljs-comment">// 实例化 Date 对象</span>
+        d.get = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>  <span class="hljs-comment">// 定义本地方法，间接调用 Date.toLocaleString()</span>
+            alert(d.toLocaleString());
+        }
+        <span class="hljs-keyword">return</span> d;  <span class="hljs-comment">// 实例对象</span>
+    }
+    <span class="hljs-keyword">var</span> d = <span class="hljs-keyword">new</span> D();  <span class="hljs-comment">// 实例化封装函数</span>
+    d.get();  <span class="hljs-comment">// 调用本地方法，返回成功</span>
+
+<span class="hljs-comment">// 构造函数是一种特殊结构的函数，它没有返回值，通过 this 来初始化实例对象</span>
+<span class="hljs-comment">// 当然，在构造函数中可以增加 return 语句为其设置返回值，</span>
+<span class="hljs-comment">// 返回值就是 new 运算符执行表达式的值</span>
+<span class="hljs-comment">// 因此，在构造函数中完成对类的实例化操作，然后返回实例对象，这就是实例继承的由来</span>
+
+<span class="hljs-comment">// 实例继承法能够实现对所有对象的继承（自定义类、核心对象、DOM对象），但它不是真正的继承机制，仅是一种模拟</span>
+<span class="hljs-comment">// 实例继承法无法传递动态参数，类的实例化操作是在封闭的函数体内实现的，不能使用 call、apply</span>
+<span class="hljs-comment">// 实例继承只能返回一个对象，与原型继承一样，不支持多重继承</span>
+<span class="hljs-comment">// 由于通过封装的方法把对象实例化和初始化操作都封装在一个函数体内，</span>
+<span class="hljs-comment">// 因此通过对封装函数执行实例化操作来获取继承的对象，</span>
+<span class="hljs-comment">// 但这种做法无法真正实现继承对象是封装类的实例，它仍保持与原对象的实例关系</span>
+
+
+<span class="hljs-number">096.</span>避免使用复制继承
+<span class="hljs-comment">// 赋值继承是最原始的方法：利用for in语句遍历对象成员，然后逐一将其复制给另一个对象来实现继承</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">F</span><span class="hljs-params">(x,y)</span> {</span>
+        <span class="hljs-keyword">this</span>.x = x;
+        <span class="hljs-keyword">this</span>.y = y;
+        <span class="hljs-keyword">this</span>.add = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.x + <span class="hljs-keyword">this</span>.y;
+        }
+    }
+    F.prototype.mul = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.x * <span class="hljs-keyword">this</span>.y;
+    }
+    <span class="hljs-keyword">var</span> f = <span class="hljs-keyword">new</span> F(<span class="hljs-number">2</span>,<span class="hljs-number">3</span>);
+    <span class="hljs-keyword">var</span> o = {}
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">in</span> f) {
+        o[i] = f[i];
+    }
+    o.x  <span class="hljs-comment">// 2</span>
+    o.y  <span class="hljs-comment">// 3</span>
+    o.add()  <span class="hljs-comment">// 5</span>
+    o.mul()  <span class="hljs-comment">// 6</span>
+
+    <span class="hljs-comment">// 对于该复制继承法，可以将其封装</span>
+        <span class="hljs-built_in">Function</span>.prototype.extend = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(o)</span> {</span>
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">in</span> o) {
+                <span class="hljs-keyword">this</span>.constructor.prototype[i] = o[i];
+            }
+        }
+        <span class="hljs-keyword">var</span> o = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>};
+        o.extend(<span class="hljs-keyword">new</span> F(<span class="hljs-number">2</span>,<span class="hljs-number">3</span>));
+
+<span class="hljs-comment">// 复制继承法也不是真正的继承，是通过反射机制复制类对象所有可枚举属性和方法来模拟继承</span>
+
+<span class="hljs-comment">// 缺点：</span>
+<span class="hljs-comment">// 由于是反射机制，复制继承法不能继承非枚举类型的方法、系统核心对象的只读属性和方法</span>
+<span class="hljs-comment">// 通过反射机制来复制对象成员的执行效率会非常差，对象结构越庞大就越明显</span>
+<span class="hljs-comment">// 如果当前类型包含同名成员，会被父类动态复制所覆盖</span>
+<span class="hljs-comment">// 多重继承情况下，复制继承不能清晰描述父类与子类的相关性</span>
+<span class="hljs-comment">// 只有在类被实例化后，才能够实现遍历成员和复制成员，因而不能支持动态参数</span>
+<span class="hljs-comment">// 由于复制继承法仅是简单地引用赋值，如果父类成员值包含引用类型，那么继承后的副作用和原型继承法一样很多</span>
+
+<span class="hljs-comment">// 优化复制继承法：</span>
+<span class="hljs-comment">// 首先，为 Function 对象扩展一个方法，该方法能够把对象赋值给一个空构造函数的原型对象，</span>
+<span class="hljs-comment">// 然后实例化构造函数并返回实例对象，这样该对象就拥有构造函数包含的所有成员</span>
+    <span class="hljs-built_in">Function</span>.prototype.clone = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(o)</span> {</span>  <span class="hljs-comment">// 对象克隆方法</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Temp</span><span class="hljs-params">()</span>{</span>};  <span class="hljs-comment">// 新建空构造函数</span>
+        Temp.prototype = o;  <span class="hljs-comment">// 把参数对象赋值给该构造函数的原型对象</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Temp();  <span class="hljs-comment">// 实例化后的对象</span>
+    }
+
+<span class="hljs-comment">// 然后，调用该方法来克隆对象。返回的是一个空对象，不过它存储了指向给定对象的原型对象指针</span>
+<span class="hljs-comment">// 这样就可以利用原型链来访问这些变量，从而在不同对象之间实现继承关系</span>
+    <span class="hljs-keyword">var</span> o = <span class="hljs-built_in">Function</span>.clone(<span class="hljs-keyword">new</span> F(<span class="hljs-number">2</span>,<span class="hljs-number">3</span>));
+    o.x  <span class="hljs-comment">// 2</span>
+    o.y  <span class="hljs-comment">// 3</span>
+    o.add()  <span class="hljs-comment">// 5</span>
+    o.mul()  <span class="hljs-comment">// 6</span>
+
+
+<span class="hljs-number">097.</span>推荐使用混合继承
+<span class="hljs-comment">// 混合继承是指把多种继承方法结合在一起使用，扬长避短，以实现各种复杂的应用</span>
+
+<span class="hljs-comment">// 继承方法综合比较</span>
+项目       类  原型  实例  复制  克隆
+原型属性   <span class="hljs-number">0</span>   <span class="hljs-number">1</span>     <span class="hljs-number">1</span>     <span class="hljs-number">1</span>    <span class="hljs-number">1</span>
+本地成员   <span class="hljs-number">1</span>   <span class="hljs-number">0</span>     <span class="hljs-number">1</span>     <span class="hljs-number">1</span>    <span class="hljs-number">1</span>
+多重继承   <span class="hljs-number">1</span>   <span class="hljs-number">0</span>     <span class="hljs-number">0</span>     <span class="hljs-number">1</span>    <span class="hljs-number">0</span>
+多参数     <span class="hljs-number">1</span>   <span class="hljs-number">0</span>     <span class="hljs-number">0</span>     <span class="hljs-number">0</span>    <span class="hljs-number">0</span>
+执行效率   H   H     M     L    L
+ins..of   <span class="hljs-number">0</span>    <span class="hljs-number">1</span>     <span class="hljs-number">0</span>     <span class="hljs-number">0</span>    <span class="hljs-number">0</span>
+
+<span class="hljs-comment">// 类继承与原型继承是截然不同的（继承模式、生成对象行为方式）</span>
+<span class="hljs-comment">// 原型继承更能节约内存，比类继承显得更为简单</span>
+<span class="hljs-comment">// 类继承中创建的每一个对象在内存中都有自己的一套属性和方法副本</span>
+
+
+<span class="hljs-number">098.</span>比较使用 JS 多态、重载和覆盖
+<span class="hljs-comment">// 在 JS 中，加号是一个多态运算符，它能够根据传入值的类型进行不同的计算</span>
+<span class="hljs-comment">// 从某种意义上来说，多态是面向对象中重要的一部分，也是实施继承的主要目的</span>
+
+<span class="hljs-comment">// 多态表现为两个方面：类型的模糊、类型的识别</span>
+<span class="hljs-comment">// JS 是一种弱类型语言，通过 typeof 运算符来判断值的类型，但无法判断对象类型</span>
+<span class="hljs-comment">// 所有类型的实例对象对于 typeof 运算符来说都是基本的 Object，因而 JS 的类型是模糊的</span>
+<span class="hljs-comment">// 由于没有严格的类型检测，因此可以为任何对象调用任何方法，无需考虑它是否被设计为拥有该方法</span>
+
+<span class="hljs-comment">// 使用 JS 原型可以设计类的多态特性：</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">A</span><span class="hljs-params">()</span> {</span>  <span class="hljs-comment">// 超类 A</span>
+        <span class="hljs-keyword">this</span>.get = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            alert(<span class="hljs-string">'A'</span>);
+        }
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">B</span><span class="hljs-params">()</span> {</span>  <span class="hljs-comment">// 子类 B</span>
+        <span class="hljs-keyword">this</span>.get = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            alert(<span class="hljs-string">'B'</span>);
+        }
+    }
+    B.prototype = <span class="hljs-keyword">new</span> A();  <span class="hljs-comment">// B 继承 A</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">C</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">this</span>.get = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            alert(<span class="hljs-string">'C'</span>);
+        }
+    }
+    C.prototype = <span class="hljs-keyword">new</span> A();  <span class="hljs-comment">// C 继承 A</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">F</span><span class="hljs-params">(x)</span> {</span>  <span class="hljs-comment">// 多态类 F</span>
+        <span class="hljs-keyword">this</span>.x = x;
+    }
+    F.prototype.get = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">if</span>(<span class="hljs-keyword">this</span>.x <span class="hljs-keyword">instanceof</span> A) {  <span class="hljs-comment">// 判断是否为超类的实例，然后调用不同类的方法</span>
+            <span class="hljs-keyword">this</span>.x.get();
+        }
+    }
+
+    <span class="hljs-keyword">var</span> b = <span class="hljs-keyword">new</span> B();
+    <span class="hljs-keyword">var</span> c = <span class="hljs-keyword">new</span> C();
+    <span class="hljs-keyword">var</span> f1 = <span class="hljs-keyword">new</span> F(b);
+    <span class="hljs-keyword">var</span> f2 = <span class="hljs-keyword">new</span> F(c);
+    f1.get();  <span class="hljs-comment">// 'B'</span>
+    f2.get();  <span class="hljs-comment">// 'C'</span>
+
+<span class="hljs-comment">// 重载（overload）：同名的方法有多个实现（依靠参数的类型、个数来区分和识别）</span>
+    <span class="hljs-comment">// JS 中函数的参数是没有类型的、个数是任意的</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(x,y)</span> {</span> <span class="hljs-keyword">return</span> x + y; }
+
+    <span class="hljs-comment">// 虽然指定了两个形参，但仍可以传递任意多个实参，类型也是任意的</span>
+    <span class="hljs-comment">// 由于 JS 弱类型不会根据传递参数个数和类型来决定要执行的行为</span>
+    <span class="hljs-comment">// 因此，要定义重载方法，只能够通过 arguments 来实现</span>
+
+    <span class="hljs-comment">// 下面的函数实现了重载对任意多个参数求和</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> sum = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>;i&lt;<span class="hljs-built_in">arguments</span>.length;i++) {
+            <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> <span class="hljs-built_in">arguments</span>[i] == <span class="hljs-string">'number'</span>) {
+                sum += <span class="hljs-built_in">arguments</span>[i];
+            }
+        }
+        <span class="hljs-keyword">return</span> sum;
+    }
+
+    <span class="hljs-comment">// 结合 instanceof 和 constructor 来判断参数类型，再根据个数、类型可实现复杂的重载</span>
+
+<span class="hljs-comment">// 覆盖（overrid）:在子类中定义的方法与超类中的方法同名，且参数个数相同，子类实例化后，</span>
+<span class="hljs-comment">//   从超类中继承的方法将被隐藏</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">A</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">this</span>.m = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            alert(<span class="hljs-string">'A'</span>);
+        }
+    }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">B</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">this</span>.m = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            alert(<span class="hljs-string">'B'</span>);
+        }
+    }
+    B.prototype = <span class="hljs-keyword">new</span> A();  <span class="hljs-comment">// 继承</span>
+    B.prototype.constructor = B;  <span class="hljs-comment">// 恢复</span>
+    <span class="hljs-keyword">var</span> b = <span class="hljs-keyword">new</span> B();
+    b.m();  <span class="hljs-comment">// 'B'</span>
+
+<span class="hljs-comment">// 在强类型语言中，在覆盖的方法中可以调用被覆盖的方法（超类的方法）</span>
+<span class="hljs-comment">// 不过可以通过临时私有变量先保存超类的同名方法，然后在子类同名方法中调用</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">A</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">this</span>.m = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            alert(<span class="hljs-string">'A'</span>);
+        }
+    }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">B</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> m = <span class="hljs-keyword">this</span>.m;
+        <span class="hljs-keyword">this</span>.m = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            m.call(<span class="hljs-keyword">this</span>);
+            alert(<span class="hljs-string">'B'</span>);
+        }
+    }
+    B.prototype = <span class="hljs-keyword">new</span> A();
+    B.prototype.constructor = B;
+    <span class="hljs-keyword">var</span> b = <span class="hljs-keyword">new</span> B();
+    b.m();  <span class="hljs-comment">// 'B'</span>
+
+    <span class="hljs-comment">// 在覆盖方法中调用超类的同名方法时，需要使用 call、apply 来改变执行上下文为 this</span>
+    <span class="hljs-comment">// 如果是直接调用该方法，执行上下文就会变成全局对象，在特殊语境中可能会产生歧义</span>
+
+
+<span class="hljs-number">099.</span>建议主动封装类
+<span class="hljs-comment">// 封装（encapsulation）：把对象内部数据和操作细节进行隐藏</span>
+<span class="hljs-comment">// JS 不支持该特性，但使用闭包可以实现类型的封装功能</span>
+<span class="hljs-comment">// 很多 JS 程序喜欢类的被动封装：就是对对象内部数据进行适当主观约定，没有强制保证</span>
+<span class="hljs-comment">// 为了数据安全，在代码中适当增加一些条件限制，避免非法侵入，当然可以增加完善的监测方法，保护数据完整性</span>
+    <span class="hljs-keyword">var</span> card = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name, sex)</span> {</span>
+        <span class="hljs-keyword">if</span>(!checkName(name)) {<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Name 值非法！'</span>)}
+        <span class="hljs-keyword">this</span>.sex = checkSex(sex);
+    }
+    card.prototype = {  <span class="hljs-comment">// 类内部数据检测方法</span>
+        checkName: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name)</span> {</span>..}
+    }
+
+<span class="hljs-comment">// 很多开发人员习惯使用命名规范来区分公共成员与私有成员（在名称前后添加下划线）</span>
+    <span class="hljs-keyword">var</span> card = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name, sex)</span> {</span>
+        <span class="hljs-keyword">var</span> _name = name, _sex = sex;
+        <span class="hljs-keyword">if</span>(! _checkName(_name)) {<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Name 值非法！'</span>)}
+        <span class="hljs-keyword">this</span>.sex = _checkSex(_sex);
+    }
+    card.prototype = {}
+
+<span class="hljs-comment">// 要使外界可以访问某些私有方法，可以采用如下方法：</span>
+    <span class="hljs-keyword">var</span> card = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name, sex)</span> {</span>
+        <span class="hljs-keyword">var</span> _name = name, _sex = sex;
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">_checkName</span><span class="hljs-params">(_name)</span> {</span>}
+        <span class="hljs-keyword">this</span>.checkName = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> _checkName;
+        }
+    }
+
+<span class="hljs-comment">// 函数作用域内部的方法无权被外界访问，但在函数作用域内的其他公共方法可以访问内部方法，</span>
+<span class="hljs-comment">// 于是将公共方法作为中转平台，可以巧妙地把内部私有方法公开化</span>
+<span class="hljs-comment">// 因此，这些公共方法也称为特权方法，即在方法的前面加上关键字this</span>
+<span class="hljs-comment">// 因为这些方法被定义于函数作用域中，所以它们能够访问到私有属性，</span>
+<span class="hljs-comment">// 对于不需要直接访问私有属性和方法的方法，建议将它们放在类的原型对象中进行声明</span>
+
+<span class="hljs-comment">// 使用这种方式创建的对象具有真正的封装特性</span>
+<span class="hljs-comment">// 缺点：生成的每一个新实例对象都会为每一个私有方法和特权方法生成一个新的副本，</span>
+<span class="hljs-comment">//   占用大量系统资源，不适宜大量使用，仅在必要时适当使用</span>
+<span class="hljs-comment">// 同时，这种方法不利于类的继承，因为所有派生的子类都不能访问超类的任何私有属性和方法</span>
+    <span class="hljs-keyword">var</span> Card = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>  <span class="hljs-comment">// 超类</span>
+        <span class="hljs-keyword">var</span> _name = <span class="hljs-number">1</span>;
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">_checkName</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> _name;
+        }
+        <span class="hljs-keyword">this</span>.checkName = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">return</span> _name;
+        }
+    }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">F</span><span class="hljs-params">()</span> {</span>  <span class="hljs-comment">// 子类</span>
+        Card.call(<span class="hljs-keyword">this</span>);  <span class="hljs-comment">// 继承类 Card</span>
+        <span class="hljs-keyword">this</span>.name =  _name;
+    }
+    <span class="hljs-keyword">var</span> a = <span class="hljs-keyword">new</span> F();alert(a.name);  <span class="hljs-comment">// 访问无效</span>
+    a._checkName();  <span class="hljs-comment">// 无法访问，抛出解析错误</span>
+
+<span class="hljs-comment">// 不过，读者可以通过特权方法来访问超类中的私有属性和方法：</span>
+    a.checkName();  <span class="hljs-comment">// 访问超类公共方法，间接访问私有属性和方法</span>
+
+
+<span class="hljs-number">100.</span>谨慎使用类的静态成员
+<span class="hljs-comment">// 在面向对象的编程中，类是不能够直接访问的，必须实例化后才可以访问</span>
+<span class="hljs-comment">// 但静态属性和方法与类本身直接联系，可以直接通过类来访问</span>
+<span class="hljs-comment">// 例如，JS 核心对象中的 Math、Global 都是静态对象，不需要实例化就可以直接访问</span>
+
+<span class="hljs-comment">// 类的静态成员包括私有和公共两种类型，不管是公共成员还是私有成员，它们在系统中只有一份副本，</span>
+<span class="hljs-comment">// 不会被分成多份传递给不同的对象，而是通过函数指针进行引用，这与闭包截然不同</span>
+
+<span class="hljs-comment">// 下面示例为类型定义一个私有的静态成员</span>
+    <span class="hljs-keyword">var</span> F = (<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        <span class="hljs-keyword">var</span> _a = <span class="hljs-number">1</span>;  <span class="hljs-comment">// 私有变量</span>
+        <span class="hljs-keyword">this</span>.a = _a;  <span class="hljs-comment">// 公共属性</span>
+        <span class="hljs-keyword">this</span>.get1 =<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>  <span class="hljs-comment">// 公共方法</span>
+            <span class="hljs-keyword">return</span> _a;
+        };
+        <span class="hljs-keyword">this</span>.set1 = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(x)</span>{</span>  <span class="hljs-comment">// 公共方法</span>
+            _a = x;
+        };
+        <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>  <span class="hljs-comment">// 构造函数类</span>
+            <span class="hljs-keyword">this</span>.get2 =<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>  <span class="hljs-comment">// 提供访问私有变量的接口</span>
+                <span class="hljs-keyword">return</span> _a;
+            };
+            <span class="hljs-keyword">this</span>.set2 = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(x)</span>{</span>  <span class="hljs-comment">// 提供修改私有变量的接口</span>
+                _a = x;
+            };
+        }
+    })();
+
+    <span class="hljs-comment">// 定义类的静态公共方法和属性</span>
+    F.get3 =<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span> <span class="hljs-keyword">return</span> get1(); };
+    F.set3 = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(x)</span>{</span> set1(x); }
+
+<span class="hljs-comment">// 与一般类的创建方法一样，这里的私有成员和特权成员仍然被声明在构造器中，并借助var和this关键字来实现</span>
+<span class="hljs-comment">// 这里的构造器却由原来的普通函数变成了一个内嵌函数，并且作为外层函数的返回值赋值给了变量F，这就创建了一个闭包</span>
+<span class="hljs-comment">// 在这个闭包中，还可以声明静态私有成员，例如：</span>
+    <span class="hljs-keyword">var</span> F = (<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">set5</span><span class="hljs-params">(x)</span> {</span>  <span class="hljs-comment">// 静态私有方法</span>
+            _a = x;
+        }
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">get5</span><span class="hljs-params">()</span> {</span>  <span class="hljs-comment">// 静态私有方法</span>
+            <span class="hljs-keyword">return</span> _a;
+        }
+    })();
+
+<span class="hljs-comment">// 这些静态私有成员可以在构造器内部访问，这意味着所有私有函数和特权函数都能访问它们</span>
+<span class="hljs-comment">// 与其他方法相比，静态方法有一个优点，那就是在内存中仅存放一份</span>
+<span class="hljs-comment">// 那些被声明在构造器之外的公共静态方法，</span>
+<span class="hljs-comment">// 以及下文中将要提到的F类原型属性都不能访问在构造器中定义的任何私有属性，因此它们不是特权成员</span>
+
+<span class="hljs-comment">// 定义在构造器中的私有方法能够调用其中的静态私有方法，反之则不然</span>
+<span class="hljs-comment">// 要判断一个私有方法是否应该被设计为静态方法，可以看它是否需要访问任何实例数据</span>
+<span class="hljs-comment">// 如果它不需要，那么将其设计为静态方法会更有效率，因为它只被创建一份</span>
+<span class="hljs-comment">// 定义类的静态公共方法和属性一般在类的外面进行，这种外挂定义的方式在前面的示例中也曾经介绍过</span>
+<span class="hljs-comment">// 这种外挂的静态方法和属性可以直接访问，这实际上相当于把构造器作为命名空间来使用</span>
+<span class="hljs-comment">// 同时，由于它们仍然属于构造器结构的一部分，因此在这些静态方法和属性中可以访问闭包中的私有成员</span>
+    alert(F.get3());  <span class="hljs-comment">// 1</span>
+    F.set3(<span class="hljs-number">2</span>);  <span class="hljs-comment">// 修改私有变量的值</span>
+    F.get3();  <span class="hljs-comment">// 2</span>
+
+<span class="hljs-comment">// 注意，类F是返回的内层函数，该值是一个构造函数，它无法访问外层函数的公共方法get1()和set1()，</span>
+<span class="hljs-comment">// 但能够访问返回构造函数体内的公共方法get2()和set2()</span>
+    <span class="hljs-keyword">var</span> a = <span class="hljs-keyword">new</span> F()  <span class="hljs-comment">// 实例化类F</span>
+    a.get2();  <span class="hljs-comment">// 1</span>
+    a.set2(<span class="hljs-number">2</span>);  <span class="hljs-comment">// 调用类F的公共方法，修改私有变量_a</span>
+    a.get2();  <span class="hljs-comment">// 2</span>
+
+<span class="hljs-comment">// 但下面的用法都是错误的，因为级别比较低的F类（F是返回的匿名构造函数）</span>
+<span class="hljs-comment">// 无权访问闭包体内的变量、属性和方法（不管是私有的还是公共的）</span>
+    <span class="hljs-keyword">var</span> a = <span class="hljs-keyword">new</span> F()
+    a.get1();
+    a.set1(<span class="hljs-number">2</span>);
+    alert(a.get1());
+
+<span class="hljs-comment">// 闭包体内的所有对象都可以访问闭包体内的私有或公共变量、属性和方法</span>
+<span class="hljs-comment">// 由于类F是闭包体内返回的构造函数，因此根据作用域链，它们可以向上访问闭包所有成员</span>
+    F.prototype = {  <span class="hljs-comment">// 类F的原型对象</span>
+        get4: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>  <span class="hljs-comment">// 原型方法get4()</span>
+            <span class="hljs-keyword">return</span> get1();  <span class="hljs-comment">// 访问闭包内数据</span>
+        },
+        set4: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(x)</span>{</span>  <span class="hljs-comment">// 原型方法set4()</span>
+            set1(x);  <span class="hljs-comment">// 访问闭包内数据</span>
+        }
+    };
+    <span class="hljs-keyword">var</span> a = <span class="hljs-keyword">new</span> F();  <span class="hljs-comment">// 实例化类F</span>
+    a.get4(); <span class="hljs-comment">// 1        </span>
+
+
+<span class="hljs-number">101.</span>比较类的构造和析构特性
+<span class="hljs-comment">// 构造和析构是创建和销毁对象的过程，它们是对象生命周期中的起点和终点，是最重要的环节</span>
+<span class="hljs-comment">// 当一个对象诞生时，构造函数负责创建并初始化对象的内部环境，包括分配内存、创建内部对象和打开相关的外部资源等</span>
+<span class="hljs-comment">// 析构函数负责关闭资源、释放内部的对象和已分配的内存</span>
+
+<span class="hljs-comment">// 在面向对象的编程中，构造和析构是类的两个重要特性</span>
+<span class="hljs-comment">// 构造函数将在对象产生时调用，析构函数将在对象销毁时调用</span>
+<span class="hljs-comment">// 调用的过程和实现方法由编译器完成，我们只需要记住它们调用的时间，因为它们的调用是自动完成的，不需要人工控制</span>
+
+<span class="hljs-comment">// 1.构造函数</span>
+    <span class="hljs-comment">// 在 JS 中，被new运算符调用的函数就是构造函数</span>
+    <span class="hljs-comment">// 构造函数被 new 计算后，将返回实例对象，也就是所谓的对象初始化，即对象的诞生。</span>
+    <span class="hljs-comment">// 调用构造函数的过程也是类实例化的过程</span>
+    <span class="hljs-comment">// 如果构造函数有返回值，并且返回值是引用类型的，那么经过new运算符计算后，</span>
+    <span class="hljs-comment">// 返回的不再是构造函数自身对应的实例对象，而是构造函数包含的返回值（即引用类型值）</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">F</span><span class="hljs-params">(x,y)</span> {</span>
+            <span class="hljs-keyword">this</span>.x = x;
+            <span class="hljs-keyword">this</span>.y = y;
+            <span class="hljs-keyword">return</span> [];
+        }
+        <span class="hljs-keyword">var</span> f = <span class="hljs-keyword">new</span> F(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>);
+        alert(f.constructor == F);  <span class="hljs-comment">//false，说明F不再是f的构造函数</span>
+
+    <span class="hljs-comment">// 上例中，返回值是一个空的数组，而不再是实例对象</span>
+    <span class="hljs-comment">// 原来构造函数的返回值覆盖了new运算符的运算结果</span>
+    <span class="hljs-comment">// 此时如果调用 f 的 constructor，那么返回值是：</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Array</span> <span class="hljs-params">()</span> {</span>  <span class="hljs-comment">// 被封闭的Array核心结构</span>
+            [native code]
+        }
+
+    <span class="hljs-comment">// 上面示例说明返回值是Array的实例，使用下面的代码可以检测出来：</span>
+        alert(f.constructor == <span class="hljs-built_in">Array</span>);  <span class="hljs-comment">// true，说明Array是f的构造函数</span>
+
+    <span class="hljs-comment">// 利用 call、apply 可以实现动态构造</span>
+    <span class="hljs-comment">// 在下面这个示例中，构造函数 A、B 和 C 相互之间通过 call 关联在一起，</span>
+    <span class="hljs-comment">// 当构造对象c时，将调用构造函数 C，而在执行构造函数 C 时，会先调用构造函数 B</span>
+    <span class="hljs-comment">// 在调用构造函数 B 之前，会自动调用构造函数 C，从而实现动态构造对象的效果</span>
+    <span class="hljs-comment">// 这种多个构造函数相互关联在一起的情况称为多重构造</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">A</span><span class="hljs-params">(x)</span> {</span>
+            <span class="hljs-keyword">this</span>.x = x || <span class="hljs-number">0</span>;
+        }
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">B</span><span class="hljs-params">(x)</span> {</span>
+            A.call(<span class="hljs-keyword">this</span>,x);
+            <span class="hljs-keyword">this</span>.a = [x];
+        }
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">C</span><span class="hljs-params">(x)</span> {</span>
+            B.call(<span class="hljs-keyword">this</span>,x);
+            <span class="hljs-keyword">this</span>.y = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.x;
+            }
+        }
+        <span class="hljs-keyword">var</span> c = <span class="hljs-keyword">new</span> C(<span class="hljs-number">3</span>);
+        c.y();  <span class="hljs-comment">// 3</span>
+
+    <span class="hljs-comment">// 根据动态构造特性可以设计类的多态处理：</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">F</span><span class="hljs-params">(x, y)</span> {</span>  <span class="hljs-comment">// 多态类型</span>
+            <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">A</span><span class="hljs-params">(x, y)</span> {</span>
+                <span class="hljs-keyword">this</span>.add = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                    <span class="hljs-keyword">return</span> x + <span class="hljs-string">""</span> + y;
+                }
+            }
+            <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">B</span><span class="hljs-params">(x, y)</span> {</span>
+                <span class="hljs-keyword">this</span>.add = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                    <span class="hljs-keyword">return</span> x + y;
+                }
+            }
+            <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> x == <span class="hljs-string">"string"</span> || <span class="hljs-keyword">typeof</span> y == <span class="hljs-string">"string"</span>) {
+                A.call(<span class="hljs-keyword">this</span>, x, y);
+            } <span class="hljs-keyword">else</span> {
+                B.call(<span class="hljs-keyword">this</span>, x, y);
+            }
+        }
+        <span class="hljs-keyword">var</span> f1 = <span class="hljs-keyword">new</span> F(<span class="hljs-number">3</span>,<span class="hljs-number">4</span>);
+        f1.add();  <span class="hljs-comment">// 调用对象方法add()，返回数值7</span>
+        <span class="hljs-keyword">var</span> f2 = <span class="hljs-keyword">new</span> F(<span class="hljs-string">"3"</span>,<span class="hljs-string">"4"</span>);  <span class="hljs-comment">// 实例化类F，传递字符串</span>
+        alert(f2.add());  <span class="hljs-comment">// 调用对象方法add()，返回字符串34</span>
+
+<span class="hljs-comment">// 2.析构函数</span>
+    <span class="hljs-comment">// 析构是销毁对象的过程</span>
+    <span class="hljs-comment">// 由于 JS 能够自动回收垃圾，不需要人工清除，所以当对象使用完毕时，</span>
+    <span class="hljs-comment">// JS 会调用对象回收程序来销毁内存中的对象，这个回收程序相当于一个析构函数</span>
+
+    <span class="hljs-comment">// 从文法角度来分析，JS 是不支持析构语法的</span>
+    <span class="hljs-comment">// 当然，我们也可以主动定义析构函数对对象进行清理</span>
+    <span class="hljs-comment">// 先定义一个析构函数，该函数中包含一个析构方法，把该方法继承给任意对象，就可以调用它清除对象内部所有成员了</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">D</span><span class="hljs-params">()</span> {</span>} <span class="hljs-comment">// 析构函数</span>
+        
+        D.prototype = {
+            d: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>  <span class="hljs-comment">// 析构方法</span>
+                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span>) {
+                    <span class="hljs-keyword">if</span>(<span class="hljs-keyword">this</span>[i] <span class="hljs-keyword">instanceof</span> D) {
+                        <span class="hljs-keyword">this</span>[i].d();
+                    }
+                    <span class="hljs-keyword">this</span>[i] = <span class="hljs-literal">null</span>;  <span class="hljs-comment">// 清除成员</span>
+                }
+            }
+        }
+
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">F</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">this</span>.x = <span class="hljs-number">1</span>;
+            <span class="hljs-keyword">this</span>.y = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                alert(<span class="hljs-number">2</span>);
+            }
+        }
+        F.prototype =<span class="hljs-keyword">new</span> D();  <span class="hljs-comment">// 绑定析构函数，继承析构方法</span>
+        <span class="hljs-keyword">var</span> f = <span class="hljs-keyword">new</span> F();  <span class="hljs-comment">// 实例化试验函数</span>
+        f.d();  <span class="hljs-comment">// 调用析构方法</span>
+        f.x;  <span class="hljs-comment">// null，说明属性已经被注销</span>
+        f.y()  <span class="hljs-comment">// 编译错误，说明方法已不存在</span>
+
+<span class="hljs-comment">// 构造和析构有一个顺序问题：</span>
+    <span class="hljs-comment">// 在其他强类型语言中，构造是从基类开始按继承的层次顺序进行的，析构的时候顺序正好相反</span>
+    <span class="hljs-comment">// 这样处理是因为子类可能在构造函数中使用父类的成员变量，如果父类还没有创建，那么就会有问题</span>
+    <span class="hljs-comment">// 而在析构的时候，如果父类先析构，也会出现这样的问题</span>
+
+    <span class="hljs-comment">// JS 对此没有严格的要求，但它遵循从下到上的顺序进行构造，</span>
+    <span class="hljs-comment">// 而析构则没有这方面的要求，只要对象没有成员引用或对象引用即可进行析构</span>
+
+
+<span class="hljs-number">102.</span>使用享元类
+<span class="hljs-comment">// 享元类就是类的类型，即创建类型的类</span>
+    <span class="hljs-comment">// 享元类与类的关系正如类与对象的关系一样，是一种创建型的泛化关系</span>
+    <span class="hljs-comment">// 享元类能够接受类作为参数，即享元类操作的对象是类，而不是具体的数据</span>
+    <span class="hljs-comment">// 一般享元类返回的是类，而不是具体的数据</span>
+    <span class="hljs-comment">// 下面的示例就是一个简单的享元类，它包含了一个返回的类</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">O</span><span class="hljs-params">(x)</span>{</span> <span class="hljs-comment">// 享元类    </span>
+            <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span> <span class="hljs-comment">// 类</span>
+                <span class="hljs-keyword">this</span>.x = x;
+                <span class="hljs-keyword">this</span>.get = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+                    alert(<span class="hljs-keyword">this</span>.x);
+                }
+            }
+        }
+        <span class="hljs-keyword">var</span> o = <span class="hljs-keyword">new</span> O(<span class="hljs-number">1</span>);
+        <span class="hljs-keyword">var</span> f = <span class="hljs-keyword">new</span> o();
+        f.get();  <span class="hljs-comment">// 1 调用返回类的方法get()</span>
+
+<span class="hljs-comment">// 上例中，享元类与普通函数没有什么两样，不过它的返回值是类，而不是具体数值</span>
+<span class="hljs-comment">// 实际上 JS 核心对象 Function 就是一个享元类，虽然说它没有返回值，但可以通过字符串的形式创建返回类</span>
+    <span class="hljs-keyword">var</span> O = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Function</span>(<span class="hljs-string">"this.x=1;this.y=2"</span>) <span class="hljs-comment">// 实例化之后返回的是类</span>
+    <span class="hljs-keyword">var</span> o = <span class="hljs-keyword">new</span> O();  <span class="hljs-comment">// 实例化返回类</span>
+    alert(o.x);  <span class="hljs-comment">// 1 调用实例的属性值</span>
+
+<span class="hljs-comment">// 上例中演示了简单的函数中包含一个返回类结构，当然享元类并非如此简单</span>
+<span class="hljs-comment">// 下面再演示一个比较复杂的示例，在这个享元类中参数值包含类类型，返回值也是类类型</span>
+    <span class="hljs-comment">//首先，定义一个普通类，作为一个参数值准备传递给享元类</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">F</span><span class="hljs-params">(x, y)</span>{</span>
+            <span class="hljs-keyword">this</span>.x = x;
+            <span class="hljs-keyword">this</span>.y = y;
+        }
+        F.prototype.add = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+            alert(<span class="hljs-keyword">this</span>.x + <span class="hljs-keyword">this</span>.y);
+        }
+
+    <span class="hljs-comment">// 然后，定义一个享元类，该函数类包含3个参数，其中第一个参数为类类型，第二个和第三个参数是值类型数据</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">O</span><span class="hljs-params">(o, x, y)</span>{</span>
+            <span class="hljs-keyword">this</span>.say = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+                alert( <span class="hljs-string">"享元类"</span> ); 
+            }
+            <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>  
+                <span class="hljs-keyword">this</span>.say = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>  
+                    alert( <span class="hljs-string">"返回类"</span> );     
+                }
+                <span class="hljs-keyword">var</span> a = <span class="hljs-keyword">new</span> o(x, y);  <span class="hljs-comment">// 实例化参数类  </span>
+                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">in</span> a ){  <span class="hljs-comment">// 通过实例继承法，继承参数类给返回类   </span>
+                    <span class="hljs-keyword">this</span>[i] = a[i]  <span class="hljs-comment">// 此时this关键字只返回类的当前对象 </span>
+                }
+            }
+        }
+
+    <span class="hljs-comment">// 最后，使用new运算符调用享元类，第一个参数值为上文定义的类F，</span>
+    <span class="hljs-comment">// 第二个和第三个参数为普通数值，返回的类赋值给变量A，则A就变成了一个类结构</span>
+    <span class="hljs-comment">// 此时不能够通过A来读取享元类的本地方法 say()</span>
+        <span class="hljs-keyword">var</span> A = <span class="hljs-keyword">new</span> O(F, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>);
+        <span class="hljs-keyword">var</span> B = <span class="hljs-keyword">new</span> A();
+        A.say();  <span class="hljs-comment">// 如果直接调用享元类的本地方法，将提示编译错误</span>
+
+    <span class="hljs-comment">// 但可以通过实例化后的B对象来访问参数类F中的成员，以及返回类内部定义的本地属性</span>
+        B.say();  <span class="hljs-comment">// ＂返回类＂</span>
+        B.add();  <span class="hljs-comment">// 3</span>
+        alert(B.x);  <span class="hljs-comment">// 1</span>
+        alert(B.y);  <span class="hljs-comment">// 2</span>
+
+    <span class="hljs-comment">// 注意，当一个类有返回值时，如果是值类型数据，则可以访问类的成员，也可以获取返回值</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">F</span><span class="hljs-params">()</span>{</span>
+            <span class="hljs-keyword">this</span>.x = <span class="hljs-number">1</span>;
+            <span class="hljs-keyword">return</span> <span class="hljs-number">2</span>;
+        }
+        <span class="hljs-keyword">var</span> f = <span class="hljs-keyword">new</span> F();
+        alert(f.x);  <span class="hljs-comment">// 1</span>
+        alert(F());  <span class="hljs-comment">// 2</span>
+
+    <span class="hljs-comment">// 如果类返回的是引用类型或函数体，则类的成员将不可访问，它们将成为闭包结构内的私有数据，不再对外开放</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">F</span><span class="hljs-params">()</span>{</span>
+            <span class="hljs-keyword">this</span>.x = <span class="hljs-number">1</span>;
+            <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.x;
+            };
+        }
+        F.prototype.y = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+            alert(<span class="hljs-number">3</span>);
+        }
+        <span class="hljs-keyword">var</span> f = <span class="hljs-keyword">new</span> F();
+        f.x;  <span class="hljs-comment">// 访问本地属性x失败，返回undefined</span>
+        F()();  <span class="hljs-comment">// 调用返回的函数，返回1，说明它可以访问本地属性x</span>
+        f.y();  <span class="hljs-comment">// 提示编译错误，没有这个成员</span>
+
+
+<span class="hljs-number">103.</span>使用掺元类
+<span class="hljs-comment">// 掺元类就是共享通用的方法和属性，将差异比较大的类中相同功能的方法集中到一个类中声明，</span>
+<span class="hljs-comment">// 这样需要这些方法的类就可以直接从掺元类中进行扩展，通用的方法只需要声明一遍就行了</span>
+<span class="hljs-comment">// 从代码的大小、质量方面来说，这还是有一定效益的</span>
+
+<span class="hljs-comment">// 掺元类就是让一个类被多个类继承，这种继承关系被形象地称为多亲继承，它是一种比较特殊的类形式</span>
+
+<span class="hljs-comment">// 如果希望某个函数被多个类调用，那么可以通过扩充的方式让这些类共享该函数</span>
+<span class="hljs-comment">// 具体的设计思路：先创建包含通用函数的超类，然后利用这个超类扩充子类，这种包含通用方法的类可以称为掺元类</span>
+<span class="hljs-comment">// 例如，先设计一个掺元类 F，设想两个子类A和B能够继承掺元类F的通用方法 getx() 和 gety()</span>
+    <span class="hljs-keyword">var</span> F = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(x,y)</span>{</span>  <span class="hljs-comment">// 构造函数F，掺元类</span>
+        <span class="hljs-keyword">this</span>.x =x;
+        <span class="hljs-keyword">this</span>.y = y;
+    }
+    F.prototype = {
+        getx : <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.x;
+        },
+        gety : <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(y)</span>{</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.y;
+        }
+    }
+
+<span class="hljs-comment">// 然后，定义两个子类 A 和 B，利用类继承方法先继承掺元类中的本地属性，以方便继承的方法正确获取值</span>
+<span class="hljs-comment">// 实际应用中不使用类继承来继承掺元类的本地属性和方法</span>
+    A = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(x,y)</span>{</span>  <span class="hljs-comment">// 子类A</span>
+        F.call(<span class="hljs-keyword">this</span>,x,y);  <span class="hljs-comment">// 继承掺元类F</span>
+    };
+    B = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(x,y)</span>{</span>  <span class="hljs-comment">// 子类B</span>
+        F.call(<span class="hljs-keyword">this</span>,x,y); <span class="hljs-comment">// 继承掺元类F</span>
+    };
+
+<span class="hljs-comment">// 要让A类和B类都继承F类，可以使用原型继承方法来实现，但原型继承需要实例化F类</span>
+<span class="hljs-comment">// 我们可以模仿复制继承方法设计一个专门函数来实现这种继承关系，具体代码如下：</span>
+    <span class="hljs-comment">// 掺元类继承封装函数，其中参数Sub表示子类，参数Sup表示掺元类</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">extend</span><span class="hljs-params">(Sub,Sup)</span>{</span>
+        <span class="hljs-keyword">for</span>(m <span class="hljs-keyword">in</span> Sup.prototype){  <span class="hljs-comment">// 遍历掺元类的原型对象</span>
+            <span class="hljs-keyword">if</span>(!Sub.prototype[m]){  <span class="hljs-comment">// 如果子类不存在同名成员，则复制掺元类原型成员给子类原型对象</span>
+                Sub.prototype[m] = Sup.prototype[m];
+            }
+        }
+    }
+
+    <span class="hljs-comment">// 该函数很简单，使用for in循环遍历掺元类的原型对象中的每一个成员，并将其添加到子类的原型对象中</span>
+    <span class="hljs-comment">// 如果子类中已存在同名成员，则跳过该成员，转而处理下一个，这样能够确保子类原型对象中的成员不会被改写</span>
+    <span class="hljs-comment">// 有了这个封装函数，就可以直接调用它来快速生成多个相同的子类</span>
+    <span class="hljs-comment">// 传递子类参数必须事先声明，并且应通过类继承方法来继承F的本地属性和方法</span>
+
+    extend(A,F);  <span class="hljs-comment">// 继承F的子类A</span>
+    extend(B,F);  <span class="hljs-comment">// 继承F的子类B</span>
+
+<span class="hljs-comment">// 最后，实例化A类和B类，这样就可以调用F定义的通用方法了</span>
+    <span class="hljs-keyword">var</span> a = <span class="hljs-keyword">new</span> A(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>);
+    <span class="hljs-keyword">var</span> b = <span class="hljs-keyword">new</span> B(<span class="hljs-number">10</span>,<span class="hljs-number">20</span>);
+    a.getx();  <span class="hljs-comment">// 1</span>
+    a.gety();  <span class="hljs-comment">// 2</span>
+    b.getx();  <span class="hljs-comment">// 10</span>
+    b.gety();  <span class="hljs-comment">// 20</span>
+
+<span class="hljs-comment">// 也可以把多个子类合并到一个类中来实现多重继承</span>
+<span class="hljs-comment">// 例如，下面的示例定义了两个类A和B，并分别为它们定义两个原型方法</span>
+    <span class="hljs-keyword">var</span> A = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>}<span class="hljs-comment">// 类A</span>
+        A.prototype = {
+        x : <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-string">"x"</span>;
+        }
+    }
+    <span class="hljs-keyword">var</span> B = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>}  <span class="hljs-comment">// 类B</span>
+        B.prototype = {
+        y : <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-string">"y"</span>;
+        }
+    }
+    C = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>};  <span class="hljs-comment">// 空类C</span>
+    extend(C,A);  <span class="hljs-comment">// 把类A继承给类C</span>
+    extend(C,B);  <span class="hljs-comment">// 把类B继承给类C</span>
+    <span class="hljs-keyword">var</span> c = <span class="hljs-keyword">new</span> C();  <span class="hljs-comment">// 实例化类C</span>
+    c.x()  <span class="hljs-comment">// 'x'</span>
+    c.y()  <span class="hljs-comment">// 'y'</span>
+
+<span class="hljs-comment">// 面向对象中并不是所有的事物泛型都是使用继承关系来描述的，继承关系只是泛型关系的一种，</span>
+<span class="hljs-comment">// 除此之外，创建关系、原型关系、聚合关系、组合关系等，都是泛型的一种类型</span>
+<span class="hljs-comment">// 泛型概念很宽泛，通常使用继承、聚合和组合来描述事物的名词特性，</span>
+<span class="hljs-comment">// 而使用原型、元类等其他概念来描述事物的形容词概念</span>
+
+
+<span class="hljs-number">104.</span>谨慎使用伪类
+<span class="hljs-comment">// JS 的原型存在诸多矛盾，某些看起来有点像基于类的语言的复杂语法问题遮蔽了它的原型机制</span>
+<span class="hljs-comment">// 原型不但不让对象直接从其他对象继承，反而插入了一个多余的间接层，从而使构造器函数产生对象</span>
+<span class="hljs-comment">// 当一个函数对象被创建时，Function 构造器产生的函数对象会运行类似这样的一些代码：</span>
+    <span class="hljs-keyword">this</span>.prototype = {constructor: <span class="hljs-keyword">this</span>};
+
+<span class="hljs-comment">// 新函数对象被赋予一个 prototype 属性，其值包含一个 constructor 属性且属性值为该新函数对象</span>
+<span class="hljs-comment">// 该 prototype 对象是存放继承特征的地方</span>
+<span class="hljs-comment">// 因为 JS 语言没有提供一种方法来确定哪个函数是用做构造器的，</span>
+<span class="hljs-comment">// 所以每个函数都会得到一个 prototype 对象，</span>
+<span class="hljs-comment">// constructor 属性没什么太大作用，重要的是 prototype 对象</span>
+
+<span class="hljs-comment">// 定义一个构造器并扩展它的原型：</span>
+    <span class="hljs-keyword">var</span> Mammal = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name)</span> {</span> <span class="hljs-keyword">this</span>.name = name;};
+    Mammal.prototype.get_name = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span> <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.name;};
+    Mammal.prototype.says = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span> <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.saying || <span class="hljs-string">''</span>;};
+
+<span class="hljs-comment">// 构造实例：</span>
+    <span class="hljs-keyword">var</span> myMammal = <span class="hljs-keyword">new</span> Mammal(<span class="hljs-string">'mammal'</span>);
+    <span class="hljs-keyword">var</span> name = myMammal.get_name();  <span class="hljs-comment">// 'mammal'</span>
+
+<span class="hljs-comment">// 构造另一个伪类来继承 Mammal，这是通过定义它的 constructor 函数</span>
+<span class="hljs-comment">// 并替换它的 prototype 为一个 Mammal 的实例来实现的</span>
+    <span class="hljs-keyword">var</span> Cat = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name)</span> {</span>
+        <span class="hljs-keyword">this</span>.name = name;
+        <span class="hljs-keyword">this</span>.saying = <span class="hljs-string">'meow'</span>;
+    };
+    Cat.prototype = <span class="hljs-keyword">new</span> Mammal();
+    Cat.prototype.purr = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(n)</span> {</span>
+        <span class="hljs-keyword">var</span> i, s = <span class="hljs-string">''</span>;
+        <span class="hljs-keyword">for</span>( i = <span class="hljs-number">0</span>; i &lt; n; i += <span class="hljs-number">1</span>) {
+            <span class="hljs-keyword">if</span>(s) { s += <span class="hljs-string">'-'</span>; }
+            s += <span class="hljs-string">'r'</span>;
+        }
+        <span class="hljs-keyword">return</span> s;
+    };
+    Cat.prototype.get_name = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.says() + <span class="hljs-string">' '</span> + <span class="hljs-keyword">this</span>.name + <span class="hljs-string">' '</span> + <span class="hljs-keyword">this</span>.says();
+    };
+    <span class="hljs-keyword">var</span> myCat = <span class="hljs-keyword">new</span> Cat(<span class="hljs-string">'cat'</span>);
+    <span class="hljs-keyword">var</span> says = myCat.says();   <span class="hljs-comment">// 'meow'</span>
+    <span class="hljs-keyword">var</span> purr = myCat.purr(<span class="hljs-number">5</span>);  <span class="hljs-comment">// 'r-r-r-r-r'</span>
+    <span class="hljs-keyword">var</span> name = myCat.get_name();  <span class="hljs-comment">// 'meow cat meow'</span>
+
+<span class="hljs-comment">// 伪类模式的本意是想向面向对象靠拢，但它看起来与面向对象格格不入</span>
+<span class="hljs-comment">// 我们可以隐藏一些“丑陋”的细节，这是通过使用 method 方法定义一个 inherits 方法来实现的</span>
+
+    <span class="hljs-built_in">Function</span>.method(<span class="hljs-string">'inherits'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(Parent)</span> {</span>
+        <span class="hljs-keyword">this</span>.prototype = <span class="hljs-keyword">new</span> Parent();
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    });
+
+<span class="hljs-comment">// inherits 和 method 方法都返回 this，这样就可以通过链式语法只用一行语句构造 Cat</span>
+    <span class="hljs-keyword">var</span> Cat = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name)</span> {</span>
+        <span class="hljs-keyword">this</span>.name = name;
+        <span class="hljs-keyword">this</span>.saying = <span class="hljs-string">'meow'</span>;
+    }.inherits(Mammal).method(<span class="hljs-string">'purr'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(n)</span> {</span>
+        <span class="hljs-keyword">var</span> i, s = <span class="hljs-string">''</span>;
+        <span class="hljs-keyword">for</span>( i = <span class="hljs-number">0</span>; i &lt; n; i += <span class="hljs-number">1</span>) {
+            <span class="hljs-keyword">if</span>(s) { s += <span class="hljs-string">'-'</span>; }
+                s += <span class="hljs-string">'r'</span>;
+            }    
+        <span class="hljs-keyword">return</span> s;
+    }).method(<span class="hljs-string">'get_name'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.says() + <span class="hljs-string">' '</span> + <span class="hljs-keyword">this</span>.name + <span class="hljs-string">' '</span> + <span class="hljs-keyword">this</span>.says();
+    });
+
+<span class="hljs-comment">// 隐藏了 prototype 操作细节，现在看起来就没那么怪异了</span>
+<span class="hljs-comment">// 现在有了行为像“类”的构造器函数，但它们没有私有环境，所有的属性都是公开的，因此无法访问父类 super 的方法</span>
+<span class="hljs-comment">// 同时，使用构造器函数存在一个严重的隐患</span>
+<span class="hljs-comment">// 如果在调用构造器函数时忘记了在前面加上 new 前级，那么 this 将不会被绑定到一个新对象上，</span>
+<span class="hljs-comment">// 而是被绑定到全局对象上，这样不但没有扩充新对象，反而会破坏全局变量</span>
+<span class="hljs-comment">// 发生这种情况时，既没有编译时警告，也没有运行时警告</span>
+
+<span class="hljs-comment">// 这是一个严重的语言设计错误</span>
+<span class="hljs-comment">// 为降低这个问题带来的风险，所有构造器函数都约定首字母大写，且不以首字母大写的形式拼写任何其他的东西</span>
+<span class="hljs-comment">// 这样至少可以通过人工检查去发现是否缺少了 new 前缀</span>
+<span class="hljs-comment">// 当然，一个更好的备选方案就是根本不使用 new</span>
+
+<span class="hljs-comment">// 伪类形式可以给不熟悉 JS 的程序员提供便利，但它也隐藏了该语言的真实本质</span>
+<span class="hljs-comment">// 借鉴类的表示法可能误导程序员去编写过于深入和复杂的层次结构</span>
+<span class="hljs-comment">// 许多复杂的类层次结构的产生就是源于静态类型检查的约束，JS 完全摆脱了这些约束</span>
+<span class="hljs-comment">// 在基于类的语言中，类的继承是代码重用的唯一方式，JS 有着更多且更好的选择</span>
+
+
+<span class="hljs-number">105.</span>比较单例的两种模式
+<span class="hljs-comment">// 在 JS 中，单例模式（即实例结构模式）是最基本、最有用的模式之一</span>
+<span class="hljs-comment">// 这种模式提供了一种将代码组织为一个逻辑单元的手段，这个逻辑单元中的代码可以通过单一的变量进行访问</span>
+<span class="hljs-comment">// 确保单例对象只有一份实例，就可以确信自己的所有代码使用的都是同样的全局资源</span>
+<span class="hljs-comment">// 单例类在 JS 中用途广泛：  </span>
+    <span class="hljs-comment">// 可以用来划分命名空间，以减少全局变量的数量</span>
+    <span class="hljs-comment">// 可以在一种名为分支的技术中用来封装浏览器之间的差异</span>
+    <span class="hljs-comment">// 可以借助于单例模式，将代码组织得更为一致，从而使代码更容易阅读和维护</span>
+
+<span class="hljs-comment">// 1.第一种模式：对象直接量</span>
+    <span class="hljs-comment">// 最基本的单例实际上是一个对象字面量，它将一批有一定关联的方法和属性组织在一起</span>
+        <span class="hljs-keyword">var</span> Singleton = {
+            attribute1: <span class="hljs-literal">true</span>;
+            attribute2: <span class="hljs-number">10</span>
+            method1: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span> },
+            method2: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span> }
+        };
+
+    <span class="hljs-comment">// 这些成员可以通过Singleton加圆点运算符来访问，例如：</span>
+        Singleton.attribute1 = <span class="hljs-literal">false</span>;
+        <span class="hljs-keyword">var</span> total = Singleton. attribute2 + <span class="hljs-number">5</span>;
+        <span class="hljs-keyword">var</span> result = Singleton.method1();
+
+    <span class="hljs-comment">// 对象字面量只是用于创建单例的方法之一，并非所有对象字面值都是单体，</span>
+    <span class="hljs-comment">// 如果它只是用来模仿关联数组或容纳数据的话，那显然不是单例</span>
+    <span class="hljs-comment">// 但如果它用来组织一批相关方法和属性，那就可能是单例，其区别主要在于设计者的意图</span>
+
+    <span class="hljs-comment">// 在单例对象内创建类的私有成员的最简单、最直接的方法是使用下画线表示法</span>
+    <span class="hljs-comment">// 在 JS 界如果变量和方法使用下划线，则表示该变量和方法是私有方法，只允许内部调用，第三方不应该去调用</span>
+        GiantCorp.DataParser = {
+            <span class="hljs-comment">// 私有方法</span>
+            _stripWhitespace: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(str)</span> {</span>
+                <span class="hljs-keyword">return</span> str.replace(<span class="hljs-regexp">/\s+/</span>, <span class="hljs-string">''</span>);
+            },
+            <span class="hljs-comment">// 公用方法</span>
+            stringToArray: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(str, delimiter, stripWS)</span> {</span>
+                <span class="hljs-keyword">if</span> (stripWS) {
+                    str = <span class="hljs-keyword">this</span>._stripWhitespace(str);
+                }
+                <span class="hljs-keyword">var</span> outputArray = <span class="hljs-keyword">this</span>._stringSplit(str, delimiter);
+                <span class="hljs-keyword">return</span> outputArray;
+            }
+        };
+
+    <span class="hljs-comment">// 在 stringToArray 方法中使用 this 访问单体中的其他方法，这是访问单体中其他成员或方法最简便的方式</span>
+    <span class="hljs-comment">// 这样做有一点风险，因为 this 并不一定指向 GiantCorp.DataParser</span>
+    <span class="hljs-comment">// 例如，如果把某个方法用做事件监听器，那么其中的this指向的是window对象，</span>
+    <span class="hljs-comment">// 因此大多数 JS 库都会为事件关联进行作用域校正，</span>
+    <span class="hljs-comment">// 如在这里使用 GiantCorp.DataParser 比使用 this 更为安全</span>
+
+
+<span class="hljs-comment">// 2.第二种模式：使用闭包</span>
+    <span class="hljs-comment">// 在单例对象中创建私有成员的第二种方法是借助闭包</span>
+    <span class="hljs-comment">// 因为单例只会被实例化一次，所以不必担心自己在构造函数中声明了多少成员</span>
+    <span class="hljs-comment">// 由于每个方法和属性都只会被创建一次，所以可以把它们声明在构造函数内部</span>
+    <span class="hljs-comment">// 使用闭包创建拥有私有成员的单例类的示例如下：</span>
+        MyNamespace.Singleton = (<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>  <span class="hljs-comment">// 私有成员</span>
+        <span class="hljs-keyword">var</span> privateAttribute1 = <span class="hljs-literal">false</span>;
+            <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">privateMethod1</span><span class="hljs-params">()</span> {</span>}
+                <span class="hljs-keyword">return</span> {
+                <span class="hljs-comment">// 公有成员</span>
+                publicAttribute1: <span class="hljs-literal">true</span>;
+                publicMethod1: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span> },
+            };
+        })();
+
+    <span class="hljs-comment">// 这种单例模式又称为模块模式，指的是它可以把一批相关方法和属性组织为模块并起到划分命名空间的作用</span>
+    <span class="hljs-comment">// 将私有成员放在闭包中可以确保其不会在单例对象之外被使用，</span>
+    <span class="hljs-comment">// 因此开发人员可以自由地改变对象的实现细节，而不会殃及别人的代码</span>
+    <span class="hljs-comment">// 还可以使用这种办法对数据进行保护和封装</span>
+
+<span class="hljs-comment">// 在 JS 中单例模式的主要优点： </span>
+    <span class="hljs-comment">// 1.对代码的组织作用</span>
+        <span class="hljs-comment">// 单例模式将相关方法和属性组织在一个不会被多次实例化的单例中，可以使代码的调试和维护变得更轻松</span>
+        <span class="hljs-comment">// 描述性的命名空间还可以增强代码的自我说明性</span>
+        <span class="hljs-comment">// 将方法包裹在单例中，可以防止它们被其他程序员误改</span>
+    <span class="hljs-comment">// 2.单例模式的一些高级变体可以在开发周期的后期用于对脚本进行优化</span>
+
+<span class="hljs-comment">// 在 JS 中单例模式的主要缺点：</span>
+    <span class="hljs-comment">// 1.因为提供的是一种单点访问，所以它有可能导致模块间的强耦合</span>
+        <span class="hljs-comment">// 单体最好是留给定义命名空间和实现分支型方法使用，在这些情况下耦合不是什么问题</span>
+    <span class="hljs-comment">// 2.有某些更高级的模式会更符合任务的需要</span>
+        <span class="hljs-comment">// 虚拟代理能给予开发人员对实例化方式更多的控制权</span>
+        <span class="hljs-comment">// 也可以用一个真正的对象工厂来取代分支型单例</span>
+
+</code></pre>

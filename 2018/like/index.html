@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title title="like">兴趣-奇斯威克-Jisuowei.com</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0">
+	<link rel='stylesheet' type='text/css' href='../css/jikit.css' />
+	<link rel='stylesheet' type='text/css' href='../css/jisuowei.css' />
+	<link rel='stylesheet' type='text/css' href='../css/jisuowei_mobile.css' />
+</head>
+<style>
+
+#chart {
+	width: 100%;
+	height: 200px;
+	border: 1px solid #DBDBDB;
+	border-radius: 4px;
+	margin: 24px 0;
+}
+
+#map {
+	position: absolute;
+	top: 48px;right: 20px;bottom: 20px;left: 20px;
+	border-radius: 4px;
+	box-shadow: 0 0 20px #000, 0 8px 20px #000;
+}
+
+.ride_dv {text-align: center;background:#efefef;padding: 4px 0;color:#888;margin-top:32px;border-radius: 4px;}
+.ride_tt {font-size:18px;line-height:18px;margin-top:32px;padding-left:8px;border-left: 4px solid #C23531;}
+.ride_tt a {font-size: 12px;font-weight: normal;float:right;}
+.ride_ds {font-family:'DINCondWeb';margin:6px 0;}
+.ride_dt {font-size:14px;color:#aaa;}
+
+</style>
+<body>
+
+
+</body>
+<script src="../../static/js/jquery.2.1.1.min.js"></script>
+<script src="../js/jikit.js"></script>
+<script src="../js/jisuowei.js"></script>
+<script src="../../static/js/echarts.common.min.js"></script>
+<script>
+
+$('#top').html('<p id="tab"></p>');
+
+$('#mid').html('<div id="ride_box"><div id="chart"></div><div id="ride_record"></div></div><div id="webapp_box"></div>');
+
+
+function startSecNav(tab){
+	for( var i=0; i<tab.length; i++ ) {
+		$('#tab').append($('<a href="javascript:;" id="'+tab[i].id+'">'+tab[i].value+'</a>'));
+	}
+	$('#tab a').click(function(){
+		var notation = $(this).attr('id');
+		$('#tab a').removeClass('on');
+		$('#tab a#' + notation).addClass('on');
+		$('#mid > div').hide();
+		$('#'+notation+'_box').show();
+
+	});
+	$('#ride').click();
+};
+
+startSecNav(TAG.Like.tab);
+
+
+var option = {
+	title: { text:'单次骑行里程记录（24h内）'},
+	tooltip: {trigger: 'axis',axisPointer: {type: 'shadow'},formatter:'{b}：{c} km'},
+	grid: {top: '16%', left: '8%',right: '8%',bottom: '3%',containLabel: true},
+	xAxis: {type: 'category',data: ['2001','2002','2004','2011/07/08','2011/07/11','2012/06/27','2013/10/05']},
+	yAxis: {type: 'value',name:'单位（km）',nameLocation:'middle',nameGap:40,},
+	series: [{name: '里程',type: 'bar',barWidth: 20,data: [1.8,7.8,14.2,82,135,195.7,308.9]}]
+};
+
+echarts.init(document.getElementById('chart')).setOption(option);
+
+
+
+$('#ride_record').html(
+
+'<p class="ride_dv">小学时代<p>'+
+
+	'<p class="ride_tt">学车【晴】</p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2001_1 &nbsp; <i class="fa fa-road"></i> 0.1km</p>'+
+	'<p class="ride_dt">blah blah</p>'+
+
+
+	'<p class="ride_tt">同学的家【晴】</p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2001_2 &nbsp; <i class="fa fa-road"></i> 1.4km</p>'+
+	'<p class="ride_dt">blah blah</p>'+
+
+
+	'<p class="ride_tt">好奇心【小雨】</p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2001_3 &nbsp; <i class="fa fa-road"></i> 1.8km</p>'+
+	'<p class="ride_dt">blah blah</p>'+
+
+	'<p class="ride_tt">老家【清】</p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2002 &nbsp; <i class="fa fa-road"></i> 7.8km</p>'+
+	'<p class="ride_dt">blah blah</p>'+
+
+
+'<p class="ride_dv">初中时代<p>'+
+
+	'<p class="ride_tt">卸甲【晴】</p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2004 &nbsp; <i class="fa fa-road"></i> 14.2km</p>'+
+	'<p class="ride_dt">blah blah</p>'+
+
+
+	'<p class="ride_tt">绕道外环【晴】</p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2005 &nbsp; <i class="fa fa-road"></i> 9.2km</p>'+
+	'<p class="ride_dt">blah blah</p>'+
+
+
+	'<p class="ride_tt">再绕外环【晴】</p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2007 &nbsp; <i class="fa fa-road"></i> 11.2km</p>'+
+	'<p class="ride_dt">blah blah</p>'+
+
+
+'<p class="ride_dv">高中时代<p>'+
+
+	'<p class="ride_tt">甸垛【晴】</p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2010/07/30 &nbsp; <i class="fa fa-road"></i> 14.3km</p>'+
+	'<p class="ride_dt">blah blah</p>'+
+
+
+	'<p class="ride_tt">邵伯【晴】</p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2011/05/04 &nbsp; <i class="fa fa-road"></i> 30.1km</p>'+
+	'<p class="ride_dt">英语考试没去。邵伯之行。2：26出发-2：52车逻-2：55八桥岔口-3：16江都界-3：28硬币一枚-4：02邵伯镇-5：17离开邵伯-5：38境内撒尿-5：40看生物-6：00再出发-6：40改用电动-6：45再用脚力-6：56出江都进高邮-7：29八桥岔口-7：35车逻-8：11到净土寺广场</p>'+
+
+
+'<p class="ride_dv">高考暑假<p>'+
+
+	'<p class="ride_tt">高邮湖西四镇【晴】</p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2011/07/08 &nbsp; <i class="fa fa-road"></i> 82km &nbsp; <i class="fa fa-clock-o"></i> 6h 36min &nbsp; <i class="fa fa-tachometer"></i> 12.4km/h</p>'+
+	'<p class="ride_dt">郭集 送桥 天山 菱塘</p>'+
+
+
+	'<p class="ride_tt">高邮东南九镇【晴转暴雨】</p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2011/07/11 &nbsp; <i class="fa fa-road"></i> 135km &nbsp; <i class="fa fa-clock-o"></i> 11h 44min &nbsp; <i class="fa fa-tachometer"></i> 11.5km/h</p>'+
+	'<p class="ride_dt">车逻 八桥 卸甲 汉留 汤庄 甘垛 横泾 司徒 三垛</p>'+
+
+
+	'<p class="ride_tt">高邮北部六镇【晴】</p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2011/07/26 &nbsp; <i class="fa fa-road"></i> 116km &nbsp; <i class="fa fa-clock-o"></i> 7h 46min &nbsp; <i class="fa fa-tachometer"></i> 14.9km/h</p>'+
+	'<p class="ride_dt">东墩 马棚 界首 临泽 川青 周巷 营南 周山 张轩 龙虬</p>'+
+
+
+'<p class="ride_dv">2011+ &nbsp; 50km+<p>'+
+
+	'<p class="ride_tt">探路常州【晴】</p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2012/04/07 &nbsp; <i class="fa fa-road"></i> 119.1km &nbsp; <i class="fa fa-clock-o"></i> -h -min &nbsp; <i class="fa fa-tachometer"></i> -km/h</p>'+
+	'<p class="ride_dt">blah blah</p>'+
+
+
+	'<p class="ride_tt">锡常往返【晴】</p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2012/06/02 &nbsp; <i class="fa fa-road"></i> 84.5km &nbsp; <i class="fa fa-clock-o"></i> 3h 48min &nbsp; <i class="fa fa-tachometer"></i> 22.5km/h</p>'+
+	'<p class="ride_dt">blah blah</p>'+
+
+
+	'<p class="ride_tt">奢风东南记【小雨转阴】<a href="https://jisuowei.com/ride" target="_blank" class="fa fa-map-marker"> 骑行轨迹</a></p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2012/06/27 &nbsp; <i class="fa fa-road"></i> 195.7km &nbsp; <i class="fa fa-clock-o"></i> 9h 59min &nbsp; <i class="fa fa-tachometer"></i> 19.7km/h</p>'+
+	'<p class="ride_dt">放暑假，第一次从无锡骑车回高邮。</p>'+
+
+
+	'<p class="ride_tt">锡邮单程【晴】</p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2013/07/02 &nbsp; <i class="fa fa-road"></i> 193.1km &nbsp; <i class="fa fa-clock-o"></i> 10h 10min &nbsp; <i class="fa fa-tachometer"></i> 19.4km/h</p>'+
+	'<p class="ride_dt">第二次从无锡骑回高邮，路线与上次基本一致。</p>'+
+
+
+	'<p class="ride_tt">临泽之行【晴】</p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2013/07/14 &nbsp; <i class="fa fa-road"></i> 100.5km &nbsp; <i class="fa fa-clock-o"></i> 4h 45min &nbsp; <i class="fa fa-tachometer"></i> 21.3km/h</p>'+
+	'<p class="ride_dt">blah blah</p>'+
+
+
+	'<p class="ride_tt">环太湖 【晴转暴雨】<a href="https://jisuowei.com/ride" target="_blank" class="fa fa-map-marker"> 骑行轨迹</a></p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2013/10/05 &nbsp; <i class="fa fa-road"></i> 308.9km &nbsp; <i class="fa fa-clock-o"></i> 16h 59min &nbsp; <i class="fa fa-tachometer"></i> 18.17km/h</p>'+
+	'<p class="ride_dt">blah blah</p>'+
+
+
+	'<p class="ride_tt">毕业骑行-常镇 【晴】<a href="https://jisuowei.com/ride" target="_blank" class="fa fa-map-marker"> 骑行轨迹</a></p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2014/07/07 &nbsp; <i class="fa fa-road"></i> 85.9km &nbsp; <i class="fa fa-clock-o"></i> 5h 25min &nbsp; <i class="fa fa-tachometer"></i> 15.8km/h</p>'+
+	'<p class="ride_dt">blah blah</p>'+
+
+
+	'<p class="ride_tt">毕业骑行-镇宁 【晴】<a href="https://jisuowei.com/ride" target="_blank" class="fa fa-map-marker"> 骑行轨迹</a></p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2014/07/08 &nbsp; <i class="fa fa-road"></i> 73.6km &nbsp; <i class="fa fa-clock-o"></i> 4h 17min &nbsp; <i class="fa fa-tachometer"></i> 17.1km/h</p>'+
+	'<p class="ride_dt">blah blah</p>'+
+
+
+	'<p class="ride_tt">南京长江大桥往返 【晴】<a href="https://jisuowei.com/ride" target="_blank" class="fa fa-map-marker"> 路线</a></p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2014/10/03 &nbsp; <i class="fa fa-road"></i> 63.8km &nbsp; <i class="fa fa-clock-o"></i> 3h 37min &nbsp; <i class="fa fa-tachometer"></i> 17.8km/h</p>'+
+	'<p class="ride_dt">blah blah</p>'+
+
+
+	'<p class="ride_tt">常苏单程 【阴】<a href="https://jisuowei.com/ride" target="_blank" class="fa fa-map-marker"> 骑行轨迹</a></p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2016/06/04 &nbsp; <i class="fa fa-road"></i> 95.5km &nbsp; <i class="fa fa-clock-o"></i> 5h 37min &nbsp; <i class="fa fa-tachometer"></i> 17km/h</p>'+
+	'<p class="ride_dt">blah blah</p>'+
+
+	'<p class="ride_tt">宁苏单程两日 【阴转晴】<a href="https://jisuowei.com/ride" target="_blank" class="fa fa-map-marker"> 路线</a></p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2017/08/26 &nbsp; <i class="fa fa-road"></i> 233km &nbsp; <i class="fa fa-clock-o"></i> 13h 42min &nbsp; <i class="fa fa-tachometer"></i> 17km/h</p>'+
+	'<p class="ride_dt">blah blah</p>'+
+
+	''
+);
+
+
+$('#webapp_box').html(
+
+	'<p class="ride_tt">TipTriangle <a href="https://jisuowei.com/app/tipTriangle" target="_blank" class="fa fa-link"> 去看看</a></p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2015/09/14'+
+	'<p class="ride_dt">这个 demo 并不能算是一个 WebApp ，只是因为这是鸡哥当年写的第一个 JS function ，特此留念。</p>'+
+
+
+	'<p class="ride_tt">日记阅读器 JiDiary 1.0 <a href="https://jisuowei.com/app/diary1" target="_blank" class="fa fa-link"> 去看看</a></p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2016/01/25'+
+	'<p class="ride_dt">纸质载体多有不便的产物。</p>'+
+
+
+	'<p class="ride_tt">日记阅读器 JiDiary 2.0 <a href="https://jisuowei.com/app/diary2" target="_blank" class="fa fa-link"> 去看看</a></p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2016/08/11'+
+	'<p class="ride_dt">对 1.0 的重大升级，支持了本地搜索，信息概览，往年今日..等功能。</p>'+
+
+
+	'<p class="ride_tt">鸡哥 JavaScript 版俄罗斯方块 <a href="https://jisuowei.com/app/tetris" target="_blank" class="fa fa-link"> 去看看</a></p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2017/03/29'+
+	'<p class="ride_dt">心血来潮，鸡哥写的第一个 JS 游戏，纯代码实现，没有用一张图片。</p>'+
+
+
+	'<p class="ride_tt">浏览器for循环空转5亿次耗时<a href="https://jisuowei.com/app/forLoop500m" target="_blank" class="fa fa-link"> 去看看</a></p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2017/05/02'+
+	'<p class="ride_dt">浏览器小测试</p>'+
+
+	'<p class="ride_tt">分区小能手<a href="https://jisuowei.com/app/partAssi" target="_blank" class="fa fa-link"> 去看看</a></p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2017/07/19'+
+	'<p class="ride_dt">项目中的一个功能实现</p>'+
+
+	'<p class="ride_tt">番茄计时器<a href="https://jisuowei.com/app/tomato" target="_blank" class="fa fa-link"> 去看看</a></p>'+
+	'<p class="ride_ds"><i class="fa fa-calendar"></i> 2018/03/30'+
+	'<p class="ride_dt">工作好伙伴</p>'+
+
+	''
+);
+
+
+
+</script>
+</html>

@@ -1,0 +1,687 @@
+<pre><code class="js hljs ">
+<span class="hljs-comment">/*
+
+    JavaScript 编写高质量代码：改善JavaScript程序的188个建议 【成林】
+
+    2017-03-06
+    ~
+    2017-03-11 Noted by Chisw
+
+*/</span>
+
+
+<span class="hljs-number">158.</span>比较主流浏览器内核解析
+<span class="hljs-number">159.</span>推荐根据浏览器特性进行检测
+<span class="hljs-number">160.</span>各引擎对 ECMAScript v3 的分歧
+<span class="hljs-number">161.</span>ECMAScript v3 的补充
+<span class="hljs-number">162.</span>Event分歧
+<span class="hljs-number">163.</span>DOM分歧
+<span class="hljs-number">164.</span>CSS分歧
+<span class="hljs-number">165.</span>不要混淆JS和浏览器
+<span class="hljs-number">166.</span>掌握 JS 预编译过程
+<span class="hljs-number">167.</span>JS执行顺序
+<span class="hljs-number">168.</span>避免二次评估
+<span class="hljs-number">169.</span>建议使用直接量
+<span class="hljs-number">170.</span>不要让JS引擎重复工作
+<span class="hljs-number">171.</span>使用位操作符执行逻辑运算
+<span class="hljs-number">172.</span>推荐使用原生方法
+<span class="hljs-number">173.</span>编写无阻塞JS脚本
+<span class="hljs-number">174.</span>使脚本延迟执行
+<span class="hljs-number">175.</span>使用XHR脚本注入
+<span class="hljs-number">176.</span>最优化非阻塞模式
+<span class="hljs-number">177.</span>避免深陷作用域访问
+<span class="hljs-number">178.</span>推荐JS性能调优
+<span class="hljs-number">179.</span>减少DOM操作中的Repaint和Reflow
+<span class="hljs-number">180.</span>提高BOM访问效率
+<span class="hljs-number">181.</span>使用setTimeout实现工作线程
+<span class="hljs-number">182.</span>使用Web Worker
+<span class="hljs-number">183.</span>避免内存泄漏
+<span class="hljs-number">184.</span>使用SVG
+<span class="hljs-number">185.</span>减少对象成员访问
+<span class="hljs-number">186.</span>推荐<span class="hljs-number">100</span>ms用户体验
+<span class="hljs-number">187.</span>使用接口解决JS文件冲突
+<span class="hljs-number">188.</span>避免JS与CSS冲突
+
+
+<span class="hljs-comment">// 2017-03-06</span>
+<span class="hljs-number">158.</span>比较主流浏览器内核解析
+<span class="hljs-comment">// 浏览器可以分为两部分：外壳（shell）、内核（core），种类上外多内少</span>
+<span class="hljs-comment">// 外壳包括菜单、工具栏等，主要提供界面操作、参数设置，调用内核来实现各种功能</span>
+<span class="hljs-comment">// 内核是基于标记语言显示内容的程序或模块，也有一些浏览器不区分内外</span>
+
+<span class="hljs-comment">// 内核又可以分为：渲染引擎、JS 引擎，两者也是随着发展而相互独立开</span>
+<span class="hljs-comment">// 常见的有：Trident（MS）、Gecko（F）、Presto（O）、Webkit（S、F）</span>
+    <span class="hljs-comment">// T：微软最垃圾</span>
+    <span class="hljs-comment">// G：功能强大，耗资源</span>
+    <span class="hljs-comment">// P：处理 JS 快，丢失一部分网页兼容性</span>
+    <span class="hljs-comment">// W：浏览网页快，容错性较低</span>
+
+
+<span class="hljs-number">159.</span>推荐根据浏览器特性进行检测
+<span class="hljs-comment">// 各浏览器、各版本之间都存在差异，3 种策略：</span>
+    <span class="hljs-comment">// 进行检测，全面兼容</span>
+    <span class="hljs-comment">// 坚持 JS 标准，谁支持支持谁</span>
+    <span class="hljs-comment">// 使用第三方框架</span>
+
+<span class="hljs-comment">// 检测浏览器的名称、版本号、操作系统类型：使用 BOM Navigator 对象相关属性</span>
+<span class="hljs-comment">// 对特定的对象、属性、方法检测： if(condition) {}</span>
+
+
+<span class="hljs-number">160.</span>各引擎对 ECMAScript v3 的分歧
+<span class="hljs-comment">// IE 不支持 \v 空白转义</span>
+<span class="hljs-comment">// IE 只对 v3 标准中保留字支持 23/31 个</span>
+<span class="hljs-comment">// IE 存在可能会导致语法错误的 '\' 文字换行符</span>
+<span class="hljs-comment">// IE 不会将函数的 arguments 包含在上下文环境中</span>
+<span class="hljs-comment">// IE 中全局对象（Global）不能使用 this 进行迭代</span>
+<span class="hljs-comment">// IE 中使用 delete 通过 this 指针删除全局成员会产生错误</span>
+<span class="hljs-comment">// IE 中全局对象不继承 Object.prototype</span>
+<span class="hljs-comment">// IE 中向数组尾部添加逗号分隔会增加数组长度，然后视最后一个元素为 undefined</span>
+<span class="hljs-comment">// IE 中通过全局变量保存的函数不可通过函数名调用</span>
+<span class="hljs-comment">// IE 中使用 or 而不是 and 进行字符串比较</span>
+<span class="hljs-comment">// IE 中使用 with 修改函数作用域，都会绑定到全局</span>
+<span class="hljs-comment">// IE 不支持通过 for in 语句枚举类型的自定义属性</span>
+<span class="hljs-comment">// IE 中保存捕获异常的变量在当前上下文环境是可见的，catch 执行后依然存在</span>
+<span class="hljs-comment">// IE 会使用 'undefined' 字符串作为分隔符连接数组成员值</span>
+<span class="hljs-comment">// IE 调用 Array.unshift 方法会返回 undefined</span>
+<span class="hljs-comment">// IE 在返回各对象 length 属性值时与标准完全不符（至少5个）</span>
+<span class="hljs-comment">// IE 在参数精度不确定时会抛出异常</span>
+<span class="hljs-comment">// IE 在调用日期原型方法 valueOf() 时会返回 0，而不是标准的 NaN</span>
+<span class="hljs-comment">// IE 会默认使用空白符代替 undefined 值</span>
+<span class="hljs-comment">// IE 不会清除子表达式中重复匹配的选项</span>
+<span class="hljs-comment">// IE 在正则重复时，不会抛出语法错误，而是类型错误</span>
+<span class="hljs-comment">// IE 中 getYear 等价于 getFullYear （还有 set）</span>
+
+
+<span class="hljs-comment">// 2017-03-09</span>
+<span class="hljs-number">161.</span>ECMAScript v3 的补充
+<span class="hljs-comment">// IE 没有提供任何方法来检测 NaN 的值</span>
+
+<span class="hljs-comment">// 标准提供了浮点转字符串的精度表示，但最终实现依赖于实现的代理设备</span>
+
+<span class="hljs-comment">// IE 在使用 typeof 检测宿主对象类型时会出现不同</span>
+    <span class="hljs-keyword">typeof</span> (window.alert)  <span class="hljs-comment">// IE: Object  Other: function</span>
+    <span class="hljs-keyword">var</span> a = window.alert; alert.apply(<span class="hljs-literal">null</span>, [<span class="hljs-number">45</span>]);  <span class="hljs-comment">// IE:异常  Other:45</span>
+
+<span class="hljs-comment">// IE 在使用 for in 枚举属性时是倒序的</span>
+<span class="hljs-comment">// IE、FF、Safari 允许间接调用 eval，非标准</span>
+<span class="hljs-comment">// IE 在 toString 处理空白时，（换行符）会连同 Tab 符一起忽略掉</span>
+<span class="hljs-comment">// IE 在使用 Object 构造器构建宿主对象时，会视为一个 object 对象，其它则视为 DOM 对象</span>
+
+<span class="hljs-comment">// IE 在使用 valueOf 读取宿主对象的值时，会抛出错误</span>
+    <span class="hljs-keyword">var</span> x = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Object</span>(window.document);
+    x.valueOf();
+
+<span class="hljs-comment">// 各引擎输出时间相关方法时各异：</span>
+    <span class="hljs-comment">// toLocaleString、toUTCString</span>
+    <span class="hljs-comment">// toDateString、toLocaleDateString </span>
+    <span class="hljs-comment">// toTimeString、toLocaleTimeString</span>
+
+<span class="hljs-comment">// IE 和 O 会将所有字符串带有负号的十六进制数字转换为 NaN，其它转换为负数</span>
+<span class="hljs-comment">// IE 在 toString 数值原型时使用无效基数会抛出异常</span>
+
+<span class="hljs-comment">// 使用 RegExp 构造函数时，如果传递的参数为空、未定义 /，各浏览器返回值各异</span>
+
+
+<span class="hljs-comment">// 2017-03-11</span>
+<span class="hljs-number">162.</span>Event分歧
+<span class="hljs-comment">//                   IE                  非IE</span>
+<span class="hljs-comment">// event 对象        直接使用             FF 里需要通过参数传递，onclick="doit(event)"</span>
+<span class="hljs-comment">// 键盘值            event.keyCode       event.which</span>
+<span class="hljs-comment">// 光标绝对位置      event.x              event.pageX</span>
+<span class="hljs-comment">// 光标相对位置      event.offsetX        event.layerX</span>
+<span class="hljs-comment">// 绑定事件          attachEvent         addEventListener</span>
+<span class="hljs-comment">// 注销事件          detachEvent         removeEventListener</span>
+<span class="hljs-comment">// event 目标源      event.srcElement    FF 中 event.target</span>
+<span class="hljs-comment">//                   返回 Html Element   返回节点</span>
+
+<span class="hljs-comment">// 目标源兼容： obj = event.srcElement ? event.srcElement : event.target</span>
+
+
+<span class="hljs-number">163.</span>DOM分歧
+<span class="hljs-comment">//                   IE                  非IE</span>
+<span class="hljs-comment">// ID 获取元素       eval('#id') 也可以   只能 getElementById('#id')</span>
+<span class="hljs-comment">// 集合对象          () 也可以            只能 []</span>
+<span class="hljs-comment">// 删除节点          removeNode           只能父级 removeChild</span>
+<span class="hljs-comment">// 交换节点          swapNode             自定义</span>
+<span class="hljs-comment">// 插入节点          自带两个              使用标准 insertBefore</span>
+<span class="hljs-comment">// 访问自定义属性    常规方法即可          只能使用 getAttribute</span>
+<span class="hljs-comment">// input.type 属性   只读                 可读写</span>
+<span class="hljs-comment">// window.location  支持 location.href    只支持到 location</span>
+<span class="hljs-comment">// body 标签对象     需要完全读取           无需</span>
+<span class="hljs-comment">// 访问父节点        obj.parentElement     FF obj.parentNode</span>
+<span class="hljs-comment">// 插入文本          innerText             textContent</span>
+<span class="hljs-comment">// tr 标签对象       不支持赋值、添加</span>
+
+<span class="hljs-comment">// frame 切换： window.document.getElementById('id').src = 'chiue.html';</span>
+
+
+<span class="hljs-number">164.</span>CSS分歧
+<span class="hljs-comment">// CSS 访问：obj.style.property；驼峰命名；</span>
+
+<span class="hljs-comment">//                   IE                  非IE</span>
+<span class="hljs-comment">// float 是保留字    styleFloat           cssFloat</span>
+<span class="hljs-comment">// 计算样式          obj.currentStyle     document.defaultView.getComputedStyle(obj, null);</span>
+<span class="hljs-comment">// 类样式 get set    getAttribute('className')     getAttribute('class')</span>
+<span class="hljs-comment">// for 属性          getAttribute('htmlFor')       getAttribute('for')</span>
+<span class="hljs-comment">// 可视区            document.documentElement.clientWidth    window.innerWidth</span>
+<span class="hljs-comment">// 透明度            alpha(opacity=80)    opacity=0.8</span>
+<span class="hljs-comment">// 元素尺寸          obj.style.height = imgObj.height        需要添加尺寸单位 +'px'</span>
+
+<span class="hljs-comment">// 光标位置：</span>
+    <span class="hljs-comment">// clientX  窗口</span>
+    <span class="hljs-comment">// offsetX  事件对象</span>
+    <span class="hljs-comment">// screenX  显示器</span>
+    <span class="hljs-comment">// x        父文档</span>
+
+
+<span class="hljs-number">165.</span>不要混淆JS和浏览器
+<span class="hljs-comment">// JS 的运行环境包括：宿主环境、执行环境</span>
+
+<span class="hljs-comment">// 脚本语言不提供 I/O 接口，没有与外界通信能力、不能操作外围设备、管理内存、修改注册表，只能通过宿主来完成</span>
+
+<span class="hljs-comment">// 执行环境是由宿主环境通过脚本引擎创建的，实际上就是 JS 引擎创建的一个代码解析初始化环境</span>
+<span class="hljs-comment">// 包括：一套与宿主环境相联系的规则、JS 引擎内核（语法、逻辑、命令、算法）、内置对象和 API、其它约定</span>
+
+
+<span class="hljs-number">166.</span>掌握 JS 预编译过程
+<span class="hljs-comment">// JS 的解析过程包括：编译期、执行期</span>
+<span class="hljs-comment">// 编译期：JS 解释器将完成代码预处理，将 JS 代码转换成字节码</span>
+<span class="hljs-comment">// 执行期：JS 解释器借助执行期环境将字节码生成机械码，并按顺序执行</span>
+
+<span class="hljs-comment">// 解释型：代码在 执行时 才被解释器逐行动态编译和执行</span>
+<span class="hljs-comment">// 编译型：在 执行前 就完成编译</span>
+
+<span class="hljs-comment">// 编译器构成：</span>
+    <span class="hljs-comment">// 符号表：存储所有符号信息，类型、范围等</span>
+    <span class="hljs-comment">// 词法分析器：将字符流（文本）转换为记号（关键字、操作符）</span>
+    <span class="hljs-comment">// 语法分析器：读取记号流，建立语法树</span>
+    <span class="hljs-comment">// 语义检查器：检查语法树的错误</span>
+    <span class="hljs-comment">// 中间代码生成器：将语法树转换为中间代码</span>
+    <span class="hljs-comment">// 代码优化器：优化中间代码</span>
+    <span class="hljs-comment">// 代码生成器：将中间代码转换成二进制字节码</span>
+
+    <span class="hljs-comment">// 符号表在每个 器 中都会被使用</span>
+    <span class="hljs-comment">// 报错发生在语法树中</span>
+
+
+<span class="hljs-number">167.</span>JS执行顺序
+<span class="hljs-comment">// 虽然变量和函数声明可以在文档任意位置，</span>
+<span class="hljs-comment">// 但良好的习惯是在所有的代码之前声明全局变量和函数，并初始化</span>
+<span class="hljs-comment">// 函数内部同样如此</span>
+
+<span class="hljs-comment">// 可执行的 document.write</span>
+    document.write(<span class="hljs-string">"&lt;script&gt; alert('s')&lt;\/script&gt;"</span>);
+
+
+<span class="hljs-number">168.</span>避免二次评估
+<span class="hljs-comment">// JS 中有四种函数可以实现运行字符串，此类操作代价较高，不建议使用它们</span>
+    <span class="hljs-built_in">eval</span>(str)
+    <span class="hljs-built_in">Function</span>(str)
+    setTimeout(str,time)
+    setInterval(str,time)
+
+
+<span class="hljs-number">169.</span>建议使用直接量
+    <span class="hljs-keyword">var</span> arr = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>();
+    <span class="hljs-keyword">var</span> arr = [];  <span class="hljs-comment">// 推荐，赋值更快、占用空间小、运行快</span>
+
+
+<span class="hljs-number">170.</span>不要让JS引擎重复工作
+<span class="hljs-comment">// 比如浏览器检测：应使用三元运算符提高效率</span>
+
+
+<span class="hljs-number">171.</span>使用位操作符执行逻辑运算
+<span class="hljs-comment">// JS 引擎由低级语言构建，处理过程中速度是最快的</span>
+<span class="hljs-comment">// 在 JS 中位运算符经常被误解，很少被使用，同时在布尔表达式中误用</span>
+    <span class="hljs-comment">// AND  位与    都为1 结果1</span>
+    <span class="hljs-comment">// OR   位或    有一个1 结果1</span>
+    <span class="hljs-comment">// XOR  位异或  只一个1 结果1</span>
+    <span class="hljs-comment">// NOT  位非    遇0返1 遇1返0</span>
+
+<span class="hljs-comment">// 通常应用在对 2 取模运算 实现颜色交替</span>
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;rows.length; i++) {
+        <span class="hljs-keyword">if</span>(i % <span class="hljs-number">2</span>) {} <span class="hljs-keyword">else</span> {}
+    }
+
+    <span class="hljs-comment">// 重写：速度提升 50%</span>
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;rows.length; i++) {
+        <span class="hljs-keyword">if</span>(i &amp; <span class="hljs-number">1</span>) {} <span class="hljs-keyword">else</span> {}
+    }    
+
+<span class="hljs-comment">// 使用位操作的技术成为掩码，是计算机科学中常用的技术，可用于同时判断多个布尔</span>
+    <span class="hljs-keyword">var</span> OPTION_A = <span class="hljs-number">1</span>;
+    <span class="hljs-keyword">var</span> OPTION_B = <span class="hljs-number">2</span>;
+    <span class="hljs-keyword">var</span> OPTION_C = <span class="hljs-number">4</span>;
+    <span class="hljs-keyword">var</span> OPTION_D = <span class="hljs-number">8</span>;
+    <span class="hljs-keyword">var</span> OPTION_E = <span class="hljs-number">16</span>;
+    <span class="hljs-keyword">var</span> options = OPTION_A | OPTION_C | OPTION_D;
+    <span class="hljs-keyword">if</span>(options &amp; OPTION_A) {}
+
+
+<span class="hljs-number">172.</span>推荐使用原生方法
+<span class="hljs-comment">// 原生方法都是原生语言写的（C++），意味着这些方法被编译成了机器码，作为了浏览器的一部分</span>
+<span class="hljs-comment">// 原生的 querySelector() 只占用 JS CSS 时间的 10%</span>
+
+
+<span class="hljs-number">173.</span>编写无阻塞JS脚本
+<span class="hljs-comment">// 执行代码会阻塞其它处理过程，如页面绘制；提高性能的几种方法：</span>
+    <span class="hljs-comment">// 所有脚本放置页面底部，紧靠&lt;/body&gt;上方</span>
+    <span class="hljs-comment">// 脚本打包，&lt;script&gt;标签越少，加载越快</span>
+    <span class="hljs-comment">// 使用 defer 属性（只适用于IE、FF3.5+）</span>
+    <span class="hljs-comment">// 动态创建&lt;script&gt;元素，用其下载并执行代码</span>
+    <span class="hljs-comment">// 使用 XHR 对象下载代码，注入页面</span>
+
+
+<span class="hljs-number">174.</span>使脚本延迟执行
+<span class="hljs-comment">// 脚本还会阻塞 HTTP 请求和界面刷新，是一个重要的性能问题</span>
+<span class="hljs-comment">// 保持 JS 文件短小，限制 HTTP 请求数量，是创建反应迅速的网页应用第一步</span>
+<span class="hljs-comment">// defer 属性指明元素中所包含的脚本暂时不修改 DOM，可以稍后执行，将不会产生阻塞</span>
+<span class="hljs-comment">// 动态创建脚本：document.getElementsByTagName('head')[0].appendChild(script);</span>
+
+
+<span class="hljs-number">175.</span>使用XHR脚本注入
+<span class="hljs-comment">// 此方法适用于不立即执行的代码，但存在跨域问题</span>
+    <span class="hljs-keyword">var</span> script = document.createElement(<span class="hljs-string">'script'</span>);
+    script.type = <span class="hljs-string">'text/javascript'</span>;
+    script.text = xhr.responseText;
+
+
+<span class="hljs-number">176.</span>最优化非阻塞模式
+<span class="hljs-comment">// 加入大量 JS 代码时，推荐分为两个步骤</span>
+    <span class="hljs-comment">// 1.动态加载 JS 所需代码</span>
+    <span class="hljs-comment">// 2.加载页面初始化所需的除 JS 部分</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loadScript</span><span class="hljs-params">()</span> {</span>}
+
+
+<span class="hljs-number">177.</span>避免深陷作用域访问
+<span class="hljs-comment">// 对于高频使用的对象，采用局部变量保存</span>
+
+
+<span class="hljs-number">178.</span>推荐JS性能调优
+<span class="hljs-comment">// 没有 eval 的代码要比有的快 100 倍</span>
+
+<span class="hljs-comment">// 不要使用构造函数</span>
+
+<span class="hljs-comment">// 传统字符串拼接会有一些临时变量的创建和销毁</span>
+    <span class="hljs-keyword">var</span> str = <span class="hljs-string">'ji'</span> + <span class="hljs-string">'suowei'</span>;
+
+    <span class="hljs-comment">// 推荐方式</span>
+    <span class="hljs-keyword">var</span> arr = [];
+    arr.push(<span class="hljs-string">'ji'</span>);
+    arr.push(<span class="hljs-string">'suowei'</span>);
+    <span class="hljs-keyword">var</span> str = arr.join(<span class="hljs-string">''</span>);
+
+<span class="hljs-comment">// 隐式转换</span>
+    <span class="hljs-comment">// 这里的 str 并不是一个字符串对象，每次调用 charAt 都会临时构造一个字符串对象</span>
+    <span class="hljs-keyword">var</span> str = <span class="hljs-string">'12345'</span>, arr = [];
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;str.length; i++) {
+        arr.push(str.charAt(i));
+    }
+
+    <span class="hljs-comment">// 推荐方式</span>
+    <span class="hljs-keyword">var</span> str = <span class="hljs-keyword">new</span> <span class="hljs-built_in">String</span>(<span class="hljs-string">'12345'</span>);
+
+<span class="hljs-comment">// 字符串匹配</span>
+    <span class="hljs-comment">// JS 的正则性能并不理想，字符串的一些基本方法效率倒是很高</span>
+    <span class="hljs-comment">// 需要用到正则时，当考虑：</span>
+        <span class="hljs-comment">// 能否通过字符串对象本身的基本方法解决问题</span>
+        <span class="hljs-comment">// 能否通过 substring 缩小使用正则的范围</span>
+
+    <span class="hljs-comment">// 正则应避免每次构造临时对象</span>
+        str.match(<span class="hljs-regexp">/\s/</span>);
+
+        <span class="hljs-keyword">var</span> patt = <span class="hljs-regexp">/\s/</span>;
+        str.match(patt);
+
+<span class="hljs-comment">// 利用提前退出</span>
+    <span class="hljs-keyword">if</span>( source.match(patt) ) {}
+
+    <span class="hljs-keyword">if</span>( name.indexOf() &amp;&amp; source.match(patt) ) {}
+
+
+<span class="hljs-number">179.</span>减少DOM操作中的Repaint和Reflow
+<span class="hljs-comment">// Repaint（Redraw）</span>
+    <span class="hljs-comment">// 不可见到可见（visibility）</span>
+    <span class="hljs-comment">// 颜色、图片变化</span>
+    <span class="hljs-comment">// 不改变元素大小、形状、位置，改变外观</span>
+
+<span class="hljs-comment">// Reflow</span>
+    <span class="hljs-comment">// 主要发生在操作 DOM 时，任何结构、布局操作都会产生 Reflow</span>
+    <span class="hljs-comment">// 一个元素产生 Reflow，其所有父元素和子元素都会产生 Reflow</span>
+
+    <span class="hljs-comment">// 窗口变化</span>
+    <span class="hljs-comment">// DOM 节点 CURD</span>
+    <span class="hljs-comment">// 元素大小、形状、位置改变</span>
+    <span class="hljs-comment">// 一些测量属性和方法的调用</span>
+        <span class="hljs-comment">// offset*4 (Left/Top/Height/Width)</span>
+        <span class="hljs-comment">// scroll*4</span>
+        <span class="hljs-comment">// client*4</span>
+        <span class="hljs-comment">// getComputedStyle()</span>
+        <span class="hljs-comment">// currentStyle(in IE)</span>
+
+<span class="hljs-comment">// 优化方式</span>
+    <span class="hljs-comment">// 利用 display，先隐藏再操作</span>
+    <span class="hljs-comment">// 常用的属性进行缓存</span>
+    <span class="hljs-comment">// 利用 class 替代 style</span>
+
+
+<span class="hljs-number">180.</span>提高BOM访问效率
+<span class="hljs-comment">// 在大量元素中定位时，使用 id 或 name 较快，className 等就不理想了</span>
+<span class="hljs-comment">// 推荐使用 XPath</span>
+    <span class="hljs-keyword">if</span>(document.evaluate) {
+        <span class="hljs-keyword">var</span> tbHeaders = document.evaluate(<span class="hljs-string">'//body/div/table//th'</span>);
+        <span class="hljs-keyword">var</span> res = tbHeaders.iterateNext();
+        <span class="hljs-keyword">while</span>(res) {
+            res.style.border = <span class="hljs-string">'1px solid #f00'</span>;
+        }
+    } <span class="hljs-keyword">else</span> {
+
+    }
+
+<span class="hljs-comment">// HTMLCollection 对象是一类特殊的对象，类似数组；并不是固定的值，而是动态的结果</span>
+    document.images
+    document.forms
+    getElementsByTagName()
+    getElementsByClassName()
+
+    <span class="hljs-comment">// 使用 length 属性或访问具体成员，会重复查询</span>
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;items.length; i++) {}
+
+    <span class="hljs-comment">// 改写</span>
+        <span class="hljs-keyword">var</span> len = items.length;
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;len; i++) {}
+
+
+<span class="hljs-number">181.</span>使用setTimeout实现工作线程
+<span class="hljs-comment">// ajax 应用中，有时需要后台执行一些耗时且与页面无关的操作（在线文档编辑，定期备份、崩溃恢复）</span>
+<span class="hljs-comment">// JS 是单线程的：同一时间只能有一段代码被引擎执行</span>
+<span class="hljs-comment">// 鉴此会在内部维护一个待处理的时间队列，每次选出一个事件处理方法来执行，</span>
+<span class="hljs-comment">// 如果有新的事件，就加入队列等待执行</span>
+
+<span class="hljs-comment">// 使用 setTimeout 分解任务，让引擎得以喘息执行其它任务，不至于卡死</span>
+    <span class="hljs-comment">// 计算 100,000 以内的质数个数为例</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isPrime</span><span class="hljs-params">(n)</span> {</span>
+            <span class="hljs-keyword">if</span>( n==<span class="hljs-number">0</span> || n== <span class="hljs-number">1</span>) {
+                <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+            }
+            <span class="hljs-keyword">var</span> bound = <span class="hljs-built_in">Math</span>.floor(<span class="hljs-built_in">Math</span>.sqrt(n));
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">2</span>; i&lt;=bound; i++) {
+                <span class="hljs-keyword">if</span>(n%i == <span class="hljs-number">0</span>) {
+                    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+                }
+            }
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+        }
+
+    <span class="hljs-comment">// 传统方法：在计算完成之前，引擎全部被占用</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">calculateNormal</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">var</span> count = <span class="hljs-number">0</span>;
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">2</span>; i&lt;=Max; i++) {
+                <span class="hljs-keyword">if</span>(isPrime(i)) {
+                    count++;
+                }
+            }
+            <span class="hljs-keyword">return</span> count;
+        }
+
+    <span class="hljs-comment">// 分解</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">calculateUsingTimeout</span><span class="hljs-params">()</span> {</span>
+            <span class="hljs-keyword">var</span> jobs = <span class="hljs-number">10</span>; numberPerJob = <span class="hljs-built_in">Math</span>.ceil(MAX/jobs);
+            <span class="hljs-keyword">var</span> count = <span class="hljs-number">0</span>;
+            <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">calculate</span><span class="hljs-params">(start, end)</span> {</span>
+                <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i=start; i&lt;=end; i++) {
+                    <span class="hljs-keyword">if</span>(isPrime(i)) {
+                        count++;
+                    }
+                }
+            }
+            <span class="hljs-keyword">var</span> start, end, timeout, finished = <span class="hljs-number">0</span>;
+            <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">manage</span><span class="hljs-params">()</span> {</span>
+                <span class="hljs-keyword">if</span>(finished == jobs) {
+                    window.clearTimeout(timeout);
+                    <span class="hljs-keyword">return</span> count;
+                } <span class="hljs-keyword">else</span> {
+                    start = finished * numberPerJob + <span class="hljs-number">1</span>,
+                    end = <span class="hljs-built_in">Math</span>.min( (finished+<span class="hljs-number">1</span>) * numberPerJob, MAX );
+                    timeout = window.setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+                        calculate(start, end);
+                        finished++;
+                        manage();
+                    }, <span class="hljs-number">100</span>);
+                }
+            }
+            manage();
+        }
+
+
+<span class="hljs-number">182.</span>使用Web Worker
+<span class="hljs-comment">// WHATAG 工作组借鉴了 Google Gears 的成功经验，创建了 Web Worker 规范，并作为 HTML5 的一部分</span>
+<span class="hljs-comment">// Web Worker 规范定义了一套 API，允许 Web 应用在后台执行 JS，而不会影响页面</span>
+
+<span class="hljs-comment">// 规范中定义了两类工作线程：专属、共享；前者只能被一个页面使用</span>
+
+<span class="hljs-comment">// 通过构造方法创建一个新的专属工作线程，指定要执行的 JS URL，不支持从 JS 文本中直接创建工作线程</span>
+<span class="hljs-comment">// 创建工作线程的页面和工作线程之间通过简单的消息传递来进行交互</span>
+<span class="hljs-comment">// 通过 postMessage() 发送消息给工作线程</span>
+<span class="hljs-comment">// 通过 onmessage 属性设置接收到消息时的处理方法</span>
+
+<span class="hljs-comment">// 使用专属工作线程的主页面代码</span>
+    <span class="hljs-keyword">var</span> worker = <span class="hljs-keyword">new</span> Worker(<span class="hljs-string">'prime_worker.js'</span>);
+    worker.onmessage = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(event)</span> {</span>
+        <span class="hljs-keyword">var</span> res = event.data;
+        alert(data);
+    }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">calculate</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> limit = <span class="hljs-built_in">parseInt</span>(document.getElementById(<span class="hljs-string">'limit'</span>).value || <span class="hljs-number">100000</span>);
+        worker.postMessage(limit);
+    }
+
+    <span class="hljs-comment">// 专属工作线程所执行的代码</span>
+        onmessage = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(event)</span> {</span>
+            <span class="hljs-keyword">var</span> limit = event.data;
+            <span class="hljs-keyword">var</span> count = calculateNormal(limit);
+            postMessage(count);
+        }
+
+<span class="hljs-comment">// 共享工作线程允许多个页面共享使用，每个页面都是连接到该共享工作线程的某个端口（port）上</span>
+<span class="hljs-comment">// 页面通过此端口与共享工作线程进行通信</span>
+<span class="hljs-comment">// 使用 SharedWorker 构造方法可以创建出共享工作线程的实例</span>
+<span class="hljs-comment">// 在发送消息时，需要使用的是工作线程的port对象</span>
+    <span class="hljs-keyword">var</span> worker = <span class="hljs-keyword">new</span> SharedWorker(<span class="hljs-string">"prime_worker.js"</span>);
+    worker.port.onmessage = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(event)</span> {</span>
+        <span class="hljs-keyword">var</span> res = event.data;
+        alert(res);
+    }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">calculate</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> limit = <span class="hljs-built_in">parseInt</span>(document.getElementById(<span class="hljs-string">"limit"</span>).value) || <span class="hljs-number">100000</span>;
+        worker.port.postMessage(limit);
+    }
+
+    <span class="hljs-comment">// 共享工作线程不能使用 onmessage 来直接定义接收到消息时的处理方法</span>
+    <span class="hljs-comment">// 而需要使用 onconnect 来定义接收到连接时的处理逻辑</span>
+        onconnect = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(event)</span> {</span>
+            <span class="hljs-keyword">var</span> port = event.ports[<span class="hljs-number">0</span>];
+            port.onmessage = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(event)</span> {</span>
+                <span class="hljs-keyword">var</span> limit = event.data;
+                <span class="hljs-keyword">var</span> count = calculateNormal(limit);
+                port.postMessage(count);
+            };
+        }
+
+
+<span class="hljs-number">183.</span>避免内存泄漏
+<span class="hljs-comment">// JS 是垃圾收集式的，象的内存根据对象的创建分配给予的，在没有对该对象的引用时由浏览器收回</span>
+<span class="hljs-comment">// 垃圾收集机制本身并没有问题，但浏览器在为 DOM 对象分配和恢复内存的方式上有些出入</span>
+
+<span class="hljs-comment">// IE、FF 使用引用计数来为 DOM 对象处理内存</span>
+    <span class="hljs-comment">// 在引用计数系统中，每个所引用的对象都会保留一个计数，以获悉有多少对象正在引用它</span>
+        <span class="hljs-comment">// 如果计数为零，那么该对象就会被销毁，其占用的内存也会返回给堆</span>
+        <span class="hljs-comment">// 虽然这种解决方案总的来说还算有效，但是在循环引用方面却存在一些盲点</span>
+            <span class="hljs-comment">// 当两个对象互相引用时，就构成了循环引用，其中每个对象的引用计数值都被赋为1</span>
+
+            <span class="hljs-comment">// 在纯垃圾收集系统中，循环引用问题不大：如果涉及的两个对象中有一个对象被任何其他对象引用，</span>
+            <span class="hljs-comment">// 那么这两个对象都将被垃圾收集</span>
+
+    <span class="hljs-comment">// 而在引用计数系统中，这两个对象都不能被销毁，原因是引用计数永远不能为零</span>
+        <span class="hljs-comment">// 在同时使用了垃圾收集和引用计数的混合系统中，将会发生泄漏，因为系统不能正确识别循环引用</span>
+        <span class="hljs-comment">// 在这种情况下，DOM 对象和 JS 对象均不能被销毁</span>
+
+<span class="hljs-comment">// 另一种内存泄漏模式：通过调用外部函数 myFunction 创建循环引用</span>
+    <span class="hljs-comment">// 同样，JS 对象和 DOM 对象间的循环引用也会导致内存泄漏</span>
+
+<span class="hljs-comment">// 案例中应对内存泄漏的3种方式</span>
+    <span class="hljs-comment">// 主动置空 JS 对象，显式打破循环引用</span>
+    <span class="hljs-comment">// 添加另一个闭包来避免 JS 对象和 DOM 对象间的循环引用</span>
+    <span class="hljs-comment">// 添加另一个函数来避免闭包本身，进而阻止内存泄漏</span>
+
+
+<span class="hljs-number">184.</span>使用SVG
+<span class="hljs-comment">// JS 操作的对象被限制在 DOM 之内，无法进行图形编程</span>
+<span class="hljs-comment">// 长久以来，在设计网页时都仅仅是在“搭积木”，且积木只有一种形状——长方形</span>
+<span class="hljs-comment">// 这些“长方形的积木”就是应用在 HTML 元素上的盒模型（box model）</span>
+<span class="hljs-comment">// 对于构建一个传统的文档页面已经足够了，但 Web 的流行已经使网页承担的任务远远超出了传递文字信息</span>
+
+<span class="hljs-comment">// SVG（Scalable Vetor Graphics，可缩放矢量图）作为一种通用的数据格式</span>
+<span class="hljs-comment">// 属于 XML 语言的一个分支主要负责描述矢量图的数据结构关系</span>
+<span class="hljs-comment">// 实际上，SVG 不是第一种用XML描述图片的格式，甚至也不是第一种在Web上提出的XML与矢量图的组合的标准</span>
+<span class="hljs-comment">// 在它之前的 VML（Vector Markup Language）和 PGML（Precision Graphics Markup Language）都是基于 XML 的矢量图规范</span>
+
+    <span class="hljs-comment">// 1.使用&lt;img&gt;标签</span>
+        <span class="hljs-comment">/*
+            &lt;img src= 'sun.svg' &gt;
+        */</span>
+
+    <span class="hljs-comment">// 2.使用&lt;embed&gt;标签：2009.1.1，Adobe 已终止对该产品的支持</span>
+        <span class="hljs-comment">/*
+            &lt;embed src="sun.svg" width="300" height="100"
+                type="image/svg+xml"
+                pluginspage="http://www.adobe.com/svg/viewer/install/" /&gt;
+        */</span>
+
+    <span class="hljs-comment">// 3.使用&lt;embed&gt;标签</span>
+        <span class="hljs-comment">/*
+            &lt;object data="sun.svg" width="300" height="100"
+                type="image/svg+xml"
+                codebase="http://www.adobe.com/svg/viewer/install/" /&gt;
+        */</span>
+
+    <span class="hljs-comment">// 4.使用&lt;iframe&gt;标签</span>
+        <span class="hljs-comment">/*
+            &lt;iframe src="sun.svg" width="300" height="100" border="0" style="border-width:0"&gt;&lt;/iframe&gt;
+        */</span>
+
+<span class="hljs-comment">// 如果仅将 SVG 作为图片引用，则只发挥了它的静态功能</span>
+<span class="hljs-comment">// SVG 的动态功能包括两个方面：支持动画和支持脚本编程</span>
+<span class="hljs-comment">// 动画支持，是通过 W3C 颁布的动画语言SMIL（Synchronized Multimedia Integra-tion Language）实现的，</span>
+<span class="hljs-comment">// 与SVG一样，是一种声明性（declarative）的标记语言，通过元素（element）和属性（attribute）来定义动画的行为</span>
+
+
+<span class="hljs-number">185.</span>减少对象成员访问
+<span class="hljs-comment">// 大多数代码是以面向对象的形式编写的，因此，存在很多对象成员访问</span>
+<span class="hljs-comment">// 对象成员包括属性和方法，JS 中二者差别甚微，对象成员可以包含任何数据类型</span>
+<span class="hljs-comment">// 函数也是一种对象成员，那对象成员除了包含传统数据类型外，也可以包含一个函数</span>
+<span class="hljs-comment">// 当一个命名成员引用了一个函数时，该成员又被称做方法，非函数类型的数据则被称做属性</span>
+
+<span class="hljs-comment">// 访问对象成员比访问直接量或局部变量速度慢，在某些浏览器上比访问数组项还要慢</span>
+<span class="hljs-comment">// JS 对象的性质对象是基于原型的，原型是其他对象的基础，定义并实现了一个新对象所必须具有的成员</span>
+<span class="hljs-comment">// 这完全不同于传统面向对象编程中类的概念，它定义了创建新对象的过程</span>
+<span class="hljs-comment">// 原型对象为所有给定类型的对象实例所共享，因此所有实例共享原型对象的成员</span>
+
+<span class="hljs-comment">// 一个对象通过一个内部属性绑定到它的原型</span>
+<span class="hljs-comment">// FF、S、C 向开发人员开放这一属性（__proto__），其他浏览器不允许脚本访问这一属性</span>
+<span class="hljs-comment">// 在任何时候创建一个内置类型的实例，如 Object、Array，自动拥有一个 Object 作为它们的原型</span>
+<span class="hljs-comment">// 因此，对象可以有两种类型的成员：实例成员和原型成员</span>
+<span class="hljs-comment">// 实例成员直接存在于实例自身中，而原型成员则从对象原型继承</span>
+    <span class="hljs-keyword">var</span> book = { 
+        title: <span class="hljs-string">"Javascript"</span>,
+        publisher: <span class="hljs-string">"机械工业出版社"</span>
+    };
+    alert(book.toString());  <span class="hljs-comment">// "[object Object]"</span>
+
+    <span class="hljs-comment">// book 对象有两个实例成员：title、publisher</span>
+    <span class="hljs-comment">// 这里并没有定义 toString()，但却被调用了，且没有抛出错误</span>
+    <span class="hljs-comment">// toString() 就是一个 book 对象继承的原型成员</span>
+
+<span class="hljs-comment">// 可以利用 hasOwnProperty() 确定一个对象是否具有特定名称的实例成员，参数就是成员名称</span>
+<span class="hljs-comment">// 确定对象是否具有某个名称的属性，可以使用操作符in</span>
+    book.hasOwnProperty(<span class="hljs-string">"title"</span>)  <span class="hljs-comment">// true</span>
+    book.hasOwnProperty(<span class="hljs-string">"toString"</span>)  <span class="hljs-comment">// false</span>
+    alert(<span class="hljs-string">"title"</span> <span class="hljs-keyword">in</span> book);  <span class="hljs-comment">// true</span>
+    alert(<span class="hljs-string">"toString"</span> <span class="hljs-keyword">in</span> book);  <span class="hljs-comment">// true</span>
+
+    <span class="hljs-comment">// title 是一个实例成员</span>
+    <span class="hljs-comment">// toString 不在实例之中</span>
+
+<span class="hljs-comment">// 对象的原型决定了一个实例的类型，默认所有对象都是 Object 的实例，并且继承了所有基本方法</span>
+
+<span class="hljs-comment">// 成员嵌套越深，访问速度越慢</span>
+<span class="hljs-comment">// 一般来说，要在同一个函数中多次读取同一个对象属性，最好将它存入一个局部变量</span>
+<span class="hljs-comment">// 在一个函数中，绝不应该对一个对象成员进行超过一次的搜索，除非该值可能改变</span>
+
+
+<span class="hljs-number">186.</span>推荐<span class="hljs-number">100</span>ms用户体验
+<span class="hljs-comment">// 浏览器在 JS 运行时间上采取了限制</span>
+    <span class="hljs-comment">// 这是一个有必要的限制，确保恶意代码编写者无法通过无尽的密集操作锁定用户浏览器或计算机</span>
+
+<span class="hljs-comment">// 此类限制有两个：栈尺寸限制、长时间运行脚本限制（长时间运行脚本定时器、失控脚本定时器）</span>
+    <span class="hljs-comment">// 基本思想是浏览器记录一个脚本的运行时间，一旦到达一定限度时就终止它</span>
+    <span class="hljs-comment">// 当到达此限制时，浏览器会向用户显示一个对话框。</span>
+
+<span class="hljs-comment">// 测量脚本的运行时间两种方法</span>
+    <span class="hljs-comment">// 统计自脚本开始运行以来执行过多少语句</span>
+        <span class="hljs-comment">// 此方法意味着脚本在不同的机器上可能会运行不同的时间长度，</span>
+        <span class="hljs-comment">// 可用内存和CPU速度可以影响一条独立语句运行所花费的时间</span>
+    <span class="hljs-comment">// 统计脚本运行的总时间</span>
+        <span class="hljs-comment">// 在特定时间内可运行的脚本数量也因用户机器性能差异而不同，但脚本总是停在固定的时间上</span>
+        <span class="hljs-comment">// 毫不奇怪，每个浏览器在对长时间运行脚本检查方法上略有不同</span>
+
+<span class="hljs-comment">// IE 设置默认限制为500万条语句</span>
+    <span class="hljs-comment">// 此限制存放在注册表中</span>
+        <span class="hljs-comment">// HKEY_CURRENT_USER\Software\Mi-crosoft\InternetExplorer\Styles\MaxScriptStatements</span>
+<span class="hljs-comment">// FF 默认限制为10s</span>
+    <span class="hljs-comment">// 此限制存放在浏览器的配置设置中</span>
+        <span class="hljs-comment">// 在地址栏中输入about:config，键名为dom.max_script_run_time</span>
+
+<span class="hljs-comment">// S 默认限制为5 s</span>
+    <span class="hljs-comment">// 此设置不能改变，但可以关闭</span>
+        <span class="hljs-comment">// 通过启动 Develop 菜单并选择“禁止失控JavaScript定时器”来关闭此定时限制</span>
+
+<span class="hljs-comment">// C 没有独立的长时间运行脚本限制</span>
+    <span class="hljs-comment">// 代之以依赖它的通用崩溃检测系统来处理此类实例</span>
+
+<span class="hljs-comment">// O 没有长运行脚本限制</span>
+    <span class="hljs-comment">// 将继续运行代码直至完成</span>
+        <span class="hljs-comment">// 由于 O 结构特点，当脚本运行结束时并不会导致系统不稳定。</span>
+
+
+<span class="hljs-number">187.</span>使用接口解决JS文件冲突
+<span class="hljs-comment">// 同一页面导入多个外部脚本文件时，可能会存在重名的对象、函数、方法或变量等</span>
+<span class="hljs-comment">// 同时执行时就会出现冲突、重名覆盖现象，影响脚本的顺利执行</span>
+
+<span class="hljs-comment">// 最好方法就是利用接口：对函数进行封装，然后定义一个对外接口，其他文件只能通过这个接口来访问被封装的函数</span>
+<span class="hljs-comment">// JS 代码封装的方法是，把函数放在结构体内：实际上就是一个闭包，避免外部引入冲突</span>
+    (<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>  
+        <span class="hljs-comment">// 接口对象</span>
+        obj = {
+            func: func
+        };
+        <span class="hljs-comment">// 被封装的函数</span>
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">func</span><span class="hljs-params">(arg)</span> {</span>
+            <span class="hljs-keyword">return</span> arg;
+        }
+    })();
+
+    obj.func();
+
+<span class="hljs-comment">// 定义的接口对象名不能相同，否则也会出现冲突  // 看到这里我表示很汗颜</span>
+
+
+<span class="hljs-number">188.</span>避免JS与CSS冲突
+<span class="hljs-comment">// CSS：样式所引用的外部文件的路径都是以 代码所在位置 作为参考来进行设置</span>
+    #box {background:url(css.gif);}
+<span class="hljs-comment">// JS：是以所引用的 网页位置 作为参考进行设置</span>
+    document.getElementById(<span class="hljs-string">"box"</span>).style.backgroundImage=<span class="hljs-string">"url(images/js.gif)"</span>;
+
+<span class="hljs-comment">// 二者同时定义样式时，JS 定义的样式优先级高于 CSS</span>
+
+</code></pre>

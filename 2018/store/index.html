@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title title="store">收藏-奇斯威克-Jisuowei.com</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0">
+	<link rel='stylesheet' type='text/css' href='../css/jikit.css' />
+	<link rel='stylesheet' type='text/css' href='../css/jisuowei.css' />
+	<link rel='stylesheet' type='text/css' href='../css/jisuowei_mobile.css' />
+</head>
+<body>
+
+</body>
+<script src="../../static/js/jquery.2.1.1.min.js"></script>
+<script src="../js/jikit.js"></script>
+<script src="../js/jisuowei.js"></script>
+<script src="../../static/js/countUp.js"></script>
+<script>
+
+$('#top').html('<p id="tab"></p>');
+
+function startSecNav(tab){
+
+	for( var i=0; i<tab.length; i++ ) {
+		$('#tab').append($('<a href="javascript:;" id="'+tab[i].id+'">'+tab[i].value+'</a>'));
+	}
+
+	$('#tab').append($('<span id="tab_sum"></span>'));
+
+	$('#tab a').click(function(){
+
+		$("#mid").html('数据加载中..');
+		$('#tab_sum').html('0');
+
+		var notation = $(this).attr('id');
+		$('#tab a').removeClass('on');
+		$('#tab a#' + notation).addClass('on');
+
+	setTimeout(function(){
+		if( notation == 'excerpt') {
+			$.getJSON('../../static/json/' + notation + '.json', function(data) {
+				var html = '';
+
+				for(var i=0; i<data.length; i++) {
+					html += '<div class="store_excerpt"><span class="excerpt_date">'+ data[i].date +'</span><p class="excerpt_tt">'+ data[i].title +'<span class="author">【'+data[i].author+'】</span></p></div>';
+				}
+
+				$("#mid").html(html);
+
+				var numAnim = new CountUp('tab_sum', 0, data.length, 0, 1.6);
+				numAnim.start();
+
+			});	
+		} else {
+			$.getJSON('../../static/json/' + notation + '.json', function(data) {
+
+				var html = '';
+
+				for(var i=0; i<data.length; i++) {
+					html += '<div class="store_list"><div class="store_avatar">'+ data[i].title.substring(0,1) + '</div>';
+						html += '<div class="store_cont"><p><a target="_blank" href="'+data[i].url+'">'+ data[i].title+'</a><br>';
+
+						html += '<span>'+
+							(function(){
+								var star = '';
+								var gray = 5 - data[i].lv;
+								for(var j=0; j<data[i].lv;j++) {
+									star += '<i class="fa fa-star on"></i>';
+								}
+								for(var j=0; j<gray;j++) {
+									star += '<i class="fa fa-star off"></i>';
+								}
+								return star;
+							})();
+						+'</span>';
+
+						html += '<span class="date">'+ data[i].date + '</span><span class="tag">'+ data[i].tg +'</span></p></div></div>';
+				}
+
+				$("#mid").html(html);
+
+				var numAnim = new CountUp('tab_sum', 0, data.length, 0, 1.6);
+				numAnim.start();
+
+			});
+		}
+	},300);
+
+	});
+
+	$('#excerpt').click();
+
+};
+
+startSecNav(TAG.Store.tab);
+
+</script>
+</html>

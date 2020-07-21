@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title title="code">码库-奇斯威克-Jisuowei.com</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0">
+	<link rel='stylesheet' type='text/css' href='../css/jikit.css' />
+	<link rel='stylesheet' type='text/css' href='../css/jisuowei.css' />
+	<link rel='stylesheet' type='text/css' href='../css/jisuowei_mobile.css' />
+<style>
+#result {background:#222222;width:900px;margin-left:-450px;}
+#result * {font-family: 'webConsolas','微软雅黑';font-size: 12px;}
+@media screen and (max-width:960px){#result {margin-left:0;width:100%;left:0;}}
+.hljs{display:block;overflow-x:auto;background:#222}
+.hljs,.hljs-subst{color:#aaa}
+.hljs-section{color:#fff}
+.hljs-comment {color: #646464;}
+.hljs-quote,.hljs-meta{color:#444}
+.hljs-string,.hljs-symbol,.hljs-bullet,.hljs-regexp{color:#ffcc33}
+.hljs-number,.hljs-addition{color:#00cc66}
+.hljs-built_in,.hljs-builtin-name,.hljs-literal,.hljs-type,.hljs-template-variable,.hljs-attribute,.hljs-link{color:#32aaee}
+.hljs-keyword,.hljs-selector-tag,.hljs-name,.hljs-selector-id,.hljs-selector-class{color:#6644aa}
+.hljs-title,.hljs-variable,.hljs-deletion,.hljs-template-tag{color:#bb1166}
+.hljs-section,.hljs-doctag,.hljs-strong{font-weight:bold}
+.hljs-emphasis{font-style:italic}
+</style>
+</head>
+<body>
+
+</body>
+<script src="../../static/js/jquery.2.1.1.min.js"></script>
+<script src="../js/jikit.js"></script>
+<script src="../js/jisuowei.js"></script>
+<script src="../../static/js/countUp.js"></script>
+<script>
+
+$('#top').html('<p id="tab"></p>');
+
+function startSecNav(tab){
+
+	for( var i=0; i<tab.length; i++ ) {
+		$('#tab').append($('<a href="javascript:;" id="'+tab[i].id+'">'+tab[i].value+'</a>'));
+	}
+
+	$('#tab').append($('<span id="tab_sum"></span>'));
+
+	$('#tab a').click(function(){
+
+		$("#mid").html('数据加载中..');
+		$('#tab_sum').html('0');
+
+		var notation = $(this).attr('id');
+		$('#tab a').removeClass('on');
+		$('#tab a#' + notation).addClass('on');
+
+
+	setTimeout(function(){
+
+		$.getJSON('../../static/json/' + notation + '.json', function(data) {
+
+			var html = '';
+
+			for(var i=0; i<data.length; i++) {
+				html += '<div class="store_list"><div class="store_avatar">'+ data[i].title.substring(0,1) + '</div><div class="store_cont">';
+					
+					html += '<p><a href="javascript:;" onclick="showCodeNote(this);" data-url="'+data[i].url+'">'+ data[i].title+'</a><span class="author">【'+data[i].author+'】</span></p>';
+
+					html += '<p>';
+						// 星级
+						html += '<span>'+
+							(function(){
+								var star = '';
+								var gray = 5 - data[i].lv;
+								for(var j=0; j<data[i].lv;j++) {
+									star += '<i class="fa fa-star on"></i>';
+								}
+								for(var j=0; j<gray;j++) {
+									star += '<i class="fa fa-star off"></i>';
+								}
+								return star;
+							})();
+						+'</span>';
+
+						// 日期
+						html += '<span class="date">'+ data[i].date + '</span>';
+
+						// 标签
+						html += (function(){var tags = ''; for(var j=0;j<data[i].tag.length;j++){tags+='<span class="tag">'+data[i].tag[j]+'</span>';}return tags;})();
+
+					html += '</p>';
+
+				html += '</div></div>';
+			}
+
+			$("#mid").html(html);
+
+			var numAnim = new CountUp('tab_sum', 0, data.length, 0, 1.6);
+			numAnim.start();
+		});
+
+	},200);
+
+
+	});
+
+	// 初始化
+	$('#course').click();
+
+};
+startSecNav(TAG.Code.tab);
+
+function showCodeNote(e) {
+	$('#res').fadeIn(240);
+	$('#result').html('<p id="loadingTip">数据加载中..</p>');
+	var s = $(e).attr('data-url');
+	setTimeout(function(){
+		Jikit.ajax('../../static/code/'+ s + '.txt',function(str) {
+			$("#result").html(  str );
+		});
+		$('#result').scrollTop("0");
+	},600)
+	$('#res_ox').click(function(){$('#res').fadeOut(240)});
+}
+
+</script>
+</html>
