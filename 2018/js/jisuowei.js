@@ -102,7 +102,6 @@ window.onload = function () {
 		if (target !== 'blog') {
 			window.location = '../' + target;
 		} else {
-			window.open('../blog');
 			window.open('https://jisuowei.com/post');
 		}
 	});
