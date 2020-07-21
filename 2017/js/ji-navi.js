@@ -66,7 +66,7 @@ window.onload = function () {
 // head 
 		var eMeta = $('<meta name="keywords" content="嵇所伟, 奇斯威克, chisw, chiswick, jisuowei">');
 		var eIcon = $("<link href='../img/favicon.ico' rel='shortcut icon' />");
-		var eLink = $("<link rel='stylesheet' type='text/css' href='../css/font-awesome.min.css' />");
+		var eLink = $("<link rel='stylesheet' type='text/css' href='../../static/css/font-awesome.min.css' />");
 
 		$('head').append(eMeta,eLink,eIcon);
 
