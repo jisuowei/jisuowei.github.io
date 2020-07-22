@@ -324,14 +324,14 @@
 
 						$.ajax({
 							type:'post', async:true, dataType:'json',
-							url: Ji.data.url +'api/book/getNote.php',
+							url: `${location.href.indexOf('jisuowei') !== -1 ? 'https://jisuowei.com' : 'http://192.168.31.85'}/api/get/note.php`,
 							data: {
 								id: id
 							},
 							success: function(res) {
 
-								if ( res.data.length ) {
-									res.data.forEach(function(data, index){
+								if ( res.rows.length ) {
+									res.rows.forEach(function(data, index){
 										html +=
 										`<div class="ji-read-note-list">
 											<p class="ji-read-note-date">
