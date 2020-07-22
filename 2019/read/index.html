@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title title="read">阅读-奇斯威克-Jisuowei.com</title>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0">
+    <link href="../static/img/favicon.ico" rel="shortcut icon">
+    <link rel="stylesheet" href="../../static/css/element.min.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/jikit.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/jisuowei.css">
+    <link rel="stylesheet" type="text/css" href="../../static/css/font-awesome.min.css">
+<style type="text/css">
+
+#sum-read {
+    border-top: 1px solid #EBEEF5;
+    padding: 10px 0;
+    font-family: "jidincond";
+    font-size: 28px;
+    color: #5c5c5c;
+}
+
+#sum-read::after {
+    content: "BOOKS";
+    padding-left: 12px;
+    color: #ddd;
+}
+
+.book_list {
+    float: left;
+    width: 230px;
+    height: 156px;
+    padding: 0 0 12px 0;
+    box-sizing: border-box;
+}
+.book_avatar {
+    float: left;
+    width: 96px;
+    height: 128px;
+}
+.book_avatar img {
+    max-width: 100%;
+    max-height: 100%;
+}
+.book_avatar.xread::after {
+    content: '笔记';
+    display: block;
+    position: absolute;
+    margin: -32px 0 0 -4px;
+    padding: 2px 0;
+    color: #fff;
+    background: #0086FF;
+    width: 32px;
+    text-align: center;
+    border-radius: 2px;
+    font-size: 12px;
+    border: 1px solid #fff;
+    transform: scale(.8);
+}
+
+.book_desc {width: 134px;padding-left: 10px;float: left;box-sizing: border-box;}
+.book_tt {font-size:12px;display:inline-block;width: 100%;}
+.book_aut {font-size:12px; color: #808080;}
+.book_tri {line-height:26px;}
+
+.book_pub,.book_user,.book_end {color: #ccc;font-size: 12px;}
+.book_tags {margin-bottom:4px;}
+.book_pub {line-height:16px;}
+.book_end {color:#888;line-height:16px;}
+
+</style>
+</head>
+<body>
+<div id="jisuowei">
+
+    <div id="ji-nav"></div>
+    <div id="ji-body">
+    <div class="ji-container-center">
+
+        <el-carousel height="120px" style="background:#f2f2f2;margin:10px 0;">
+            <el-carousel-item v-for="img in imgs">
+                <img :src="img">
+            </el-carousel-item>
+        </el-carousel>
+
+        <el-container>
+
+            <el-aside width="240px">
+
+                <div id="sum-read">0</div>
+
+                <el-collapse v-model="tabName" @change="" accordion>
+                    <el-collapse-item title="概览" name="all">
+                        <el-button size="mini" plain @click="getBookList('all','all')">全部已购</el-button>
+                        <el-button size="mini" plain @click="getBookList('finish','finish')">读完</el-button>
+                        <el-button size="mini" plain @click="getBookList('recommend','reco')">鸡哥力荐</el-button>
+                    </el-collapse-item>
+                    <el-collapse-item title="分类" name="type">
+                        <el-button size="mini" plain @click="getBookList('tag', i)"       v-for="o,i in tags">{{ o }}</el-button>
+                    </el-collapse-item>
+                    <el-collapse-item title="作者" name="author">
+                        <el-button size="mini" plain @click="getBookList('search', o)"    v-for="o,i in auts">{{ o }}</el-button>
+                    </el-collapse-item>
+                    <el-collapse-item title="系列" name="series">
+                        <el-button size="mini" plain @click="getBookList('search', o)"    v-for="o,i in sers">{{ o }}</el-button>
+                    </el-collapse-item>
+                    <el-collapse-item title="出版社" name="publisher">
+                        <el-button size="mini" plain @click="getBookList('publisher', i)" v-for="o,i in pubs.slice(0,24)">{{ o }}</el-button>
+                    </el-collapse-item>
+                </el-collapse>
+
+                <br>
+
+                <el-alert
+                    title="本站不提供书籍下载"
+                    type="warning"
+                    :closable="false"
+                    show-icon>
+                </el-alert>
+
+            </el-aside>
+
+            <el-main>
+
+                <el-row>
+                    <p v-if="bookPage.length === 0" style="text-align:center;margin:100px;font-size:32px;color:#A0A0A0;">啊哦，没有搜到耶 (ಥ_ಥ)</p>
+
+                    <div class="book_list" v-for="bk in bookPage">
+                        <div :class="'book_avatar '+ ( bk.lv > 0 ? 'xread' : '' )">
+                            <img class="ji-read-avatar j_bookNote" :data-id="bk.id" :src="bk.avatar">
+                        </div>
+                        <div class="book_desc">
+                            <p class="book_tt" ellipsis :title="bk.title">{{ bk.title }}</p>
+                            <p class="book_aut" ellipsis :title="bk.author">{{ bk.author }}</p>
+                            <p class="book_tri">
+                                <span class="ji-lv-star">
+                                    {{ bk.lv }}
+                                    <span v-html="Ji.getLvStar(bk.lv)"></span>
+                                </span>
+                                <el-popover v-if="bk.detail"
+                                    placement="top" title="包括" width="300" trigger="hover"
+                                    :content="bk.detail">
+                                    <el-button slot="reference" circle size="mini" icon="el-icon-more"></el-button>
+                                </el-popover>
+                            </p>
+                            <p class="book_tags">
+                                <el-tag size="mini" type="info" v-for="t in bk.tag.split(';')">{{ tags[t] }}</el-tag>
+                                <a v-if="bk.dkid" :href="'http://www.duokan.com/reader/www/app.html?id='+ bk.dkid" target="_blank">试读</a>
+                            </p>
+                            <p class="book_pub">
+                                {{ pubs[bk.publisher] + ' ' + (bk.editor ? '| ' + bk.editor : '') }}
+                            </p>
+                            <p class="book_user">
+                                {{ bk.date +'&'+ bk.user }}
+                            </p>
+                            <p v-if="bk.xdate && bk.xdate.charAt(0) != '0'" class="book_end"><i class="fa fa-calendar-check-o"></i> {{ bk.xdate +' 读完' }}</p>
+                        </div>
+                    </div>
+                </el-row>
+
+                <el-row class="text-center" style="margin:20px 0;">
+                    <el-pagination
+                        background
+                        @current-change="handleCurrentChange"
+                        :current-page.sync="pageNow"
+                        :page-size="pageSize"
+                        layout="prev, pager, next, jumper"
+                        :total="pageCount">
+                    </el-pagination>
+                </el-row>
+
+            </el-main>
+
+        </el-container>
+
+    </div>
+    </div>
+    <div id="ji-footer"></div>
+    <div id="ji-fixed"></div>
+
+</div>
+</body>
+<script src="../../static/js/jquery.2.1.1.min.js"></script>
+<script src="../static/js/jit.js"></script>
+<script src="../static/js/jikit.js"></script>
+<script src="../static/js/jisuowei.js"></script>
+<script src="../../static/js/countUp.js"></script>
+<script src="../../static/js/layer/layer.js"></script>
+<script src="../../static/js/vue.min.js"></script>
+<script src="../../static/js/element.min.js"></script>
+<script>
+(function() {
+
+    Ji.init(2);
+
+    var vm = new Vue({
+
+        el: '#jisuowei',
+
+        data: {
+            imgs: [
+                '../static/img/59f88855ly1fzp4hxclmsj20xc03cgma.jpg',
+                '../static/img/59f88855ly1fzp4htezwkj20xc03c0tx.jpg',
+            ],
+            tags: ['古典名著','近代','世界名著','艺术','计算机','传记','小说','经管','人文社科','历史','政治','科学','外语','科幻','教育','心理','中国史','世界史'],
+            auts: ['吕思勉','林语堂','胡适','汪曾祺','周国平','易中天','刘慈欣','凡尔纳','东野圭吾','道金斯','卡耐基','冷成金'],
+            sers: ['西方视野里的中国','双语','牛津通识读本','剑桥艺术史','简史','卑鄙的圣人','昆虫记','银河帝国','鬼谷子','丰臣秀吉','一口气','一本书'],
+            pubs: ['多看文库','中信','中华书局','中南博集天卷','北京磨铁数盟','北京兴盛乐','北京图灵文化','北京新华先锋','青岛智道文化','浙江出版集团','杭州蓝狮子','诚品读库','上海读客','北京凤凰壹力','北京华章','北京明日宏图','中版集团','北京新知文创','北京紫云文心','中国人民大学','新星','湖北长江','四川文轩在线','北京紫图','上海书猫','中国国际广播','中央编译','北京明天远航','北京东方视角','北京掌娱互动','接力','华中科技大学','金城','广东省出版集团','中国纺织','北京和平雅华','黑龙江华文悦读','人民东方','人民文学','北京华章同人','上海世纪文睿','北京日知','湖南科学','湖南文艺','北京凤凰联动','江苏译林','山西春秋','山西书海','北京九志天达','上海世纪','中国文著协','凤凰悦世泓文','湖南省青苹果','电子工业','北京华文经典','陕西书海','北京东西时代','北京世图','北京斯坦威','北京精典博维','北京理工大学','三联书店','杭州果麦','北京博采雅集','上海浩林','广州久邦','东西文库','北京华夏盛轩','后浪出版','广西师范大学','北京世纪文景','上海译文','北京时代华语','人民邮电','新经典文化','天津聚石文华','悦读名品','北京卓文天语','北京华章图文','上海雅众文化','现代','北京东方资治','长江新世纪','商务印书馆','北京环球卓尔','北京图灵','江苏人民','机械工业','北京十分科技','重庆远望科技','北京白马时光','北京清妍景和','北京中作华文','天津华文天下','北京华文天下','天津湛庐','时代数联','上海九久读书','复旦大学','北京智者天下','中国水利水电','北京世纪景风','湖北今古传奇','北京人天书店','北京阳光秀美','北京华阅时代','北京读品联合','东方','Confidential','四川科幻世界','浙江人民','云南人民','清华大学','海南','上海浦睿文化','北京大学音像','华文悦读荟','北京新东方','北京凤凰天下','成都万有','北京长江世纪','中国传媒大学','豆瓣阅读','新经典','北京阳光博客','中国华侨','中国社会科学','世界图书','undefined','北京大学','上海辞书','江苏文艺','中国商业','新华出版社','南京凤凰悦世','东莞永正电子','浙江九层文化','北京南文博雅','外文社','外教研','新世界','北京齐物秋水','辽宁无限穿越','上海阅文信息','武汉出版社'],
+            pageSize: 20,
+            pageCount: 0,
+            pageNow: 1,
+            pageKey: '',
+            pageVal: '',
+            bookPage: [],
+            tabName: 'all',
+        },
+
+        created: function() {
+            this.getBookList('all','all');
+        },
+
+        methods: {
+            getBookList: function(key, val, page) {
+
+                var changeCount = false;
+
+                if ( key !== null && val !== null ) {
+                    this.pageKey = key;
+                    this.pageVal = val;
+                    this.pageNow = 1;
+                    changeCount = true;
+                }
+
+                key = key ? key : this.pageKey;
+                val = val ? val : this.pageVal;
+
+                var that = this;
+
+                var _layer = layer.open({
+                    title: false, btn: [], skin: 'ji-loading-box', closeBtn: false, shade: [0.84,'#fff'], area:['60px', '100px'],
+                    content: '<div class="ji-loading"><div class="dot dot1"></div><div class="dot dot2"></div><div class="dot dot3"></div><div class="dot dot4"></div></div>'
+                });
+
+                var data = {
+                    key: key || 'all',
+                    val: val,
+                    pageSize: that.pageSize,
+                    current: page || 1
+                };
+
+                jit.ajax(`${location.href.indexOf('jisuowei') !== -1 ? 'https://jisuowei.com' : 'http://192.168.31.85'}/api/get/book.php`, data, 'POST', function(res) {
+
+                    layer.close(_layer);
+
+                    that.bookPage = res.rows;
+                    that.pageCount = res.count;
+
+                    $('html,body').animate({scrollTop: 0}, 400);
+
+                    if ( changeCount ) {
+                        new CountUp('sum-read', 0, res.count, 0, 1.6).start();
+                    }
+
+                });
+
+            },  // getBookList
+
+            handleCurrentChange: function(curr) {
+                this.getBookList(null, null, curr);
+            },  // handleCurrentChange
+
+        },
+
+
+    });
+
+
+    document.onkeydown = function(e){
+        var e = e || window.event;
+        if( e.keyCode === 13 ) {
+            var $input = $('.j_searchInput'),
+                val    = $input.val();
+
+            if ( !$input.is(':focus') ) return null;
+
+            if ( val ) {
+                vm.getBookList('search', val);
+
+                $('#ji-nav,#ji-body,#ji-footer').removeClass('ji-blur');
+                $('html, body').css({overflow: 'auto'});
+                $('.j_searchPannel').hide();
+            } else {
+                vm.$message({message: '请输入 书名 | 作者', type: 'error'});
+            }
+            $input.val('');
+        }
+    };
+
+
+})();
+</script>
+</html>
