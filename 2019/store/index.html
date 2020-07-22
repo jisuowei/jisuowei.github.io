@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title title="store">库藏-奇斯威克-Jisuowei.com</title>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0">
+    <link href="../static/img/favicon.ico" rel="shortcut icon">
+    <link rel="stylesheet" href="../../static/css/element.min.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/jisuowei.css">
+    <link rel="stylesheet" type="text/css" href="../../static/css/font-awesome.min.css">
+<style>
+
+#tab-sum {
+    border-top: 1px solid #EBEEF5;
+    padding: 10px 0;
+    font-family: "jidincond";
+    font-size: 28px;
+    color: #5c5c5c;
+}
+
+#tab-sum::after {
+    content: "ITEMS";
+    padding-left: 12px;
+    color: #ddd;
+}
+
+.store-item .item-avatar {
+    position: relative;
+    height: 120px;
+    background-color: #000;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    word-break: break-all;
+    text-align: justify;
+    cursor: pointer;
+}
+
+.store-item .item-avatar::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0,0,0, .32);
+}
+
+.store-item .item-avatar p {
+    box-sizing: border-box;
+    position: absolute;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    padding: 12px 10px;
+    font-size: 14px;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0, 1), 0 0 5px rgba(0,0,0, .5);
+}
+
+.store-item .item-info {
+    box-sizing: border-box;
+    padding: 6px 10px 8px 10px;
+}
+
+.store-item .item-info .el-button {
+    float: right;
+}
+
+.store-item .item-info .info-date {
+    font-size: 12px;
+    color: #aaa;
+}
+
+.store-item .item-info .info-star {
+    font-size: 12px;
+    color: #FFB74D;
+}
+
+.store-item .item-info .info-tag {
+    margin: 4px 0;
+}
+
+
+</style>
+</head>
+<body>
+<div id="jisuowei">
+
+
+    <div id="ji-nav"></div>
+    <div id="ji-body">
+    <div class="ji-container-center">
+
+
+        <el-container>
+
+            <el-aside width="240px">
+
+                <div id="tab-sum">0</div>
+
+                <el-collapse v-model="typeName" @change="" accordion>
+                    <el-collapse-item title="标签" name="tag">
+                        <el-button size="mini" disabled plain v-for="o in typeList" @click="">{{ o }}</el-button>
+                    </el-collapse-item>
+                </el-collapse>
+
+            </el-aside>
+
+            <el-main>
+
+
+                <el-tabs v-model="storeTab" type="card" @tab-click="getStoreList">
+                    <el-tab-pane label="文章" name="article"></el-tab-pane>
+                    <el-tab-pane label="视频" name="video"></el-tab-pane>
+                    <el-tab-pane label="文件" name="file"></el-tab-pane>
+                    <el-tab-pane label="趣图" name="image" disabled></el-tab-pane>
+                    <el-tab-pane label="音乐" name="music" disabled></el-tab-pane>
+                    <el-tab-pane label="电影" name="movie" disabled></el-tab-pane>
+                </el-tabs>
+
+
+                <el-row :gutter="20">
+
+                    <el-col :span="6" v-for="o in storeList" style="margin-bottom:20px;">
+                        <el-card :body-style="{padding:'0px'}" shadow="hover">
+
+                            <div class="store-item">
+                                <div class="item-avatar"
+                                    :style="'background-image:url('+ ( o.avatar || defaultImg ) +');'"
+                                    :title="o.title"
+                                    @click="open(o.url)"
+                                >
+                                    <p ellipsis>{{ o.title }}</p>
+                                </div>
+                                <div class="item-info">
+                                    <el-button size="mini" plain circle>
+                                        <i class="fa fa-heart-o"></i>
+                                    </el-button>
+                                    <p class="info-date">{{ o.date.substring(0, 16) }}</p>
+                                    <p class="info-star" v-html="Ji.getLvStar(o.lv)"></p>
+                                    <p class="info-tag">
+                                        <el-tag type="info" size="mini">{{ o.tag }}</el-tag>
+                                    </p>
+                                </div>
+                            </div>
+
+                        </el-card>
+                    </el-col>
+
+                </el-row>
+
+
+            </el-main>
+
+        </el-container>
+
+
+
+    </div>
+    </div>
+    <div id="ji-footer"></div>
+    <div id="ji-fixed"></div>
+
+</div>
+</body>
+<script src="../../static/js/jquery.2.1.1.min.js"></script>
+<script src="../static/js/jit.js"></script>
+<script src="../static/js/jisuowei.js"></script>
+<script src="../../static/js/countUp.js"></script>
+<script src="../../static/js/vue.min.js"></script>
+<script src="../../static/js/element.min.js"></script>
+<script>
+(function(){
+
+    Ji.init(4);
+
+    var vm = new Vue({
+
+        el: '#jisuowei',
+
+        data: {
+
+            defaultImg: '../static/img/default_article_banner.png',
+            typeName: 'tag',
+            typeList: ['生活','政治','文化','漫画','设计','PS','编程','思维','计算机','前端','HTML5','CSS3','JS'],
+            storeTab: 'article',
+            storeList: [],
+
+        },
+
+        created: function() {
+
+            this.getStoreList({name: 'article'});
+
+        },
+
+        methods: {
+
+            getStoreList: function(tab) {
+
+                let name = tab.name;
+                if ( !name ) return null;
+
+                $('#tab-sum').text(0);
+
+                let type = {
+                    article: 0,
+                    video: 1,
+                    file: 2
+                }[name];
+
+                jit.ajax(`${location.href.indexOf('jisuowei') !== -1 ? 'https://jisuowei.com' : 'http://192.168.31.85'}/api/get/store.php`, {type: type}, 'POST', res => {
+                    this.storeList = res.rows;
+                    new CountUp('tab-sum', 0, res.rows.length, 0, 1.6).start();
+                });
+
+            },  // getStoreList
+
+            open: function(url) {
+                window.open(url);
+            },  // open
+
+        },
+    });
+
+
+
+}());
+</script>
+</html>

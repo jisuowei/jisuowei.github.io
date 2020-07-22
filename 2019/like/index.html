@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title title="like">兴趣-奇斯威克-Jisuowei.com</title>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0">
+    <link href="../static/img/favicon.ico" rel="shortcut icon" />
+    <link rel="stylesheet" href="../../static/css/element.min.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/jisuowei.css">
+    <link rel="stylesheet" type="text/css" href="../../static/css/font-awesome.min.css">
+</head>
+<style>
+
+#chart {
+    width: 100%;
+    height: 200px;
+    border: 1px solid #DBDBDB;
+    border-radius: 4px;
+    margin: 24px 0;
+}
+
+
+.ride-item .item-avatar {
+    position: relative;
+    height: 120px;
+    background-color: #000;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    word-break: break-all;
+    text-align: justify;
+}
+
+.ride-item .item-avatar::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0,0,0, .32);
+}
+
+.ride-item .item-avatar p {
+    box-sizing: border-box;
+    position: absolute;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    padding: 12px 10px;
+    font-size: 14px;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0, 1), 0 0 5px rgba(0,0,0, .5);
+}
+
+.ride-item .item-info {
+    box-sizing: border-box;
+    padding: 6px 10px 8px 10px;
+    font-size: 12px;
+    color: #aaa;
+}
+
+.ride-item .item-info a {
+    text-decoration: none;
+}
+
+</style>
+<body>
+<div id="jisuowei">
+
+    <div id="ji-nav"></div>
+    <div id="ji-body">
+    <div class="ji-container-center">
+
+
+		<el-container>
+
+			<el-aside width="240px">
+
+			</el-aside>
+
+			<el-main>
+
+                <el-tabs v-model="likeTab" type="card" @tab-click="">
+                    <el-tab-pane label="骑行" name="ride"></el-tab-pane>
+                    <el-tab-pane label="书法" name="script" disabled></el-tab-pane>
+                    <el-tab-pane label="设计" name="design" disabled></el-tab-pane>
+                    <el-tab-pane label="3D建模" name="3D" disabled></el-tab-pane>
+                </el-tabs>
+
+
+                <div id="chart"></div>
+
+                <el-row :gutter="20">
+
+                    <el-col :span="6" v-for="o in records" style="margin-bottom:20px;">
+                        <el-card :body-style="{padding:'0px'}" shadow="hover">
+
+                            <div class="ride-item">
+                                <div class="item-avatar"
+                                     :style="'background-image:url('+ ( o.avatar || defaultImg ) +');'"
+                                     :title="o.title"
+                                >
+                                    <p ellipsis>{{ o.title }}</p>
+                                </div>
+                                <div class="item-info">
+                                    {{ o.date }}
+                                    <a :href="`javascript:window.open('https://jisuowei.com/ride');`">
+                                        {{ o.map ? '查看路线' : '' }}
+                                    </a>
+                                </div>
+                            </div>
+
+                        </el-card>
+                    </el-col>
+
+                </el-row>
+
+            </el-main>
+
+        </el-container>
+
+        </div>
+
+    </div>
+    </div>
+    <div id="ji-footer"></div>
+    <div id="ji-fixed"></div>
+
+
+</div>
+</body>
+<script src="../../static/js/jquery.2.1.1.min.js"></script>
+<script src="../static/js/jit.js"></script>
+<script src="../static/js/jisuowei.js"></script>
+<script src="../../static/js/echarts.common.min.js"></script>
+<script src="../../static/js/vue.min.js"></script>
+<script src="../../static/js/element.min.js"></script>
+<script>
+(function(){
+
+	Ji.init(3);
+
+	var vm = new Vue({
+
+        el: '#jisuowei',
+
+        data: {
+            defaultImg: '../static/img/default_article_banner.png',
+            likeTab: 'ride',
+            records: [],
+        },
+
+        created: function() {
+            this.getRideRecords();
+        },
+
+        methods: {
+            getRideRecords: function () {
+
+                jit.ajax(`${location.href.indexOf('jisuowei') !== -1 ? 'https://jisuowei.com' : 'http://192.168.31.85'}/api/get/ride.php`, {}, 'POST', res => {
+                    this.records = res.rows
+                });
+
+            },  // getRideRecords
+        },
+
+    });
+
+    var option = {
+        title: { text:'单次骑行里程记录（24h内）'},
+        tooltip: {trigger: 'axis',axisPointer: {type: 'shadow'},formatter:'{b}：{c} km'},
+        grid: {top: '16%', left: '8%',right: '8%',bottom: '3%',containLabel: true},
+        xAxis: {type: 'category',data: ['2001','2002','2004','2011/07/08','2011/07/11','2012/06/27','2013/10/05']},
+        yAxis: {type: 'value',name:'单位（km）',nameLocation:'middle',nameGap:40,},
+        series: [{name: '里程',type: 'bar',barWidth: 20,data: [1.8,7.8,14.2,82,135,195.7,308.9]}]
+    };
+
+    echarts.init(document.getElementById('chart')).setOption(option);
+
+}());
+</script>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>应用-奇斯威克-Jisuowei.com</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0">
+    <link href="../static/img/favicon.ico" rel="shortcut icon" />
+    <link rel="stylesheet" href="../../static/css/element.min.css">
+    <link rel='stylesheet' type='text/css' href='../static/css/jikit.css' />
+    <link rel='stylesheet' type='text/css' href='../static/css/jisuowei.css' />
+    <link rel="stylesheet" type="text/css" href="../../static/css/font-awesome.min.css" />
+<style>
+
+.app-list {
+    margin-bottom: 30px;
+}
+
+.app-list .list-title {
+    margin-top: 12px;
+    line-height: 32px;
+    color: #222;
+}
+
+.app-list .list-title::before {
+    position: absolute;
+    z-index: -1;
+    font-size: 40px;
+    font-weight: bold;
+    color: #f2f2f2;
+}
+
+.app-list:nth-child(1) .list-title::before {content: "TOOL";}
+.app-list:nth-child(2) .list-title::before {content: "GAME";}
+.app-list:nth-child(3) .list-title::before {content: "DEMO";}
+.app-list:nth-child(4) .list-title::before {content: "POKIT";}
+.app-list:nth-child(5) .list-title::before {content: "REPOST";}
+
+.app-list .list-item {
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.app-list .list-item .item-avatar {
+    float: left;
+    width: 100px;
+    height: 100px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
+    transition: background .23s;
+}
+
+.app-list .list-item:hover .item-avatar {
+    background-size: 128%;
+}
+
+.app-list .list-item .item-triple {
+    float: left;
+    width:190px;
+    padding: 10px;
+}
+
+.app-list .list-item .item-title {
+    font-size: 16px;
+}
+
+.app-list .list-item .item-date {
+    margin-bottom: 8px;
+    font-size: 12px;
+}
+
+.app-list .list-item .item-info {
+    font-size: 12px;
+    color: #aaa;
+}
+
+</style>
+</head>
+<body>
+<div id="jisuowei">
+
+    <div id="ji-nav"></div>
+    <div id="ji-body">
+    <div class="ji-container-center" style="padding-top:20px;">
+
+        <el-row v-for="type, i in listAll" class="app-list">
+
+            <el-col :span="3">
+                <div class="list-title">
+                    <i :class="'fa fa-'+ type.icon"></i>
+                    {{ type.name }}
+                </div>
+            </el-col>
+
+            <el-col :span="20" :offset="1">
+
+                <el-row :gutter="20">
+
+                    <el-col :span="8" v-for="o in type.list">
+                        <el-card shadow="hover" class="list-item" :title="o.title" :body-style="{padding:'0px'}">
+                            <div @click="open(`https://jisuowei.com/app/${o.name}`)">
+                                <div class="item-avatar" :style="'background-image:url('+ o.avatar +')'"></div>
+                                <div class="item-triple">
+                                    <p class="item-title" ellipsis>{{ o.title }}</p>
+                                    <p class="item-date">{{ o.date }}</p>
+                                    <p class="item-info">{{ o.info }}</p>
+                                </div>
+                            </div>
+                        </el-card>
+                    </el-col>
+
+                </el-row>
+
+            </el-col>
+
+        </el-row>
+
+    </div>
+    </div>
+    <div id="ji-footer"></div>
+    <div id="ji-fixed"></div>
+
+</div>
+</body>
+<script src="../../static/js/jquery.2.1.1.min.js"></script>
+<script src="../static/js/jit.js"></script>
+<script src="../static/js/jikit.js"></script>
+<script src="../static/js/jisuowei.js"></script>
+<script src="../../static/js/vue.min.js"></script>
+<script src="../../static/js/element.min.js"></script>
+<script>
+(function(){
+
+    Ji.init(5);
+
+    var vm = new Vue({
+
+        el: '#jisuowei',
+
+        data: {
+            listAll: [
+                {list: [], icon: 'wrench',    name: '小工具'},
+                {list: [], icon: 'gamepad',   name: '游戏'},
+                {list: [], icon: 'rocket',    name: '示例'},
+                {list: [], icon: 'book',      name: '自制阅读'},
+                {list: [], icon: 'share-alt', name: '转载'},
+            ],
+        },
+
+        created: function() {
+            this.getAppList();
+        },
+
+        methods: {
+
+            getAppList: function() {
+
+                jit.ajax(`${location.href.indexOf('jisuowei') !== -1 ? 'https://jisuowei.com' : 'http://192.168.31.85'}/api/get/app.php`, {name: ''}, 'POST', res => {
+                    let arr = res.rows;
+
+                    arr.forEach((o, i) => {
+                        this.listAll[ +o.type - 1 ].list.push(o);
+                    });
+
+                });
+
+            },  // getAppList
+
+
+            open: function(url) {
+                window.open(url);
+            },  // open
+
+        },
+
+    });
+
+}());
+</script>
+</html>
