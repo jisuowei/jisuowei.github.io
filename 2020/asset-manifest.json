@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.css": "/static/css/main.58159063.chunk.css",
+    "main.js": "/static/js/main.0d35d619.chunk.js",
+    "runtime~main.js": "/static/js/runtime~main.037e3951.js",
+    "static/css/2.9ebbbab3.chunk.css": "/static/css/2.9ebbbab3.chunk.css",
+    "static/js/2.1e599106.chunk.js": "/static/js/2.1e599106.chunk.js",
+    "index.html": "/index.html",
+    "precache-manifest.024b258b06c2c965f9bd0d4ce9859b59.js": "/precache-manifest.024b258b06c2c965f9bd0d4ce9859b59.js",
+    "service-worker.js": "/service-worker.js",
+    "static/media/index.css": "/static/media/navi.c318bcb3.woff",
+    "static/media/duohui.png": "/static/media/duohui.02dd8961.png",
+    "static/media/empty_avatar.jpg": "/static/media/empty_avatar.23c3730b.jpg",
+    "static/media/gaoyou.png": "/static/media/gaoyou.b8ad08ed.png",
+    "static/media/App.css": "/static/media/icons-20.90247cfd.ttf",
+    "static/media/logo_dark.svg": "/static/media/logo_dark.3f124d5a.svg",
+    "static/media/panoda.png": "/static/media/panoda.aebf8135.png",
+    "static/media/pin.svg": "/static/media/pin.67551dca.svg",
+    "static/media/pomotodo.png": "/static/media/pomotodo.97694070.png"
+  }
+}
