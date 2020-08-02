@@ -25,7 +25,7 @@ export default function Navi() {
           <Navbar.Group>
 
             <Navbar.Heading>
-              <NavLink to="/">
+              <NavLink to="/2020">
                 <img className="w-16" src={Logo} alt="logo" />
               </NavLink>
             </Navbar.Heading>
