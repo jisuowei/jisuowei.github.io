@@ -1,0 +1,118 @@
+* {
+  outline: none !important;
+  text-decoration: none !important;
+}
+
+@font-face {
+  font-family: 'navi';
+  src: url('./fonts/navi.woff');
+}
+
+.font-navi {
+  font-family: 'navi';
+}
+
+@font-face {
+  font-family: 'dinc';
+  src: url('./fonts/dinc.woff2');
+}
+
+.font-dinc {
+  font-family: 'dinc';
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.blur-10 {
+  filter: blur(5px)
+}
+
+.min-h-320 {
+  min-height: 320px;
+}
+
+/* Navi */
+.active .bp3-button.bp3-minimal {
+  background-color: #e4e9ec;
+}
+
+/* ArticleItem */
+.article-item {
+  width: 280px;
+  transition: box-shadow .23s;
+}
+
+/* BookItem */
+.book-item {
+  width: 220px;
+  height: 142px;
+}
+
+.book-item .item-avatar {
+  width: 72px;
+  height: 96px;
+  top: 10px;
+  left: 12px;
+  transition: transform .23s;
+}
+
+.item-avatar:hover {
+  transform: scale(1.1);
+}
+
+/* StoreItem */
+.store-item {
+  width: 220px;
+  height: 142px;
+}
+
+.store-item .item-avatar {
+  width: 120px;
+  height: 60px;
+  top: 10px;
+  left: 12px;
+  transition: transform .23s;
+}
+
+.store-avatar:hover {
+  transform: scale(1.1);
+}
+
+/* Jitem */
+.jitem {
+  width: 220px;
+  height: 142px;
+}
+
+.jitem .item-avatar {
+  width: 64px;
+  height: 64px;
+  top: 10px;
+  left: 12px;
+  transition: transform .23s;
+}
+
+.jitem .item-avatar:hover {
+  transform: scale(1.1);
+}
+
+/* Pagination */
+.pagination .bp3-button {
+  min-width: 38px;
+}
+
+.anchorBL {
+  display: none;
+}
