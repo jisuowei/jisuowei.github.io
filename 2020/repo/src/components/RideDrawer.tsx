@@ -18,7 +18,7 @@ export default function RideDrawer(props: IRideDrawer) {
 
   useEffect(() => {
     if (open) {
-      fetch(`${process.env.REACT_APP_OSS_URL}/file/ride/${date}.json`)
+      fetch(`${process.env.REACT_APP_OSS_URL}/file/ride/${date}.json`, { mode: 'cors' })
         .then((response) => response.json())
         .then(function (data) {
 

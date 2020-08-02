@@ -21,15 +21,13 @@ const App: React.FC = () => {
       <Layout>
         <Switch>
 
-          <Route exact path="/" component={HomePage} />
-          <Route exact path="/article" component={ArticlePage} />
-          <Route exact path="/article/:id" component={ArticleContent} />
-          <Route exact path="/read" component={ReadPage} />
-          <Route exact path="/ride" component={RidePage} />
-          <Route exact path="/store" component={StorePage} />
-          <Route exact path="/app" component={AppPage} />
-          <Route exact path="/app/:name" component={AppPage} />
-
+          <Route exact path="/2020" component={HomePage} />
+          <Route exact path="/2020/article" component={ArticlePage} />
+          <Route exact path="/2020/article/:id" component={ArticleContent} />
+          <Route exact path="/2020/read" component={ReadPage} />
+          <Route exact path="/2020/ride" component={RidePage} />
+          <Route exact path="/2020/store" component={StorePage} />
+          <Route exact path="/2020/app" component={AppPage} />
           <Route component={NotFound}/>
 
         </Switch>
