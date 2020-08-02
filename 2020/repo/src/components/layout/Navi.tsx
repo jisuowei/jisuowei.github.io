@@ -8,11 +8,11 @@ import Logo from '../../images/logo_dark.svg'
 export default function Navi() {
 
   const navis = [
-    { text: '文章', to: '/article' },
-    { text: '阅读', to: '/read' },
-    { text: '骑行', to: '/ride' },
-    { text: '库藏', to: '/store' },
-    { text: '应用', to: '/app' },
+    { text: '文章', to: '/2020/article' },
+    { text: '阅读', to: '/2020/read' },
+    { text: '骑行', to: '/2020/ride' },
+    { text: '库藏', to: '/2020/store' },
+    { text: '应用', to: '/2020/app' },
   ]
 
   const [omnibarShow, setOmnibarShow] = useState(false)
