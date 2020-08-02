@@ -1,6 +1,7 @@
 {
   "name": "ji-react",
   "version": "0.1.0",
+  "homepage": "https://jisuowei.cn/2020",
   "private": true,
   "dependencies": {
     "@babel/core": "7.5.5",
