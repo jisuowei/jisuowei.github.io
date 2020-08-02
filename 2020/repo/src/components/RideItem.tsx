@@ -1,7 +1,6 @@
 import React from 'react'
 import EmptyAvatar from '../images/empty_avatar.jpg'
 import { Icon, Tooltip, Tag, Divider } from '@blueprintjs/core'
-import RideDrawer from '../components/RideDrawer'
 
 export interface RideItemProps {
   id: string
@@ -37,12 +36,11 @@ function RideItem(props: RideItemProps) {
       {
         map === '1'
           ? (
-            <RideDrawer date={date.replace(/-/g, '')}>
-              <div
-                className="item-avatar absolute bg-cover bg-no-repeat bg-center rounded-lg overflow-hidden shadow-md cursor-pointer"
-                style={{ backgroundImage: `url(${avatar || EmptyAvatar})` }}
-              />
-            </RideDrawer>
+            <div
+              className="item-avatar absolute bg-cover bg-no-repeat bg-center rounded-lg overflow-hidden shadow-md cursor-pointer"
+              style={{ backgroundImage: `url(${avatar || EmptyAvatar})` }}
+              onClick={() => window.open('https://jisuowei.com/ride')}
+            />
           )
           : (
             <div

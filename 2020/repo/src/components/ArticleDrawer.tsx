@@ -53,7 +53,7 @@ function ArticleDrawer(props: IArticleDrawer) {
         }
       </Drawer>
       <a 
-        href={`/article/${id}`} 
+        href={`https://jisuowei.com/post/${id}`} 
         target="_blank"
         rel="noopener noreferrer"
         onClick={(event) => {

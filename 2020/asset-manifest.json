@@ -1,12 +1,12 @@
 {
   "files": {
     "main.css": "/2020/static/css/main.b2c2ae65.chunk.css",
-    "main.js": "/2020/static/js/main.3996bf0b.chunk.js",
+    "main.js": "/2020/static/js/main.659bc331.chunk.js",
     "runtime~main.js": "/2020/static/js/runtime~main.12d0c56d.js",
     "static/css/2.d72e6e2b.chunk.css": "/2020/static/css/2.d72e6e2b.chunk.css",
-    "static/js/2.3b7aba33.chunk.js": "/2020/static/js/2.3b7aba33.chunk.js",
+    "static/js/2.fa4783aa.chunk.js": "/2020/static/js/2.fa4783aa.chunk.js",
     "index.html": "/2020/index.html",
-    "precache-manifest.7735f5ad6a065e24bd321b17156dbcd7.js": "/2020/precache-manifest.7735f5ad6a065e24bd321b17156dbcd7.js",
+    "precache-manifest.2d02427993e8ad0bce956f136a80b2a6.js": "/2020/precache-manifest.2d02427993e8ad0bce956f136a80b2a6.js",
     "service-worker.js": "/2020/service-worker.js",
     "static/media/index.css": "/2020/static/media/navi.c318bcb3.woff",
     "static/media/duohui.png": "/2020/static/media/duohui.02dd8961.png",
@@ -15,7 +15,6 @@
     "static/media/App.css": "/2020/static/media/icons-20.90247cfd.ttf",
     "static/media/logo_dark.svg": "/2020/static/media/logo_dark.3f124d5a.svg",
     "static/media/panoda.png": "/2020/static/media/panoda.aebf8135.png",
-    "static/media/pin.svg": "/2020/static/media/pin.67551dca.svg",
     "static/media/pomotodo.png": "/2020/static/media/pomotodo.97694070.png"
   }
 }
