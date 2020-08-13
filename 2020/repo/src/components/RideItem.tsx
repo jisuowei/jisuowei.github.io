@@ -39,7 +39,7 @@ function RideItem(props: RideItemProps) {
             <div
               className="item-avatar absolute bg-cover bg-no-repeat bg-center rounded-lg overflow-hidden shadow-md cursor-pointer"
               style={{ backgroundImage: `url(${avatar || EmptyAvatar})` }}
-              onClick={() => window.open('https://jisuowei.com/ride')}
+              onClick={() => window.open(`https://jisuowei.com/ride/${date.replace(/-/g, '')}`)}
             />
           )
           : (
