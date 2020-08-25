@@ -6,6 +6,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0" />
   <meta name="keywords" content="嵇所伟, 奇斯威克, chisw, chiswick, jisuowei" />
   <link href="./favicon.ico" rel="shortcut icon" />
+  <script>
+    const version = document.referrer.match(/[0-9]{4}/)
+    if (version) location.href = `/${version}`
+  </script>
 </head>
 <style>
   * {
