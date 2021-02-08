@@ -1,6 +1,6 @@
 # jisuowei.cn
 
-Archive old versions of websites.
+Archive old versions of my personal website.
 
 - [version 2014](/2014)
 - [version 2015](/2015)
