@@ -1,4 +1,4 @@
-# jisuowei.cn
+# archive.jisuowei.com
 
 Archive old versions of my personal website.
 
